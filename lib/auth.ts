@@ -4,9 +4,11 @@ import GoogleProvider from 'next-auth/providers/google'
 import { connectDB } from '@/lib/mongodb'
 import UserModel from '@/models/User'
 import bcrypt from 'bcryptjs'
+import { authConfig } from '@/auth.config'
 import type { Currency } from '@/types'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  ...authConfig,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -40,6 +42,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
+    ...authConfig.callbacks,
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
@@ -74,8 +77,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return true
     },
   },
-  pages: {
-    signIn: '/login',
-  },
-  session: { strategy: 'jwt' },
 })
