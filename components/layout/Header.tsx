@@ -2,18 +2,22 @@
 
 import { useSession } from 'next-auth/react'
 import { useTransition } from 'react'
+import { Menu } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { switchCurrency } from '@/lib/actions/currency'
+import { useSidebar } from '@/store/sidebar'
 import type { Currency } from '@/types'
 
 export default function Header() {
   const { data: session, update } = useSession()
   const [pending, startTransition] = useTransition()
+  const { toggle } = useSidebar()
 
   const user = session?.user
   const initials = user?.name?.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase() ?? '?'
@@ -26,8 +30,11 @@ export default function Header() {
   }
 
   return (
-    <header className="h-14 border-b bg-white flex items-center justify-between px-6">
-      <div />
+    <header className="h-14 border-b bg-white flex items-center justify-between px-4 md:px-6">
+      <Button variant="ghost" size="icon" className="md:hidden" onClick={toggle}>
+        <Menu size={20} />
+      </Button>
+      <div className="hidden md:block" />
 
       <div className="flex items-center gap-3">
         {user?.currencyAccounts && user.currencyAccounts.length > 1 && (

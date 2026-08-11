@@ -10,6 +10,20 @@ export const metadata: Metadata = {
   description: 'Controle de finanças pessoais',
   manifest: '/manifest.json',
   themeColor: '#1e293b',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'ExpControl',
+  },
+  icons: {
+    apple: '/icons/apple-touch-icon.png',
+  },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
