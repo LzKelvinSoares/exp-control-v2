@@ -11,6 +11,9 @@ export function usePayBills() {
         headers: HTTP_HEADERS.JSON,
         body: JSON.stringify({ action: 'payMany', ids }),
       }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.bills() }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.bills() })
+      qc.invalidateQueries({ queryKey: queryKeys.user() })
+    },
   })
 }

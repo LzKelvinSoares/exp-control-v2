@@ -6,4 +6,5 @@ export const queryKeys = {
   fuel:     ()                            => ['fuel'] as const,
   sales:    ()                            => ['sales'] as const,
   chart:    (year: number)               => ['chart', year] as const,
+  user:     ()                           => ['user'] as const,
 }

@@ -5,6 +5,7 @@ export const API_ROUTES = {
   fuel:     '/api/fuel',
   sales:    '/api/sales',
   chart:    '/api/chart',
+  user:     '/api/user',
 } as const
 
 export const queryParams = {

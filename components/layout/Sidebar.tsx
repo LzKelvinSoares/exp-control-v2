@@ -7,6 +7,7 @@ import { LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { NAV_ITEMS } from '@/constants'
+import LevelProgress from '@/components/shared/LevelProgress'
 
 export default function Sidebar() {
   const pathname = usePathname()
@@ -35,7 +36,9 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className="px-3 py-4 border-t border-slate-700">
+      <LevelProgress />
+
+      <div className="px-3 py-4">
         <Button
           variant="ghost"
           className="w-full justify-start gap-3 text-slate-400 hover:text-white hover:bg-slate-800"

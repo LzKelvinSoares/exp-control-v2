@@ -12,6 +12,9 @@ export function useCreateBill() {
         headers: HTTP_HEADERS.JSON,
         body: JSON.stringify(data),
       }).then((r) => r.json()),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.bills() }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.bills() })
+      qc.invalidateQueries({ queryKey: queryKeys.user() })
+    },
   })
 }
