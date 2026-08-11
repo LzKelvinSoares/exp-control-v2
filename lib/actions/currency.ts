@@ -1,0 +1,14 @@
+'use server'
+
+import { auth } from '@/lib/auth'
+import { connectDB } from '@/lib/mongodb'
+import UserModel from '@/models/User'
+import type { Currency } from '@/types'
+
+export async function switchCurrency(currency: Currency) {
+  const session = await auth()
+  if (!session?.user?.id) throw new Error('Not authenticated')
+
+  await connectDB()
+  await UserModel.findByIdAndUpdate(session.user.id, { currentCurrency: currency })
+}
