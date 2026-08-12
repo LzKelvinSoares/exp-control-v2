@@ -2,12 +2,12 @@ import mongoose, { Schema, model, models } from 'mongoose'
 import type { CurrencyAccount, Currency } from '@/types'
 import { CURRENCY_ENUM } from '@/constants/enums'
 
-interface IUser {
+export interface IUser {
   id: string
   name: string
   email: string
   password: string
-  currencyAccounts: CurrencyAccount[]
+  currencyAccounts: Currency[]
   currentCurrency: Currency
   points: number
   createdAt: Date
@@ -19,10 +19,7 @@ const UserSchema = new Schema<IUser>({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: false, default: '' },
   currencyAccounts: [
-    {
-      currency: { type: String, enum: CURRENCY_ENUM, required: true },
-      label: { type: String, required: true },
-    },
+    { type: String, enum: CURRENCY_ENUM, required: true },
   ],
   currentCurrency: { type: String, enum: CURRENCY_ENUM, default: 'BRL' },
   points: { type: Number, default: 0 },

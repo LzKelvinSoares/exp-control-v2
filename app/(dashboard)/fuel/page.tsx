@@ -32,11 +32,12 @@ export default function FuelPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold text-slate-800">Combustível</h1>
+        <h1 className="text-2xl font-bold">Combustível</h1>
         <div className="flex items-center justify-between sm:justify-end gap-3">
           <MonthYearSelector />
           <Button size="sm" onClick={() => setModalOpen(true)}>
-            <Plus size={16} className="mr-1" /> Novo abastecimento
+            <Plus size={16} />
+            <span className="hidden sm:inline ml-1">Novo abastecimento</span>
           </Button>
         </div>
       </div>

@@ -7,6 +7,7 @@ import { useChart } from '@/hooks/queries/chart/use-chart'
 import { useCalendar } from '@/store/calendar'
 import { formatCurrency } from '@/lib/utils'
 import { useSession } from 'next-auth/react'
+import { useTheme } from 'next-themes'
 import type { Currency } from '@/types'
 
 export default function TrendChart() {
@@ -14,6 +15,8 @@ export default function TrendChart() {
   const { data, isLoading } = useChart(year)
   const { data: session } = useSession()
   const currency = (session?.user?.currentCurrency ?? 'BRL') as Currency
+  const { theme } = useTheme()
+  const tickColor = theme === 'dark' ? '#e2e8f0' : '#64748b'
 
   if (isLoading) return <Skeleton className="h-64 w-full rounded-xl" />
 
@@ -25,8 +28,8 @@ export default function TrendChart() {
       <CardContent>
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={data} barGap={4}>
-            <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={60}
+            <XAxis dataKey="month" tick={{ fontSize: 12, fill: tickColor }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 11, fill: tickColor }} axisLine={false} tickLine={false} width={60}
               tickFormatter={(v) => formatCurrency(v, currency).replace(/\s/g, '')} />
             <Tooltip formatter={(v) => formatCurrency(Number(v), currency)} />
             <Legend iconType="circle" iconSize={8} />

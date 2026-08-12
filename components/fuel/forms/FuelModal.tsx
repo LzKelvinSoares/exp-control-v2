@@ -96,7 +96,7 @@ export default function FuelModal({ open, fuel, onClose }: FuelModalProps) {
 
           <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg text-sm text-slate-600">
             <span>Litros calculados:</span>
-            <span className="font-semibold text-slate-800">{liters} L</span>
+            <span className="font-semibold text-foreground">{liters} L</span>
           </div>
 
           <div className="flex justify-end gap-2 pt-2">

@@ -11,6 +11,7 @@ import { useExpenses } from '@/hooks/queries/expenses/use-expenses'
 import { useRevenues } from '@/hooks/queries/revenues/use-revenues'
 import { useCalendar } from '@/store/calendar'
 import { formatCurrency, sumBy } from '@/lib/utils'
+import { EXPENSE_CATEGORIES, REVENUE_CATEGORIES } from '@/constants'
 import type { Currency } from '@/types'
 
 export default function HomePage() {
@@ -25,10 +26,26 @@ export default function HomePage() {
   const totalRevenues = sumBy(revenues ?? [], 'value')
   const balance = totalRevenues - totalExpenses
 
+  const expenseBreakdown = EXPENSE_CATEGORIES
+    .map((cat) => ({
+      label: cat.label,
+      value: sumBy((expenses ?? []).filter((e) => e.type === cat.value), 'value'),
+    }))
+    .filter((c) => c.value > 0)
+    .map((c) => ({ label: c.label, value: formatCurrency(c.value, currency) }))
+
+  const revenueBreakdown = REVENUE_CATEGORIES
+    .map((cat) => ({
+      label: cat.label,
+      value: sumBy((revenues ?? []).filter((r) => r.type === cat.value), 'value'),
+    }))
+    .filter((c) => c.value > 0)
+    .map((c) => ({ label: c.label, value: formatCurrency(c.value, currency) }))
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-800">Início</h1>
+        <h1 className="text-2xl font-bold">Início</h1>
         <MonthYearSelector />
       </div>
 
@@ -39,6 +56,7 @@ export default function HomePage() {
           icon={TrendingDown}
           loading={expLoading}
           variant="negative"
+          breakdown={expenseBreakdown}
         />
         <SummaryCard
           label="Receitas"
@@ -46,6 +64,7 @@ export default function HomePage() {
           icon={TrendingUp}
           loading={revLoading}
           variant="positive"
+          breakdown={revenueBreakdown}
         />
         <SummaryCard
           label="Saldo"

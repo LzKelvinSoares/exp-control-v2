@@ -1,4 +1,4 @@
-import type { CurrencyAccount, Currency } from '@/types'
+import type { Currency } from '@/types'
 import 'next-auth'
 
 declare module 'next-auth' {
@@ -25,7 +25,7 @@ declare module 'next-auth' {
 declare module 'next-auth/jwt' {
   interface JWT {
     id: string
-    currencyAccounts: CurrencyAccount[]
+    currencyAccounts: Currency[]
     currentCurrency: Currency
     points: number
   }

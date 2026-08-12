@@ -2,7 +2,7 @@ import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 import { connectDB } from '@/lib/mongodb'
-import UserModel from '@/models/User'
+import UserModel, { type IUser } from '@/models/User'
 import bcrypt from 'bcryptjs'
 import { authConfig } from '@/auth.config'
 import type { Currency } from '@/types'
@@ -50,23 +50,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         if (account?.provider === 'google') {
           await connectDB()
-          const dbUser = await UserModel.findOne({ email: user.email }).lean()
-          token.id = (dbUser as any)?.id.toString()
-          token.currencyAccounts = (dbUser as any)?.currencyAccounts
-          token.currentCurrency = (dbUser as any)?.currentCurrency as Currency
-          token.points = (dbUser as any)?.points
+          const dbUser = await UserModel.findOne({ email: user.email }).lean<IUser>()
+          token.id = dbUser?.id.toString() ?? ''
+          token.currencyAccounts = dbUser?.currencyAccounts ?? []
+          token.currentCurrency = dbUser?.currentCurrency ?? 'BRL'
+          token.points = dbUser?.points ?? 0
         } else {
           token.id = user.id
-          token.currencyAccounts = (user as any).currencyAccounts
-          token.currentCurrency = (user as any).currentCurrency as Currency
-          token.points = (user as any).points
+          token.currencyAccounts = user.currencyAccounts
+          token.currentCurrency = user.currentCurrency
+          token.points = user.points
         }
       }
       return token
     },
     async session({ session, token }) {
       session.user.id = token.id as string
-      session.user.currencyAccounts = token.currencyAccounts as any
+      session.user.currencyAccounts = token.currencyAccounts as Currency[]
       session.user.currentCurrency = token.currentCurrency as Currency
       session.user.points = token.points as number
       return session

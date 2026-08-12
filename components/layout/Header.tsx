@@ -2,7 +2,8 @@
 
 import { useSession } from 'next-auth/react'
 import { useTransition } from 'react'
-import { Menu } from 'lucide-react'
+import { Menu, Sun, Moon } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
@@ -18,6 +19,7 @@ export default function Header() {
   const { data: session, update } = useSession()
   const [pending, startTransition] = useTransition()
   const { toggle } = useSidebar()
+  const { theme, setTheme } = useTheme()
 
   const user = session?.user
   const initials = user?.name?.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase() ?? '?'
@@ -30,17 +32,20 @@ export default function Header() {
   }
 
   return (
-    <header className="h-14 border-b bg-white flex items-center justify-between px-4 md:px-6">
+    <header className="h-14 border-b bg-background flex items-center justify-between px-4 md:px-6">
       <Button variant="ghost" size="icon" className="md:hidden" onClick={toggle}>
         <Menu size={20} />
       </Button>
       <div className="hidden md:block" />
 
       <div className="flex items-center gap-3">
+        <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+        </Button>
         {user?.currencyAccounts && user.currencyAccounts.length > 1 && (
           <DropdownMenu>
             <DropdownMenuTrigger disabled={pending} className="cursor-pointer">
-              <Badge variant="outline" className="text-xs font-semibold">
+              <Badge className="text-xs font-semibold text-white" style={{ backgroundColor: '#612d60' }}>
                 {user.currentCurrency ?? 'BRL'}
               </Badge>
             </DropdownMenuTrigger>

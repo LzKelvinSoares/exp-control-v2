@@ -51,16 +51,18 @@ export default function RevenuesPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold text-slate-800">Receitas</h1>
+        <h1 className="text-2xl font-bold">Receitas</h1>
         <div className="flex items-center justify-between sm:justify-end gap-3">
           <MonthYearSelector />
           {filteredData.length > 0 && (
             <Button size="sm" variant="outline" onClick={handleShare}>
-              <Share2 size={16} className="mr-1" /> Compartilhar
+              <Share2 size={16} />
+              <span className="hidden sm:inline ml-1">Compartilhar</span>
             </Button>
           )}
           <Button size="sm" onClick={() => setModalOpen(true)}>
-            <Plus size={16} className="mr-1" /> Nova receita
+            <Plus size={16} />
+            <span className="hidden sm:inline ml-1">Nova receita</span>
           </Button>
         </div>
       </div>

@@ -29,9 +29,10 @@ export default function SalesPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-800">Vendas</h1>
+        <h1 className="text-2xl font-bold">Vendas</h1>
         <Button size="sm" onClick={() => setModalOpen(true)}>
-          <Plus size={16} className="mr-1" /> Nova venda
+          <Plus size={16} />
+          <span className="hidden sm:inline ml-1">Nova venda</span>
         </Button>
       </div>
 

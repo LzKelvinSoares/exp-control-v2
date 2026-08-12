@@ -24,12 +24,19 @@ export default function Sidebar() {
         />
       )}
 
-      <aside className={cn(
-        'fixed inset-y-0 left-0 z-30 flex flex-col w-64 bg-slate-900 text-slate-100 transition-transform duration-300 md:static md:translate-x-0 md:z-auto',
-        isOpen ? 'translate-x-0' : '-translate-x-full',
-      )}>
-        <div className="px-6 py-5 border-b border-slate-700">
-          <span className="text-xl font-bold tracking-tight">ExpControl</span>
+      <aside
+        style={{ backgroundColor: '#291b2a' }}
+        className={cn(
+          'fixed inset-y-0 left-0 z-30 flex flex-col w-64 text-white transition-transform duration-300 md:static md:translate-x-0 md:z-auto',
+          isOpen ? 'translate-x-0' : '-translate-x-full',
+        )}
+      >
+        <div className="px-6 py-5" style={{ borderBottom: '1px solid #612d60' }}>
+          <div className="flex items-center gap-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-blank.png" alt="ExpControl" className="h-8 w-8 object-contain" />
+            <span className="text-xl font-bold tracking-tight">ExpControl</span>
+          </div>
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-1">
@@ -38,12 +45,15 @@ export default function Sidebar() {
               key={href}
               href={href}
               onClick={close}
+              style={pathname === href ? { backgroundColor: '#612d60' } : undefined}
               className={cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
                 pathname === href
-                  ? 'bg-slate-700 text-white'
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-white',
+                  ? 'text-white'
+                  : 'text-purple-200 hover:text-white',
               )}
+              onMouseEnter={e => { if (pathname !== href) (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(97,45,96,0.6)' }}
+              onMouseLeave={e => { if (pathname !== href) (e.currentTarget as HTMLElement).style.backgroundColor = '' }}
             >
               <Icon size={18} />
               {label}
@@ -56,7 +66,10 @@ export default function Sidebar() {
         <div className="px-3 py-4">
           <Button
             variant="ghost"
-            className="w-full justify-start gap-3 text-slate-400 hover:text-white hover:bg-slate-800"
+            className="w-full justify-start gap-3 text-purple-200 hover:text-white"
+            style={{}}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(97,45,96,0.6)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = '' }}
             onClick={() => signOut({ callbackUrl: '/login' })}
           >
             <LogOut size={18} />
