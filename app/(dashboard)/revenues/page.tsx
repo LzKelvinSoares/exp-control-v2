@@ -6,11 +6,14 @@ import { TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import MonthYearSelector from '@/components/shared/MonthYearSelector'
 import SummaryCard from '@/components/shared/SummaryCard'
+import { TableFilters } from '@/components/shared/TableFilters'
 import RevenueTable from '@/components/revenues/RevenueTable'
 import RevenueModal from '@/components/revenues/forms/RevenueModal'
 import { useRevenues } from '@/hooks/queries/revenues/use-revenues'
+import { useTableFilter } from '@/hooks/useTableFilter'
 import { useCalendar } from '@/store/calendar'
 import { formatCurrency, sumBy } from '@/lib/utils'
+import { REVENUE_FILTER_DEFS } from '@/constants'
 import { useSession } from 'next-auth/react'
 import type { Currency } from '@/types'
 
@@ -22,7 +25,9 @@ export default function RevenuesPage() {
   const { data: revenues = [], isLoading } = useRevenues(month, year)
   const [modalOpen, setModalOpen] = useState(false)
 
-  const total = sumBy(revenues, 'value')
+  const { filteredData, filterValues, setFilter, clearFilters, hasActiveFilters } = useTableFilter(revenues, REVENUE_FILTER_DEFS)
+
+  const total = sumBy(filteredData, 'value')
 
   return (
     <div className="space-y-6">
@@ -44,7 +49,9 @@ export default function RevenuesPage() {
         variant="positive"
       />
 
-      <RevenueTable revenues={revenues} loading={isLoading} />
+      <TableFilters defs={REVENUE_FILTER_DEFS} values={filterValues} hasActive={hasActiveFilters} onFilter={setFilter} onClear={clearFilters} />
+
+      <RevenueTable revenues={filteredData} loading={isLoading} />
 
       <RevenueModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </div>

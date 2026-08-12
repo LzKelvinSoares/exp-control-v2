@@ -5,11 +5,14 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import MonthYearSelector from '@/components/shared/MonthYearSelector'
 import SummaryCard from '@/components/shared/SummaryCard'
+import { TableFilters } from '@/components/shared/TableFilters'
 import ExpenseTable from '@/components/expenses/ExpenseTable'
 import ExpenseModal from '@/components/expenses/forms/ExpenseModal'
 import { useExpenses } from '@/hooks/queries/expenses/use-expenses'
+import { useTableFilter } from '@/hooks/useTableFilter'
 import { useCalendar } from '@/store/calendar'
 import { formatCurrency, sumBy } from '@/lib/utils'
+import { EXPENSE_FILTER_DEFS } from '@/constants'
 import { TrendingDown } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import type { Currency } from '@/types'
@@ -22,7 +25,9 @@ export default function ExpensesPage() {
   const { data: expenses = [], isLoading } = useExpenses(month, year)
   const [modalOpen, setModalOpen] = useState(false)
 
-  const total = sumBy(expenses, 'value')
+  const { filteredData, filterValues, setFilter, clearFilters, hasActiveFilters } = useTableFilter(expenses, EXPENSE_FILTER_DEFS)
+
+  const total = sumBy(filteredData, 'value')
 
   return (
     <div className="space-y-6">
@@ -44,7 +49,9 @@ export default function ExpensesPage() {
         variant="negative"
       />
 
-      <ExpenseTable expenses={expenses} loading={isLoading} />
+      <TableFilters defs={EXPENSE_FILTER_DEFS} values={filterValues} hasActive={hasActiveFilters} onFilter={setFilter} onClear={clearFilters} />
+
+      <ExpenseTable expenses={filteredData} loading={isLoading} />
 
       <ExpenseModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </div>

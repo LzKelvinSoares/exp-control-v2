@@ -5,10 +5,13 @@ import { Plus, Receipt } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import MonthYearSelector from '@/components/shared/MonthYearSelector'
 import SummaryCard from '@/components/shared/SummaryCard'
+import { TableFilters } from '@/components/shared/TableFilters'
 import BillTable from '@/components/bills/BillTable'
 import BillModal from '@/components/bills/forms/BillModal'
 import { useBills } from '@/hooks/queries/bills/use-bills'
+import { useTableFilter } from '@/hooks/useTableFilter'
 import { formatCurrency, sumBy } from '@/lib/utils'
+import { BILL_FILTER_DEFS } from '@/constants'
 import { useCalendar } from '@/store/calendar'
 import { useSession } from 'next-auth/react'
 import type { Currency } from '@/types'
@@ -21,9 +24,11 @@ export default function BillsPage() {
   const { data: bills = [], isLoading } = useBills(month, year)
   const [modalOpen, setModalOpen] = useState(false)
 
-  const unpaid = bills.filter((b) => !b.paid)
+  const { filteredData, filterValues, setFilter, clearFilters, hasActiveFilters } = useTableFilter(bills, BILL_FILTER_DEFS)
+
+  const unpaid = filteredData.filter((b) => !b.paid)
   const totalUnpaid = sumBy(unpaid, 'value')
-  const totalAll = sumBy(bills, 'value')
+  const totalAll = sumBy(filteredData, 'value')
 
   return (
     <div className="space-y-6">
@@ -53,7 +58,9 @@ export default function BillsPage() {
         />
       </div>
 
-      <BillTable bills={bills} loading={isLoading} />
+      <TableFilters defs={BILL_FILTER_DEFS} values={filterValues} hasActive={hasActiveFilters} onFilter={setFilter} onClear={clearFilters} />
+
+      <BillTable bills={filteredData} loading={isLoading} />
 
       <BillModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </div>

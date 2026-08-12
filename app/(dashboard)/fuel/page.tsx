@@ -5,10 +5,13 @@ import { Plus, Fuel } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import MonthYearSelector from '@/components/shared/MonthYearSelector'
 import SummaryCard from '@/components/shared/SummaryCard'
+import { TableFilters } from '@/components/shared/TableFilters'
 import FuelTable from '@/components/fuel/FuelTable'
 import FuelModal from '@/components/fuel/forms/FuelModal'
 import { useFuel } from '@/hooks/queries/fuel/use-fuel'
+import { useTableFilter } from '@/hooks/useTableFilter'
 import { formatCurrency } from '@/lib/utils'
+import { FUEL_FILTER_DEFS } from '@/constants'
 import { useCalendar } from '@/store/calendar'
 import { useSession } from 'next-auth/react'
 import type { Currency } from '@/types'
@@ -21,8 +24,10 @@ export default function FuelPage() {
   const { data: entries = [], isLoading } = useFuel(month, year)
   const [modalOpen, setModalOpen] = useState(false)
 
-  const totalCost = entries.reduce((acc, e) => acc + Number(e.value), 0)
-  const totalLiters = entries.reduce((acc, e) => acc + Number(e.value) / Number(e.valuePerLiter), 0)
+  const { filteredData, filterValues, setFilter, clearFilters, hasActiveFilters } = useTableFilter(entries, FUEL_FILTER_DEFS)
+
+  const totalCost = filteredData.reduce((acc, e) => acc + Number(e.value), 0)
+  const totalLiters = filteredData.reduce((acc, e) => acc + Number(e.value) / Number(e.valuePerLiter), 0)
 
   return (
     <div className="space-y-6">
@@ -52,7 +57,9 @@ export default function FuelPage() {
         />
       </div>
 
-      <FuelTable entries={entries} loading={isLoading} />
+      <TableFilters defs={FUEL_FILTER_DEFS} values={filterValues} hasActive={hasActiveFilters} onFilter={setFilter} onClear={clearFilters} />
+
+      <FuelTable entries={filteredData} loading={isLoading} />
 
       <FuelModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
