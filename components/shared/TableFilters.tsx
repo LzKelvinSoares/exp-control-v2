@@ -2,24 +2,17 @@ import { X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { type FilterDef } from '@/hooks/useTableFilter'
 
-interface FilterDef {
-  key: string
-  label: string
-  type: 'text' | 'select'
-  placeholder?: string
-  options?: { value: string; label: string }[]
-}
-
-interface TableFiltersProps {
-  defs: FilterDef[]
+interface TableFiltersProps<T> {
+  defs: FilterDef<T>[]
   values: Record<string, string>
   hasActive: boolean
   onFilter: (key: string, value: string) => void
   onClear: () => void
 }
 
-export function TableFilters({ defs, values, hasActive, onFilter, onClear }: TableFiltersProps) {
+export function TableFilters<T>({ defs, values, hasActive, onFilter, onClear }: TableFiltersProps<T>) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       {defs.map((def) => (
