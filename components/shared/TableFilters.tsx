@@ -31,6 +31,14 @@ export function TableFilters({ defs, values, hasActive, onFilter, onClear }: Tab
             onChange={(e) => onFilter(def.key, e.target.value)}
             className="h-8 w-40 text-sm"
           />
+        ) : def.type === 'date' ? (
+          <Input
+            key={def.key}
+            type="date"
+            value={values[def.key] ?? ''}
+            onChange={(e) => onFilter(def.key, e.target.value)}
+            className="h-8 w-40 text-sm"
+          />
         ) : (
           <Select
             key={def.key}
@@ -38,7 +46,11 @@ export function TableFilters({ defs, values, hasActive, onFilter, onClear }: Tab
             onValueChange={(v) => onFilter(def.key, v)}
           >
             <SelectTrigger className="h-8 w-36 text-sm">
-              <SelectValue placeholder={def.label} />
+              <SelectValue placeholder={def.label}>
+                {!values[def.key] || values[def.key] === 'all'
+                  ? 'Todos'
+                  : def.options?.find((o) => o.value === values[def.key])?.label}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos</SelectItem>

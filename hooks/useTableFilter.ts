@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 export interface FilterDef<T> {
   key: string
   label: string
-  type: 'text' | 'select'
+  type: 'text' | 'select' | 'date'
   placeholder?: string
   options?: { value: string; label: string }[]
   accessor?: (row: T) => string

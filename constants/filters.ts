@@ -19,9 +19,8 @@ export const FUEL_FILTER_DEFS: FilterDef<Fuel>[] = [
   {
     key: 'creationDate',
     label: 'Data',
-    type: 'text',
-    placeholder: 'dd/mm/aaaa',
-    accessor: (e) => new Date(e.creationDate).toLocaleDateString('pt-BR'),
+    type: 'date',
+    accessor: (e) => new Date(e.creationDate).toLocaleDateString('en-CA'),
   },
 ]
 
