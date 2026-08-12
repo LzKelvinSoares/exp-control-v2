@@ -12,7 +12,7 @@ import { useRevenues } from '@/hooks/queries/revenues/use-revenues'
 import { useTableFilter } from '@/hooks/useTableFilter'
 import { useCalendar } from '@/store/calendar'
 import { formatCurrency, sumBy } from '@/lib/utils'
-import { REVENUE_FILTER_DEFS } from '@/constants'
+import { REVENUE_CATEGORIES, REVENUE_FILTER_DEFS } from '@/constants'
 import { useSession } from 'next-auth/react'
 import type { Currency } from '@/types'
 
@@ -27,6 +27,14 @@ export default function RevenuesPage() {
   const { filteredData, filterValues, setFilter, clearFilters, hasActiveFilters } = useTableFilter(revenues, REVENUE_FILTER_DEFS)
 
   const total = sumBy(filteredData, 'value')
+
+  const categoryBreakdown = REVENUE_CATEGORIES
+    .map((cat) => ({
+      label: cat.label,
+      value: sumBy(filteredData.filter((r) => r.type === cat.value), 'value'),
+    }))
+    .filter((c) => c.value > 0)
+    .map((c) => ({ label: c.label, value: formatCurrency(c.value, currency) }))
 
   function handleShare() {
     if (typeof navigator === 'undefined' || !navigator.share) return
@@ -63,6 +71,7 @@ export default function RevenuesPage() {
         icon={TrendingUp}
         loading={isLoading}
         variant="positive"
+        breakdown={categoryBreakdown}
       />
 
       <TableFilters defs={REVENUE_FILTER_DEFS} values={filterValues} hasActive={hasActiveFilters} onFilter={setFilter} onClear={clearFilters} />
