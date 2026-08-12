@@ -1,18 +1,19 @@
 import { z } from 'zod'
-import { SALE_ROOM_ENUM, PAYMENT_STATUS_ENUM, DELIVERY_STATUS_ENUM } from '@/constants'
+import { SALE_ROOM_ENUM } from '@/constants'
 import { toZodEnum } from './helpers'
 
 export const saleSchema = z.object({
-  name:           z.string().min(1, 'Nome é obrigatório'),
-  room:           z.enum(toZodEnum(SALE_ROOM_ENUM)),
-  buyer:          z.string().optional(),
-  value:          z.number().positive('Valor deve ser positivo'),
-  discount:       z.number().min(0).optional(),
-  installments:   z.number().int().min(1).optional(),
-  bookingDate:    z.string().optional(),
-  saleDate:       z.string().optional(),
-  paymentStatus:  z.enum(toZodEnum(PAYMENT_STATUS_ENUM)),
-  deliveryStatus: z.enum(toZodEnum(DELIVERY_STATUS_ENUM)),
+  description:  z.string().min(1, 'Descrição é obrigatória'),
+  room:         z.enum(toZodEnum(SALE_ROOM_ENUM)),
+  buyer:        z.string().optional(),
+  value:        z.number().positive('Valor deve ser positivo'),
+  valuePaid:    z.string().optional(),
+  discount:     z.union([z.string(), z.number()]).optional(),
+  installments: z.number().int().min(1).optional(),
+  bookingDate:  z.string().optional(),
+  saleDate:     z.string().optional(),
+  paid:         z.boolean().default(false),
+  delivered:    z.boolean().default(false),
 })
 
 export type SaleFormData = z.infer<typeof saleSchema>

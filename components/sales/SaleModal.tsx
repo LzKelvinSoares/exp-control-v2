@@ -8,11 +8,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useCreateSale } from '@/hooks/mutations/sales/use-create-sale'
 import { useUpdateSale } from '@/hooks/mutations/sales/use-update-sale'
 import { saleSchema, type SaleFormData } from '@/lib/schemas/sale.schema'
-import { SALE_ROOMS, PAYMENT_STATUSES, DELIVERY_STATUSES } from '@/constants'
+import { SALE_ROOMS } from '@/constants'
 import type { Sale } from '@/types'
 
 interface SaleModalProps {
@@ -31,27 +32,32 @@ export default function SaleModal({ open, sale, onClose }: SaleModalProps) {
   const updateSale = useUpdateSale()
   const isEditing = !!sale
 
-  const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<SaleFormData>({
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm<SaleFormData>({
     resolver: zodResolver(saleSchema),
-    defaultValues: { paymentStatus: 'PENDING', deliveryStatus: 'PENDING' },
+    defaultValues: { paid: false, delivered: false },
   })
+
+  const paid = watch('paid')
+  const delivered = watch('delivered')
+  const room = watch('room')
 
   useEffect(() => {
     if (sale) {
       reset({
-        name:           sale.name,
-        room:           sale.room,
-        buyer:          sale.buyer ?? '',
-        value:          sale.value,
-        discount:       sale.discount ?? 0,
-        installments:   sale.installments ?? 1,
-        bookingDate:    toDateInput(sale.bookingDate),
-        saleDate:       toDateInput(sale.saleDate),
-        paymentStatus:  sale.paymentStatus,
-        deliveryStatus: sale.deliveryStatus,
+        description:  sale.description,
+        room:         sale.room,
+        buyer:        sale.buyer ?? '',
+        value:        sale.value,
+        valuePaid:    sale.valuePaid ? String(sale.valuePaid) : '',
+        discount:     sale.discount ?? '',
+        installments: sale.installments ?? 1,
+        bookingDate:  toDateInput(sale.bookingDate),
+        saleDate:     toDateInput(sale.saleDate),
+        paid:         sale.paid,
+        delivered:    sale.delivered,
       })
     } else {
-      reset({ paymentStatus: 'PENDING', deliveryStatus: 'PENDING' })
+      reset({ paid: false, delivered: false })
     }
   }, [sale, reset])
 
@@ -80,15 +86,15 @@ export default function SaleModal({ open, sale, onClose }: SaleModalProps) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1 col-span-2">
-              <Label>Nome do item</Label>
-              <Input {...register('name')} placeholder="Ex: Mesa de madeira" />
-              {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
+              <Label>Descrição</Label>
+              <Input {...register('description')} placeholder="Ex: Mesa de madeira" />
+              {errors.description && <p className="text-xs text-red-500">{errors.description.message}</p>}
             </div>
 
             <div className="space-y-1">
               <Label>Cômodo</Label>
               <Select
-                defaultValue={sale?.room}
+                value={room ?? ''}
                 onValueChange={(v) => setValue('room', v as SaleFormData['room'])}
               >
                 <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
@@ -115,8 +121,8 @@ export default function SaleModal({ open, sale, onClose }: SaleModalProps) {
             </div>
 
             <div className="space-y-1">
-              <Label>Desconto (R$) <span className="text-muted-foreground text-xs">(opcional)</span></Label>
-              <Input type="number" step="0.01" {...register('discount', { valueAsNumber: true })} placeholder="0,00" />
+              <Label>Valor pago <span className="text-muted-foreground text-xs">(opcional)</span></Label>
+              <Input {...register('valuePaid')} placeholder="0,00" />
             </div>
 
             <div className="space-y-1">
@@ -137,35 +143,23 @@ export default function SaleModal({ open, sale, onClose }: SaleModalProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <Label>Status de pagamento</Label>
-              <Select
-                defaultValue={sale?.paymentStatus ?? 'PENDING'}
-                onValueChange={(v) => setValue('paymentStatus', v as SaleFormData['paymentStatus'])}
-              >
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {PAYMENT_STATUSES.map((s) => (
-                    <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="paid"
+                checked={paid}
+                onCheckedChange={(v) => setValue('paid', !!v)}
+              />
+              <Label htmlFor="paid">Pago</Label>
             </div>
 
-            <div className="space-y-1">
-              <Label>Status de entrega</Label>
-              <Select
-                defaultValue={sale?.deliveryStatus ?? 'PENDING'}
-                onValueChange={(v) => setValue('deliveryStatus', v as SaleFormData['deliveryStatus'])}
-              >
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {DELIVERY_STATUSES.map((s) => (
-                    <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="delivered"
+                checked={delivered}
+                onCheckedChange={(v) => setValue('delivered', !!v)}
+              />
+              <Label htmlFor="delivered">Entregue</Label>
             </div>
           </div>
 

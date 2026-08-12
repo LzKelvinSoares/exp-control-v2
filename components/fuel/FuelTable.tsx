@@ -56,43 +56,72 @@ export default function FuelTable({ entries, loading }: FuelTableProps) {
 
   return (
     <>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Data</TableHead>
-            <TableHead className="text-right">Preço/L (R$)</TableHead>
-            <TableHead className="text-right">Litros</TableHead>
-            <TableHead className="text-right">Total</TableHead>
-            <TableHead className="w-20" />
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {entries.map((entry) => (
-            <TableRow key={String(entry.id)}>
-              <TableCell className="font-medium">{formatDate(entry.creationDate)}</TableCell>
-              <TableCell className="text-right text-sm text-muted-foreground">
-                {Number(entry.valuePerLiter).toFixed(3)}
-              </TableCell>
-              <TableCell className="text-right text-sm text-muted-foreground">
-                {(Number(entry.value) / Number(entry.valuePerLiter)).toFixed(3)} L
-              </TableCell>
-              <TableCell className="text-right font-semibold">
-                {formatCurrency(Number(entry.value), currency)}
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-1 justify-end">
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(entry)}>
-                    <Pencil size={13} />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(entry.id))}>
-                    <Trash2 size={13} />
-                  </Button>
-                </div>
-              </TableCell>
+      {/* Desktop table */}
+      <div className="hidden md:block">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Data</TableHead>
+              <TableHead className="text-right">Preço/L (R$)</TableHead>
+              <TableHead className="text-right">Litros</TableHead>
+              <TableHead className="text-right">Total</TableHead>
+              <TableHead className="w-20" />
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {entries.map((entry) => (
+              <TableRow key={String(entry.id)}>
+                <TableCell className="font-medium">{formatDate(entry.creationDate)}</TableCell>
+                <TableCell className="text-right text-sm text-muted-foreground">
+                  {Number(entry.valuePerLiter).toFixed(3)}
+                </TableCell>
+                <TableCell className="text-right text-sm text-muted-foreground">
+                  {(Number(entry.value) / Number(entry.valuePerLiter)).toFixed(3)} L
+                </TableCell>
+                <TableCell className="text-right font-semibold">
+                  {formatCurrency(Number(entry.value), currency)}
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-1 justify-end">
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(entry)}>
+                      <Pencil size={13} />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(entry.id))}>
+                      <Trash2 size={13} />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Mobile cards */}
+      <div className="md:hidden space-y-3">
+        {entries.map((entry) => (
+          <div key={String(entry.id)} className="rounded-lg border bg-white p-4 space-y-3">
+            <div className="flex items-start justify-between gap-2">
+              <span className="font-medium text-sm">{formatDate(entry.creationDate)}</span>
+              <span className="font-semibold text-sm shrink-0">{formatCurrency(Number(entry.value), currency)}</span>
+            </div>
+
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <span>Preço/L: R$ {Number(entry.valuePerLiter).toFixed(3)}</span>
+              <span>{(Number(entry.value) / Number(entry.valuePerLiter)).toFixed(3)} L</span>
+            </div>
+
+            <div className="flex items-center gap-1 justify-end">
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(entry)}>
+                <Pencil size={13} />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(entry.id))}>
+                <Trash2 size={13} />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
 
       <FuelModal open={!!editing} fuel={editing} onClose={() => setEditing(undefined)} />
 

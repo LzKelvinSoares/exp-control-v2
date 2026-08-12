@@ -58,45 +58,79 @@ export default function ExpenseTable({ expenses, loading }: ExpenseTableProps) {
 
   return (
     <>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Descrição</TableHead>
-            <TableHead>Categoria</TableHead>
-            <TableHead>Responsável</TableHead>
-            <TableHead>Parcelas</TableHead>
-            <TableHead className="text-right">Valor</TableHead>
-            <TableHead className="w-20" />
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {expenses.map((expense) => (
-            <TableRow key={String(expense.id)}>
-              <TableCell className="font-medium">{expense.description}</TableCell>
-              <TableCell>
-                <Badge variant="outline" className="text-xs">{getCategoryLabel(expense.type)}</Badge>
-              </TableCell>
-              <TableCell className="text-sm text-muted-foreground">{expense.responsible}</TableCell>
-              <TableCell className="text-sm text-muted-foreground">
-                {(expense.monthsLeft ?? 1) > 1 ? `${expense.monthsLeft}x` : '—'}
-              </TableCell>
-              <TableCell className="text-right font-semibold">
-                {formatCurrency(expense.value, currency)}
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-1 justify-end">
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(expense)}>
-                    <Pencil size={13} />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(expense.id))}>
-                    <Trash2 size={13} />
-                  </Button>
-                </div>
-              </TableCell>
+      {/* Desktop table */}
+      <div className="hidden md:block">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Descrição</TableHead>
+              <TableHead>Categoria</TableHead>
+              <TableHead>Responsável</TableHead>
+              <TableHead>Parcelas</TableHead>
+              <TableHead className="text-right">Valor</TableHead>
+              <TableHead className="w-20" />
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {expenses.map((expense) => (
+              <TableRow key={String(expense.id)}>
+                <TableCell className="font-medium">{expense.description}</TableCell>
+                <TableCell>
+                  <Badge variant="outline" className="text-xs">{getCategoryLabel(expense.type)}</Badge>
+                </TableCell>
+                <TableCell className="text-sm text-muted-foreground">{expense.responsible}</TableCell>
+                <TableCell className="text-sm text-muted-foreground">
+                  {(expense.monthsLeft ?? 1) > 1 ? `${expense.monthsLeft}x` : '—'}
+                </TableCell>
+                <TableCell className="text-right font-semibold">
+                  {formatCurrency(expense.value, currency)}
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-1 justify-end">
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(expense)}>
+                      <Pencil size={13} />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(expense.id))}>
+                      <Trash2 size={13} />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Mobile cards */}
+      <div className="md:hidden space-y-3">
+        {expenses.map((expense) => (
+          <div key={String(expense.id)} className="rounded-lg border bg-white p-4 space-y-3">
+            <div className="flex items-start justify-between gap-2">
+              <span className="font-medium text-sm truncate">{expense.description}</span>
+              <span className="font-semibold text-sm shrink-0">{formatCurrency(expense.value, currency)}</span>
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge variant="outline" className="text-xs">{getCategoryLabel(expense.type)}</Badge>
+              {expense.responsible && (
+                <span className="text-xs text-muted-foreground">{expense.responsible}</span>
+              )}
+              {(expense.monthsLeft ?? 1) > 1 && (
+                <span className="text-xs text-muted-foreground">{expense.monthsLeft}x</span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-1 justify-end">
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(expense)}>
+                <Pencil size={13} />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(expense.id))}>
+                <Trash2 size={13} />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
 
       <ExpenseModal open={!!editing} expense={editing} onClose={() => setEditing(undefined)} />
 

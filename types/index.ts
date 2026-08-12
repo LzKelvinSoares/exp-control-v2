@@ -110,24 +110,27 @@ export interface Fuel {
 // ── Sales ─────────────────────────────────────────────────────────────────────
 
 export type SaleRoom = 'SALA' | 'QUARTO' | 'COZINHA' | 'BANHEIRO' | 'ESCRITORIO' | 'ROOFTOP' | 'OUTRO'
-export type PaymentStatus = 'PENDING' | 'PARTIAL' | 'PAID'
-export type DeliveryStatus = 'PENDING' | 'SHIPPED' | 'DELIVERED'
 
 export interface Sale {
   id?: string
-  name: string
+  description: string
   room: SaleRoom
+  roomDescription?: string
   buyer?: string
   value: number
-  discount?: number
+  valuePaid?: string | number
+  discount?: string | number
   installments?: number
   bookingDate?: Date | string
   saleDate?: Date | string
-  paymentStatus: PaymentStatus
-  deliveryStatus: DeliveryStatus
-  imageId?: string
-  tiedSaleId?: string
-  createdAt?: Date
+  paid: boolean
+  delivered: boolean
+  tieIn?: boolean
+  tiedInItem?: string
+  tiedInItemValue?: string | number
+  boughtTogether?: boolean
+  imgId?: string | null
+  creationDate?: Date | string
 }
 
 // ── User Levels ───────────────────────────────────────────────────────────────

@@ -12,7 +12,10 @@ export const GET = withAuth(async (req, ctx) => {
   if (dueSoon) {
     return ok(await getBillsDueSoon(ctx.userId, ctx.currency, Number(dueSoon)))
   }
-  return ok(await getBills(ctx.userId, ctx.currency))
+  const month = Number(req.nextUrl.searchParams.get('month'))
+  const year = Number(req.nextUrl.searchParams.get('year'))
+  if (!month || !year) return err('month and year are required')
+  return ok(await getBills(ctx.userId, ctx.currency, month, year))
 })
 
 export const POST = withAuth(async (req: NextRequest, ctx) => {

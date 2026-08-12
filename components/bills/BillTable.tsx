@@ -125,68 +125,117 @@ export default function BillTable({ bills, loading }: BillTableProps) {
         </div>
       )}
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-10">
-              <Checkbox checked={allSelected} onCheckedChange={toggleAll} />
-            </TableHead>
-            <TableHead>Nome</TableHead>
-            <TableHead>Categoria</TableHead>
-            <TableHead>Vencimento</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Valor</TableHead>
-            <TableHead className="w-24" />
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {bills.map((bill) => {
-            const id = String(bill.id)
-            const dueSoon = !bill.paid && isDueSoon(bill.expirationDate)
-            return (
-              <TableRow key={id} className={dueSoon ? 'bg-amber-50' : undefined}>
-                <TableCell>
+      {/* Desktop table */}
+      <div className="hidden md:block">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-10">
+                <Checkbox checked={allSelected} onCheckedChange={toggleAll} />
+              </TableHead>
+              <TableHead>Nome</TableHead>
+              <TableHead>Categoria</TableHead>
+              <TableHead>Vencimento</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Valor</TableHead>
+              <TableHead className="w-24" />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {bills.map((bill) => {
+              const id = String(bill.id)
+              const dueSoon = !bill.paid && isDueSoon(bill.expirationDate)
+              return (
+                <TableRow key={id} className={dueSoon ? 'bg-amber-50' : undefined}>
+                  <TableCell>
+                    {!bill.paid && (
+                      <Checkbox checked={selected.has(id)} onCheckedChange={() => toggleSelect(id)} />
+                    )}
+                  </TableCell>
+                  <TableCell className="font-medium">{bill.description}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="text-xs">{getCategoryLabel(bill.type)}</Badge>
+                  </TableCell>
+                  <TableCell className={`text-sm ${dueSoon ? 'text-amber-700 font-medium' : 'text-muted-foreground'}`}>
+                    {formatDate(bill.expirationDate)}
+                    {dueSoon && ' ⚠'}
+                  </TableCell>
+                  <TableCell>
+                    {bill.paid
+                      ? <Badge className="bg-emerald-100 text-emerald-700 text-xs">Pago</Badge>
+                      : <Badge variant="outline" className="text-xs text-amber-700 border-amber-300">Pendente</Badge>
+                    }
+                  </TableCell>
+                  <TableCell className="text-right font-semibold">
+                    {formatCurrency(bill.value, currency)}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1 justify-end">
+                      {!bill.paid && (
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-emerald-600" onClick={() => handlePayOne(id)} disabled={payBill.isPending}>
+                          <CheckCircle2 size={13} />
+                        </Button>
+                      )}
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(bill)}>
+                        <Pencil size={13} />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(id)}>
+                        <Trash2 size={13} />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Mobile cards */}
+      <div className="md:hidden space-y-3">
+        {bills.map((bill) => {
+          const id = String(bill.id)
+          const dueSoon = !bill.paid && isDueSoon(bill.expirationDate)
+          return (
+            <div key={id} className={`rounded-lg border p-4 space-y-3 ${dueSoon ? 'bg-amber-50 border-amber-200' : 'bg-white'}`}>
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   {!bill.paid && (
                     <Checkbox checked={selected.has(id)} onCheckedChange={() => toggleSelect(id)} />
                   )}
-                </TableCell>
-                <TableCell className="font-medium">{bill.description}</TableCell>
-                <TableCell>
-                  <Badge variant="outline" className="text-xs">{getCategoryLabel(bill.type)}</Badge>
-                </TableCell>
-                <TableCell className={`text-sm ${dueSoon ? 'text-amber-700 font-medium' : 'text-muted-foreground'}`}>
-                  {formatDate(bill.expirationDate)}
-                  {dueSoon && ' ⚠'}
-                </TableCell>
-                <TableCell>
-                  {bill.paid
-                    ? <Badge className="bg-emerald-100 text-emerald-700 text-xs">Pago</Badge>
-                    : <Badge variant="outline" className="text-xs text-amber-700 border-amber-300">Pendente</Badge>
-                  }
-                </TableCell>
-                <TableCell className="text-right font-semibold">
-                  {formatCurrency(bill.value, currency)}
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1 justify-end">
-                    {!bill.paid && (
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-emerald-600" onClick={() => handlePayOne(id)} disabled={payBill.isPending}>
-                        <CheckCircle2 size={13} />
-                      </Button>
-                    )}
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(bill)}>
-                      <Pencil size={13} />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(id)}>
-                      <Trash2 size={13} />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            )
-          })}
-        </TableBody>
-      </Table>
+                  <span className="font-medium text-sm truncate">{bill.description}</span>
+                </div>
+                <span className="font-semibold text-sm shrink-0">{formatCurrency(bill.value, currency)}</span>
+              </div>
+
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="outline" className="text-xs">{getCategoryLabel(bill.type)}</Badge>
+                {bill.paid
+                  ? <Badge className="bg-emerald-100 text-emerald-700 text-xs">Pago</Badge>
+                  : <Badge variant="outline" className="text-xs text-amber-700 border-amber-300">Pendente</Badge>
+                }
+                <span className={`text-xs ${dueSoon ? 'text-amber-700 font-medium' : 'text-muted-foreground'}`}>
+                  Vence: {formatDate(bill.expirationDate)}{dueSoon && ' ⚠'}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1 justify-end">
+                {!bill.paid && (
+                  <Button variant="ghost" size="icon" className="h-7 w-7 text-emerald-600" onClick={() => handlePayOne(id)} disabled={payBill.isPending}>
+                    <CheckCircle2 size={13} />
+                  </Button>
+                )}
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(bill)}>
+                  <Pencil size={13} />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(id)}>
+                  <Trash2 size={13} />
+                </Button>
+              </div>
+            </div>
+          )
+        })}
+      </div>
 
       <BillModal open={!!editing} bill={editing} onClose={() => setEditing(undefined)} />
 

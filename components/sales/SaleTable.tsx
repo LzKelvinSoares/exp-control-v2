@@ -10,10 +10,10 @@ import { Skeleton } from '@/components/ui/skeleton'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import SaleModal from './SaleModal'
 import { useDeleteSale } from '@/hooks/mutations/sales/use-delete-sale'
-import { SALE_ROOMS, PAYMENT_STATUSES, DELIVERY_STATUSES } from '@/constants'
+import { SALE_ROOMS } from '@/constants'
 import { formatCurrency } from '@/lib/utils'
 import { useSession } from 'next-auth/react'
-import type { Sale, Currency, PaymentStatus, DeliveryStatus } from '@/types'
+import type { Sale, Currency } from '@/types'
 
 interface SaleTableProps {
   sales: Sale[]
@@ -27,18 +27,6 @@ function formatDate(date?: Date | string) {
 
 function getLabel<T extends string>(list: { value: T; label: string }[], value: T) {
   return list.find((i) => i.value === value)?.label ?? value
-}
-
-const paymentBadgeClass: Record<PaymentStatus, string> = {
-  PENDING: 'text-amber-700 border-amber-300',
-  PARTIAL: 'text-blue-700 border-blue-300',
-  PAID:    'text-emerald-700 border-emerald-300',
-}
-
-const deliveryBadgeClass: Record<DeliveryStatus, string> = {
-  PENDING:   'text-amber-700 border-amber-300',
-  SHIPPED:   'text-blue-700 border-blue-300',
-  DELIVERED: 'text-emerald-700 border-emerald-300',
 }
 
 export default function SaleTable({ sales, loading }: SaleTableProps) {
@@ -75,61 +63,103 @@ export default function SaleTable({ sales, loading }: SaleTableProps) {
 
   return (
     <>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Item</TableHead>
-            <TableHead>Cômodo</TableHead>
-            <TableHead>Comprador</TableHead>
-            <TableHead>Venda</TableHead>
-            <TableHead>Pagamento</TableHead>
-            <TableHead>Entrega</TableHead>
-            <TableHead className="text-right">Valor</TableHead>
-            <TableHead className="w-20" />
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {sales.map((sale) => (
-            <TableRow key={String(sale.id)}>
-              <TableCell className="font-medium">{sale.name}</TableCell>
-              <TableCell>
-                <Badge variant="outline" className="text-xs">
-                  {getLabel(SALE_ROOMS, sale.room)}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-sm text-muted-foreground">
-                {sale.buyer || '—'}
-              </TableCell>
-              <TableCell className="text-sm text-muted-foreground">
-                {formatDate(sale.saleDate)}
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline" className={`text-xs ${paymentBadgeClass[sale.paymentStatus]}`}>
-                  {getLabel(PAYMENT_STATUSES, sale.paymentStatus)}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline" className={`text-xs ${deliveryBadgeClass[sale.deliveryStatus]}`}>
-                  {getLabel(DELIVERY_STATUSES, sale.deliveryStatus)}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-right font-semibold">
-                {formatCurrency(sale.value, currency)}
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-1 justify-end">
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(sale)}>
-                    <Pencil size={13} />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(sale.id))}>
-                    <Trash2 size={13} />
-                  </Button>
-                </div>
-              </TableCell>
+      {/* Desktop table */}
+      <div className="hidden md:block">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Item</TableHead>
+              <TableHead>Cômodo</TableHead>
+              <TableHead>Comprador</TableHead>
+              <TableHead>Venda</TableHead>
+              <TableHead>Pagamento</TableHead>
+              <TableHead>Entrega</TableHead>
+              <TableHead className="text-right">Valor</TableHead>
+              <TableHead className="w-20" />
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {sales.map((sale) => (
+              <TableRow key={String(sale.id)}>
+                <TableCell className="font-medium">{sale.description}</TableCell>
+                <TableCell>
+                  <Badge variant="outline" className="text-xs">
+                    {getLabel(SALE_ROOMS, sale.room)}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-sm text-muted-foreground">
+                  {sale.buyer || '—'}
+                </TableCell>
+                <TableCell className="text-sm text-muted-foreground">
+                  {formatDate(sale.saleDate)}
+                </TableCell>
+                <TableCell>
+                  <Badge variant="outline" className={`text-xs ${sale.paid ? 'text-emerald-700 border-emerald-300' : 'text-amber-700 border-amber-300'}`}>
+                    {sale.paid ? 'Pago' : 'Pendente'}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant="outline" className={`text-xs ${sale.delivered ? 'text-emerald-700 border-emerald-300' : 'text-amber-700 border-amber-300'}`}>
+                    {sale.delivered ? 'Entregue' : 'Pendente'}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-right font-semibold">
+                  {formatCurrency(sale.value, currency)}
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-1 justify-end">
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(sale)}>
+                      <Pencil size={13} />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(sale.id))}>
+                      <Trash2 size={13} />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Mobile cards */}
+      <div className="md:hidden space-y-3">
+        {sales.map((sale) => (
+          <div key={String(sale.id)} className="rounded-lg border bg-white p-4 space-y-3">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="font-medium text-sm truncate">{sale.description}</p>
+                {sale.buyer && (
+                  <p className="text-xs text-muted-foreground">{sale.buyer}</p>
+                )}
+              </div>
+              <span className="font-semibold text-sm shrink-0">{formatCurrency(sale.value, currency)}</span>
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge variant="outline" className="text-xs">{getLabel(SALE_ROOMS, sale.room)}</Badge>
+              <Badge variant="outline" className={`text-xs ${sale.paid ? 'text-emerald-700 border-emerald-300' : 'text-amber-700 border-amber-300'}`}>
+                {sale.paid ? 'Pago' : 'Pendente'}
+              </Badge>
+              <Badge variant="outline" className={`text-xs ${sale.delivered ? 'text-emerald-700 border-emerald-300' : 'text-amber-700 border-amber-300'}`}>
+                {sale.delivered ? 'Entregue' : 'Pendente'}
+              </Badge>
+              {sale.saleDate && (
+                <span className="text-xs text-muted-foreground">{formatDate(sale.saleDate)}</span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-1 justify-end">
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(sale)}>
+                <Pencil size={13} />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(sale.id))}>
+                <Trash2 size={13} />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
 
       <SaleModal open={!!editing} sale={editing} onClose={() => setEditing(undefined)} />
 

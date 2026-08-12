@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import { queryKeys } from '@/hooks/query-keys'
-import { API_ROUTES } from '@/constants'
+import { API_ROUTES, queryParams } from '@/constants'
 import type { Bill } from '@/types'
 
-export function useBills() {
+export function useBills(month: number, year: number) {
   return useQuery<Bill[]>({
-    queryKey: queryKeys.bills(),
-    queryFn: () => fetch(API_ROUTES.bills).then((r) => r.json()),
+    queryKey: queryKeys.bills(month, year),
+    queryFn: () => fetch(API_ROUTES.bills + queryParams.monthYear(month, year)).then((r) => r.json()),
   })
 }

@@ -2,8 +2,14 @@ import BillModel from '@/models/Bill'
 import { findMany, createOne, updateOne, updateMany, deleteOne } from './crud'
 import type { Bill } from '@/types'
 
-export function getBills(userId: string, currency: string) {
-  return findMany(BillModel, { userId, currencyCurrencyAccount: currency })
+export function getBills(userId: string, currency: string, month: number, year: number) {
+  const start = new Date(year, month - 1, 1).toISOString()
+  const end = new Date(year, month, 1).toISOString()
+  return findMany(BillModel, {
+    userId,
+    currencyCurrencyAccount: currency,
+    expirationDate: { $gte: start, $lt: end },
+  })
 }
 
 function toGmtRange(initDate: Date, endDate: Date) {

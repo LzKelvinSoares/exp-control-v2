@@ -19,7 +19,7 @@ export default function SalesPage() {
   const [modalOpen, setModalOpen] = useState(false)
 
   const totalValue = sumBy(sales, 'value')
-  const pendingCount = sales.filter((s) => s.paymentStatus !== 'PAID').length
+  const pendingCount = sales.filter((s) => !s.paid).length
 
   return (
     <div className="space-y-6">
