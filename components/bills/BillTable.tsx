@@ -114,9 +114,9 @@ export default function BillTable({ bills, loading }: BillTableProps) {
   return (
     <>
       {selected.size > 0 && (
-        <div className="flex items-center gap-3 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
-          <span className="text-sm text-emerald-700">{selected.size} selecionada(s)</span>
-          <Button size="sm" variant="outline" className="text-emerald-700 border-emerald-300" onClick={handlePaySelected} disabled={payBills.isPending}>
+        <div className="flex items-center gap-3 p-3 bg-emerald-50 dark:bg-emerald-950/30 rounded-lg border border-emerald-200 dark:border-emerald-800">
+          <span className="text-sm text-emerald-700 dark:text-emerald-400">{selected.size} selecionada(s)</span>
+          <Button size="sm" variant="outline" className="text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700" onClick={handlePaySelected} disabled={payBills.isPending}>
             <CheckCircle2 size={14} className="mr-1" />
             {payBills.isPending ? 'Pagando...' : 'Pagar selecionadas'}
           </Button>
@@ -129,13 +129,13 @@ export default function BillTable({ bills, loading }: BillTableProps) {
         keyExtractor={(b) => String(b.id)}
         loading={loading}
         emptyMessage="Nenhuma conta cadastrada"
-        rowClassName={(b) => !b.paid && isDueSoon(b.expirationDate) ? 'bg-amber-50' : undefined}
+        rowClassName={(b) => !b.paid && isDueSoon(b.expirationDate) ? 'bg-amber-50 dark:bg-amber-950/30' : undefined}
         renderCard={(b) => {
           const id = String(b.id)
           const dueSoon = !b.paid && isDueSoon(b.expirationDate)
           return (
             <DataCard
-              className={dueSoon ? 'bg-amber-50 border-amber-200' : undefined}
+              className={dueSoon ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800' : undefined}
               primary={
                 <div className="flex items-center gap-2 min-w-0">
                   {!b.paid && <Checkbox checked={selected.has(id)} onCheckedChange={() => toggleSelect(id)} />}
@@ -147,10 +147,10 @@ export default function BillTable({ bills, loading }: BillTableProps) {
                 <>
                   <Badge variant="outline" className="text-xs">{getCategoryLabel(b.type)}</Badge>
                   {b.paid
-                    ? <Badge className="bg-emerald-100 text-emerald-700 text-xs">Pago</Badge>
-                    : <Badge variant="outline" className="text-xs text-amber-700 border-amber-300">Pendente</Badge>
+                    ? <Badge className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 text-xs">Pago</Badge>
+                    : <Badge variant="outline" className="text-xs text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-700">Pendente</Badge>
                   }
-                  <span className={`text-xs ${dueSoon ? 'text-amber-700 font-medium' : 'text-muted-foreground'}`}>
+                  <span className={`text-xs ${dueSoon ? 'text-amber-700 dark:text-amber-400 font-medium' : 'text-muted-foreground'}`}>
                     Vence: {formatDate(b.expirationDate)}{dueSoon && ' ⚠'}
                   </span>
                 </>
