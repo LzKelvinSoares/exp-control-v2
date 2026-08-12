@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { Button } from '@/components/ui/button'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import { DataTable, type ColumnDef } from '@/components/shared/DataTable'
+import { DataTable } from '@/components/shared/DataTable'
 import { DataCard } from '@/components/shared/DataCard'
+import { useFuelTableColumns } from './useFuelTableColumns'
+import { FuelTableActions } from './FuelTableActions'
 import FuelModal from './FuelModal'
 import { useDeleteFuel } from '@/hooks/mutations/fuel/use-delete-fuel'
 import { formatCurrency } from '@/lib/utils'
@@ -30,6 +30,8 @@ export default function FuelTable({ entries, loading }: FuelTableProps) {
   const [editing, setEditing] = useState<Fuel | undefined>()
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
+  const columns = useFuelTableColumns({ currency, onEdit: setEditing, onDelete: setDeletingId })
+
   async function handleDelete() {
     if (!deletingId) return
     try {
@@ -41,49 +43,6 @@ export default function FuelTable({ entries, loading }: FuelTableProps) {
       setDeletingId(null)
     }
   }
-
-  function renderActions(entry: Fuel) {
-    return (
-      <>
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(entry)}>
-          <Pencil size={13} />
-        </Button>
-        <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(entry.id))}>
-          <Trash2 size={13} />
-        </Button>
-      </>
-    )
-  }
-
-  const columns: ColumnDef<Fuel>[] = [
-    {
-      header: 'Data',
-      cell: (e) => <span className="font-medium">{formatDate(e.creationDate)}</span>,
-    },
-    {
-      header: 'Preço/L (R$)',
-      headerClassName: 'text-right',
-      className: 'text-right text-sm text-muted-foreground',
-      cell: (e) => Number(e.valuePerLiter).toFixed(3),
-    },
-    {
-      header: 'Litros',
-      headerClassName: 'text-right',
-      className: 'text-right text-sm text-muted-foreground',
-      cell: (e) => `${(Number(e.value) / Number(e.valuePerLiter)).toFixed(3)} L`,
-    },
-    {
-      header: 'Total',
-      headerClassName: 'text-right',
-      className: 'text-right font-semibold',
-      cell: (e) => formatCurrency(Number(e.value), currency),
-    },
-    {
-      header: '',
-      headerClassName: 'w-20',
-      cell: (e) => <div className="flex items-center gap-1 justify-end">{renderActions(e)}</div>,
-    },
-  ]
 
   return (
     <>
@@ -107,7 +66,7 @@ export default function FuelTable({ entries, loading }: FuelTableProps) {
                 </span>
               </>
             }
-            actions={renderActions(e)}
+            actions={<FuelTableActions entry={e} onEdit={setEditing} onDelete={setDeletingId} />}
           />
         )}
       />

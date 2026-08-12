@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import { DataTable, type ColumnDef } from '@/components/shared/DataTable'
+import { DataTable } from '@/components/shared/DataTable'
 import { DataCard } from '@/components/shared/DataCard'
+import { useExpenseTableColumns } from './useExpenseTableColumns'
+import { ExpenseTableActions } from './ExpenseTableActions'
 import ExpenseModal from './ExpenseModal'
 import { useDeleteExpense } from '@/hooks/mutations/expenses/use-delete-expense'
 import { EXPENSE_CATEGORIES } from '@/constants'
@@ -28,6 +28,8 @@ export default function ExpenseTable({ expenses, loading }: ExpenseTableProps) {
   const [editing, setEditing] = useState<Expense | undefined>()
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
+  const columns = useExpenseTableColumns({ currency, onEdit: setEditing, onDelete: setDeletingId })
+
   async function handleDelete() {
     if (!deletingId) return
     try {
@@ -43,53 +45,6 @@ export default function ExpenseTable({ expenses, loading }: ExpenseTableProps) {
   function getCategoryLabel(value: string) {
     return EXPENSE_CATEGORIES.find((c) => c.value === value)?.label ?? value
   }
-
-  function renderActions(expense: Expense) {
-    return (
-      <>
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(expense)}>
-          <Pencil size={13} />
-        </Button>
-        <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(expense.id))}>
-          <Trash2 size={13} />
-        </Button>
-      </>
-    )
-  }
-
-  const columns: ColumnDef<Expense>[] = [
-    {
-      header: 'Descrição',
-      cell: (e) => <span className="font-medium">{e.description}</span>,
-    },
-    {
-      header: 'Categoria',
-      cell: (e) => <Badge variant="outline" className="text-xs">{getCategoryLabel(e.type)}</Badge>,
-    },
-    {
-      header: 'Responsável',
-      cell: (e) => <span className="text-sm text-muted-foreground">{e.responsible}</span>,
-    },
-    {
-      header: 'Parcelas',
-      cell: (e) => (
-        <span className="text-sm text-muted-foreground">
-          {(e.monthsLeft ?? 1) > 1 ? `${e.monthsLeft}x` : '—'}
-        </span>
-      ),
-    },
-    {
-      header: 'Valor',
-      headerClassName: 'text-right',
-      className: 'text-right font-semibold',
-      cell: (e) => formatCurrency(e.value, currency),
-    },
-    {
-      header: '',
-      headerClassName: 'w-20',
-      cell: (e) => <div className="flex items-center gap-1 justify-end">{renderActions(e)}</div>,
-    },
-  ]
 
   return (
     <>
@@ -110,7 +65,7 @@ export default function ExpenseTable({ expenses, loading }: ExpenseTableProps) {
                 {(e.monthsLeft ?? 1) > 1 && <span className="text-xs text-muted-foreground">{e.monthsLeft}x</span>}
               </>
             }
-            actions={renderActions(e)}
+            actions={<ExpenseTableActions expense={e} onEdit={setEditing} onDelete={setDeletingId} />}
           />
         )}
       />

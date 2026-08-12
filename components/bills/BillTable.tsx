@@ -1,14 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { Pencil, Trash2, CheckCircle2 } from 'lucide-react'
+import { CheckCircle2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import { DataTable, type ColumnDef } from '@/components/shared/DataTable'
+import { DataTable } from '@/components/shared/DataTable'
 import { DataCard } from '@/components/shared/DataCard'
+import { useBillTableColumns } from './useBillTableColumns'
+import { BillTableActions } from './BillTableActions'
 import BillModal from './BillModal'
 import { useDeleteBill } from '@/hooks/mutations/bills/use-delete-bill'
 import { usePayBill } from '@/hooks/mutations/bills/use-pay-bill'
@@ -45,9 +47,8 @@ export default function BillTable({ bills, loading }: BillTableProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [selected, setSelected] = useState<Set<string>>(new Set())
 
-  function getCategoryLabel(value: string) {
-    return BILL_CATEGORIES.find((c) => c.value === value)?.label ?? value
-  }
+  const unpaidBills = bills.filter((b) => !b.paid)
+  const allSelected = unpaidBills.length > 0 && unpaidBills.every((b) => selected.has(String(b.id)))
 
   function toggleSelect(id: string) {
     setSelected((prev) => {
@@ -57,9 +58,6 @@ export default function BillTable({ bills, loading }: BillTableProps) {
       return next
     })
   }
-
-  const unpaidBills = bills.filter((b) => !b.paid)
-  const allSelected = unpaidBills.length > 0 && unpaidBills.every((b) => selected.has(String(b.id)))
 
   function toggleAll() {
     setSelected(allSelected ? new Set() : new Set(unpaidBills.map((b) => String(b.id))))
@@ -97,70 +95,21 @@ export default function BillTable({ bills, loading }: BillTableProps) {
     }
   }
 
-  function renderActions(bill: Bill) {
-    const id = String(bill.id)
-    return (
-      <>
-        {!bill.paid && (
-          <Button variant="ghost" size="icon" className="h-7 w-7 text-emerald-600" onClick={() => handlePayOne(id)} disabled={payBill.isPending}>
-            <CheckCircle2 size={13} />
-          </Button>
-        )}
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(bill)}>
-          <Pencil size={13} />
-        </Button>
-        <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(id)}>
-          <Trash2 size={13} />
-        </Button>
-      </>
-    )
+  function getCategoryLabel(value: string) {
+    return BILL_CATEGORIES.find((c) => c.value === value)?.label ?? value
   }
 
-  const columns: ColumnDef<Bill>[] = [
-    {
-      header: <Checkbox checked={allSelected} onCheckedChange={toggleAll} />,
-      headerClassName: 'w-10',
-      cell: (b) => !b.paid
-        ? <Checkbox checked={selected.has(String(b.id))} onCheckedChange={() => toggleSelect(String(b.id))} />
-        : null,
-    },
-    {
-      header: 'Nome',
-      cell: (b) => <span className="font-medium">{b.description}</span>,
-    },
-    {
-      header: 'Categoria',
-      cell: (b) => <Badge variant="outline" className="text-xs">{getCategoryLabel(b.type)}</Badge>,
-    },
-    {
-      header: 'Vencimento',
-      cell: (b) => {
-        const dueSoon = !b.paid && isDueSoon(b.expirationDate)
-        return (
-          <span className={`text-sm ${dueSoon ? 'text-amber-700 font-medium' : 'text-muted-foreground'}`}>
-            {formatDate(b.expirationDate)}{dueSoon && ' ⚠'}
-          </span>
-        )
-      },
-    },
-    {
-      header: 'Status',
-      cell: (b) => b.paid
-        ? <Badge className="bg-emerald-100 text-emerald-700 text-xs">Pago</Badge>
-        : <Badge variant="outline" className="text-xs text-amber-700 border-amber-300">Pendente</Badge>,
-    },
-    {
-      header: 'Valor',
-      headerClassName: 'text-right',
-      className: 'text-right font-semibold',
-      cell: (b) => formatCurrency(b.value, currency),
-    },
-    {
-      header: '',
-      headerClassName: 'w-24',
-      cell: (b) => <div className="flex items-center gap-1 justify-end">{renderActions(b)}</div>,
-    },
-  ]
+  const columns = useBillTableColumns({
+    currency,
+    selected,
+    allSelected,
+    isPaying: payBill.isPending,
+    onToggleAll: toggleAll,
+    onToggleSelect: toggleSelect,
+    onEdit: setEditing,
+    onDelete: setDeletingId,
+    onPay: handlePayOne,
+  })
 
   return (
     <>
@@ -206,7 +155,15 @@ export default function BillTable({ bills, loading }: BillTableProps) {
                   </span>
                 </>
               }
-              actions={renderActions(b)}
+              actions={
+                <BillTableActions
+                  bill={b}
+                  onEdit={setEditing}
+                  onDelete={setDeletingId}
+                  onPay={handlePayOne}
+                  isPaying={payBill.isPending}
+                />
+              }
             />
           )
         }}

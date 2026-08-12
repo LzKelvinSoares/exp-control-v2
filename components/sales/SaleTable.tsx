@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import { DataTable, type ColumnDef } from '@/components/shared/DataTable'
+import { DataTable } from '@/components/shared/DataTable'
 import { DataCard } from '@/components/shared/DataCard'
+import { useSaleTableColumns } from './useSaleTableColumns'
+import { SaleTableActions } from './SaleTableActions'
 import SaleModal from './SaleModal'
 import { useDeleteSale } from '@/hooks/mutations/sales/use-delete-sale'
 import { SALE_ROOMS } from '@/constants'
@@ -21,7 +21,7 @@ interface SaleTableProps {
 }
 
 function formatDate(date?: Date | string) {
-  if (!date) return '—'
+  if (!date) return null
   return new Date(date).toLocaleDateString('pt-BR')
 }
 
@@ -29,8 +29,8 @@ function getLabel<T extends string>(list: { value: T; label: string }[], value: 
   return list.find((i) => i.value === value)?.label ?? value
 }
 
-function paidBadgeClass(paid: boolean) {
-  return paid ? 'text-emerald-700 border-emerald-300' : 'text-amber-700 border-amber-300'
+function statusBadgeClass(active: boolean) {
+  return active ? 'text-emerald-700 border-emerald-300' : 'text-amber-700 border-amber-300'
 }
 
 export default function SaleTable({ sales, loading }: SaleTableProps) {
@@ -40,6 +40,8 @@ export default function SaleTable({ sales, loading }: SaleTableProps) {
 
   const [editing, setEditing] = useState<Sale | undefined>()
   const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  const columns = useSaleTableColumns({ currency, onEdit: setEditing, onDelete: setDeletingId })
 
   async function handleDelete() {
     if (!deletingId) return
@@ -52,67 +54,6 @@ export default function SaleTable({ sales, loading }: SaleTableProps) {
       setDeletingId(null)
     }
   }
-
-  function renderActions(sale: Sale) {
-    return (
-      <>
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(sale)}>
-          <Pencil size={13} />
-        </Button>
-        <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(sale.id))}>
-          <Trash2 size={13} />
-        </Button>
-      </>
-    )
-  }
-
-  const columns: ColumnDef<Sale>[] = [
-    {
-      header: 'Item',
-      cell: (s) => <span className="font-medium">{s.description}</span>,
-    },
-    {
-      header: 'Cômodo',
-      cell: (s) => (
-        <Badge variant="outline" className="text-xs">{getLabel(SALE_ROOMS, s.room)}</Badge>
-      ),
-    },
-    {
-      header: 'Comprador',
-      cell: (s) => <span className="text-sm text-muted-foreground">{s.buyer || '—'}</span>,
-    },
-    {
-      header: 'Venda',
-      cell: (s) => <span className="text-sm text-muted-foreground">{formatDate(s.saleDate)}</span>,
-    },
-    {
-      header: 'Pagamento',
-      cell: (s) => (
-        <Badge variant="outline" className={`text-xs ${paidBadgeClass(s.paid)}`}>
-          {s.paid ? 'Pago' : 'Pendente'}
-        </Badge>
-      ),
-    },
-    {
-      header: 'Entrega',
-      cell: (s) => (
-        <Badge variant="outline" className={`text-xs ${paidBadgeClass(s.delivered)}`}>
-          {s.delivered ? 'Entregue' : 'Pendente'}
-        </Badge>
-      ),
-    },
-    {
-      header: 'Valor',
-      headerClassName: 'text-right',
-      className: 'text-right font-semibold',
-      cell: (s) => formatCurrency(s.value, currency),
-    },
-    {
-      header: '',
-      headerClassName: 'w-20',
-      cell: (s) => <div className="flex items-center gap-1 justify-end">{renderActions(s)}</div>,
-    },
-  ]
 
   return (
     <>
@@ -134,16 +75,16 @@ export default function SaleTable({ sales, loading }: SaleTableProps) {
             meta={
               <>
                 <Badge variant="outline" className="text-xs">{getLabel(SALE_ROOMS, s.room)}</Badge>
-                <Badge variant="outline" className={`text-xs ${paidBadgeClass(s.paid)}`}>
+                <Badge variant="outline" className={`text-xs ${statusBadgeClass(s.paid)}`}>
                   {s.paid ? 'Pago' : 'Pendente'}
                 </Badge>
-                <Badge variant="outline" className={`text-xs ${paidBadgeClass(s.delivered)}`}>
+                <Badge variant="outline" className={`text-xs ${statusBadgeClass(s.delivered)}`}>
                   {s.delivered ? 'Entregue' : 'Pendente'}
                 </Badge>
                 {s.saleDate && <span className="text-xs text-muted-foreground">{formatDate(s.saleDate)}</span>}
               </>
             }
-            actions={renderActions(s)}
+            actions={<SaleTableActions sale={s} onEdit={setEditing} onDelete={setDeletingId} />}
           />
         )}
       />
