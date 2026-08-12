@@ -1,5 +1,5 @@
 import type { NextConfig } from 'next'
-import withPWA from 'next-pwa'
+import withSerwistInit from '@serwist/next'
 
 const nextConfig: NextConfig = {
   images: {
@@ -14,4 +14,4 @@ const isDev = process.env.NODE_ENV === 'development'
 
 export default isDev
   ? nextConfig
-  : withPWA({ dest: 'public', register: true, skipWaiting: true })(nextConfig)
+  : withSerwistInit({ swSrc: 'app/sw.ts', swDest: 'public/sw.js' })(nextConfig)

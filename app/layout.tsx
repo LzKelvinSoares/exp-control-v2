@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Quicksand, Righteous } from 'next/font/google'
+import { ThemeProvider } from '@/components/layout/ThemeProvider'
 import './globals.css'
 import Providers from '@/components/layout/Providers'
 
@@ -28,11 +29,17 @@ export const viewport: Viewport = {
   userScalable: false,
 }
 
+const themeScript = `(function(){try{var t=localStorage.getItem('theme')||'light';document.documentElement.classList.add(t)}catch(e){document.documentElement.classList.add('light')}})()`
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${quicksand.variable} ${righteous.variable} h-full antialiased`}>
+    <html lang="pt-BR" suppressHydrationWarning className={`${quicksand.variable} ${righteous.variable} h-full antialiased`}>
       <body className="h-full">
-        <Providers>{children}</Providers>
+        {/* eslint-disable-next-line @next/next/no-before-interactive-script-component */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <ThemeProvider>
+          <Providers>{children}</Providers>
+        </ThemeProvider>
       </body>
     </html>
   )

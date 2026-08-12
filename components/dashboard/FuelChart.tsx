@@ -7,7 +7,7 @@ import { useChart } from '@/hooks/queries/chart/use-chart'
 import { useCalendar } from '@/store/calendar'
 import { formatCurrency } from '@/lib/utils'
 import { useSession } from 'next-auth/react'
-import { useTheme } from 'next-themes'
+import { useTheme } from '@/components/layout/ThemeProvider'
 import type { Currency } from '@/types'
 
 export default function FuelChart() {

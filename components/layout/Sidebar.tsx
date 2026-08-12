@@ -31,7 +31,7 @@ export default function Sidebar() {
           isOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        <div className="px-6 py-5" style={{ borderBottom: '1px solid #612d60' }}>
+        <div className="px-6 h-14 flex items-center" style={{ borderBottom: '1px solid #612d60' }}>
           <div className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo-blank.png" alt="ExpControl" className="h-8 w-8 object-contain" />

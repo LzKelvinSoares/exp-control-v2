@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react'
 import { useTransition } from 'react'
 import { Menu, Sun, Moon } from 'lucide-react'
-import { useTheme } from 'next-themes'
+import { useTheme } from '@/components/layout/ThemeProvider'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
