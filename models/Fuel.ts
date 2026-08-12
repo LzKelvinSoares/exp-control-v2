@@ -3,16 +3,15 @@ import type { Fuel } from '@/types'
 import { CURRENCY_ENUM } from '@/constants/enums'
 
 const FuelSchema = new Schema<Fuel>({
-  userId:        { type: String, required: true, index: true },
-  currency:      { type: String, enum: CURRENCY_ENUM, required: true },
-  date:          { type: Date, required: true },
-  totalCost:     { type: Number, required: true },
-  pricePerLiter: { type: Number, required: true },
-  liters:        { type: Number, required: true },
-  createdAt:     { type: Date, default: Date.now },
-})
+  id:                      { type: String, default: () => crypto.randomUUID() },
+  userId:                  { type: String, required: true, index: true },
+  currencyCurrencyAccount: { type: String, required: true },
+  creationDate:            { type: String },
+  value:                   { type: Number, required: true },
+  valuePerLiter:           { type: Number, required: true },
+}, { id: false, collection: 'fuel' })
 
-FuelSchema.index({ userId: 1, currency: 1, date: -1 })
+FuelSchema.index({ userId: 1, currencyCurrencyAccount: 1, creationDate: -1 })
 
 const FuelModel = models.Fuel || model<Fuel>('Fuel', FuelSchema)
 

@@ -38,21 +38,21 @@ export default function BillModal({ open, bill, onClose }: BillModalProps) {
   useEffect(() => {
     if (bill) {
       reset({
-        name:     bill.name,
-        category: bill.category,
-        value:    bill.value,
-        dueDate:  toDateInput(bill.dueDate),
-        barcode:  bill.barcode ?? '',
+        description:    bill.description,
+        type:           bill.type,
+        value:          bill.value,
+        expirationDate: toDateInput(bill.expirationDate),
+        barCode:        bill.barCode ?? '',
       })
     } else {
-      reset({ barcode: '' })
+      reset({ barCode: '' })
     }
   }, [bill, reset])
 
   async function onSubmit(data: BillFormData) {
     try {
       if (isEditing) {
-        await updateBill.mutateAsync({ id: String(bill._id), ...data })
+        await updateBill.mutateAsync({ id: String(bill.id), ...data })
         toast.success('Conta atualizada')
       } else {
         await createBill.mutateAsync(data)
@@ -74,16 +74,16 @@ export default function BillModal({ open, bill, onClose }: BillModalProps) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1">
             <Label>Nome</Label>
-            <Input {...register('name')} placeholder="Ex: Energia elétrica" />
-            {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
+            <Input {...register('description')} placeholder="Ex: Energia elétrica" />
+            {errors.description && <p className="text-xs text-red-500">{errors.description.message}</p>}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label>Categoria</Label>
               <Select
-                defaultValue={bill?.category}
-                onValueChange={(v) => setValue('category', v as BillFormData['category'])}
+                defaultValue={bill?.type}
+                onValueChange={(v) => setValue('type', v)}
               >
                 <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
                 <SelectContent>
@@ -92,7 +92,7 @@ export default function BillModal({ open, bill, onClose }: BillModalProps) {
                   ))}
                 </SelectContent>
               </Select>
-              {errors.category && <p className="text-xs text-red-500">{errors.category.message}</p>}
+              {errors.type && <p className="text-xs text-red-500">{errors.type.message}</p>}
             </div>
 
             <div className="space-y-1">
@@ -104,13 +104,13 @@ export default function BillModal({ open, bill, onClose }: BillModalProps) {
 
           <div className="space-y-1">
             <Label>Vencimento</Label>
-            <Input type="date" {...register('dueDate')} />
-            {errors.dueDate && <p className="text-xs text-red-500">{errors.dueDate.message}</p>}
+            <Input type="date" {...register('expirationDate')} />
+            {errors.expirationDate && <p className="text-xs text-red-500">{errors.expirationDate.message}</p>}
           </div>
 
           <div className="space-y-1">
             <Label>Código de barras <span className="text-muted-foreground text-xs">(opcional)</span></Label>
-            <Input {...register('barcode')} placeholder="000000000000000" />
+            <Input {...register('barCode')} placeholder="000000000000000" />
           </div>
 
           <div className="flex justify-end gap-2 pt-2">

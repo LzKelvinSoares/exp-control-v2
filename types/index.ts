@@ -23,6 +23,7 @@ export interface UserSession {
 export type ExpenseCategory =
   | 'CARTAO'
   | 'COMPRAS'
+  | 'COMPRAS_AVULSAS'
   | 'ENERGIA'
   | 'AGUA'
   | 'GAS'
@@ -30,12 +31,13 @@ export type ExpenseCategory =
   | 'TELEFONE'
   | 'ALUGUEL'
   | 'COMBUSTIVEL'
+  | 'RESTAURANTE'
   | 'OUTROS'
 
 export type RevenueCategory = 'SALARIO' | 'FREELANCE' | 'INVESTIMENTO' | 'EMPRESTIMO' | 'OUTROS'
 
 export interface MarketShoppingItem {
-  _id?: string
+  id?: string
   description: string
   quantity: number
   unit: string
@@ -44,75 +46,75 @@ export interface MarketShoppingItem {
 }
 
 export interface Expense {
-  _id?: string
+  id?: string
   userId: string
-  currency: Currency
+  currencyCurrencyAccount: string
   description: string
-  category: ExpenseCategory
-  responsible: string
+  type: string
+  typeDescription?: string
+  responsible?: string
   value: number
-  month: number
-  year: number
-  installments?: number
-  parentExpenseId?: string
+  firstExpirationDate: Date | string
+  monthsLeft?: number
+  parentBudgetId?: string
   marketItems?: MarketShoppingItem[]
-  createdAt?: Date
+  creationDate?: Date
 }
 
 export interface Revenue {
-  _id?: string
+  id?: string
   userId: string
-  currency: Currency
+  currencyCurrencyAccount: string
   description: string
-  category: RevenueCategory
-  responsible: string
+  type: string
+  typeDescription?: string
+  responsible?: string
   value: number
-  month: number
-  year: number
-  installments?: number
-  parentRevenueId?: string
-  createdAt?: Date
+  firstExpirationDate: Date | string
+  monthsLeft?: number
+  parentBudgetId?: string
+  creationDate?: Date
 }
 
 // ── Bills ────────────────────────────────────────────────────────────────────
 
-export type BillCategory = 'ENERGIA' | 'AGUA' | 'GAS' | 'INTERNET' | 'TELEFONE' | 'ALUGUEL' | 'OUTROS'
+export type BillCategory = 'ENERGIA' | 'AGUA' | 'GAS' | 'INTERNET' | 'TELEFONE' | 'ALUGUEL' | 'CARTAO' | 'UTILIDADES' | 'OUTROS'
 
 export interface Bill {
-  _id?: string
+  id?: string
   userId: string
-  currency: Currency
-  name: string
-  category: BillCategory
+  currencyCurrencyAccount: string
+  description: string
+  type: string
+  typeDescription?: string
+  responsible?: string
   value: number
-  dueDate: Date | string
-  barcode?: string
+  expirationDate: Date | string
+  barCode?: string
   paid: boolean
   paidAt?: Date | string
-  createdAt?: Date
+  creationDate?: Date
 }
 
 // ── Fuel ─────────────────────────────────────────────────────────────────────
 
 export interface Fuel {
-  _id?: string
+  id?: string
   userId: string
-  currency: Currency
-  date: Date | string
-  totalCost: number
-  pricePerLiter: number
-  liters: number
-  createdAt?: Date
+  currencyCurrencyAccount: string
+  creationDate: string
+  value: number
+  valuePerLiter: number
 }
 
 // ── Sales ─────────────────────────────────────────────────────────────────────
 
-export type SaleRoom = 'SALA' | 'QUARTO' | 'COZINHA' | 'BANHEIRO' | 'OUTROS'
+export type SaleRoom = 'SALA' | 'QUARTO' | 'COZINHA' | 'BANHEIRO' | 'ESCRITORIO' | 'ROOFTOP' | 'OUTRO'
 export type PaymentStatus = 'PENDING' | 'PARTIAL' | 'PAID'
 export type DeliveryStatus = 'PENDING' | 'SHIPPED' | 'DELIVERED'
 
 export interface Sale {
-  _id?: string
+  id?: string
   name: string
   room: SaleRoom
   buyer?: string

@@ -14,16 +14,16 @@ export const GET = withAuth(async (req, ctx) => {
 
   const data: MonthlyChartData[] = MONTHS.map(({ value, short }) => {
     const monthExpenses = expenses
-      .filter((e) => e.month === value)
-      .reduce((sum, e) => sum + e.value, 0)
+      .filter((e) => new Date(e.firstExpirationDate as string).getMonth() + 1 === value)
+      .reduce((sum, e) => sum + Number(e.value), 0)
 
     const monthFuel = fuel
-      .filter((f) => new Date(f.date).getMonth() + 1 === value)
-      .reduce((sum, f) => sum + f.totalCost, 0)
+      .filter((f) => new Date(f.creationDate).getMonth() + 1 === value)
+      .reduce((sum, f) => sum + Number(f.value), 0)
 
     const monthRevenues = revenues
-      .filter((r) => r.month === value)
-      .reduce((sum, r) => sum + r.value, 0)
+      .filter((r) => new Date(r.firstExpirationDate as string).getMonth() + 1 === value)
+      .reduce((sum, r) => sum + Number(r.value), 0)
 
     return {
       month: short,

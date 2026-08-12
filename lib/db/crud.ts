@@ -1,4 +1,4 @@
-import type { Model, UpdateQuery } from 'mongoose'
+import type { Model, UpdateQuery, Document } from 'mongoose'
 import { connectDB } from '@/lib/mongodb'
 
 type Filter<T> = Partial<Record<keyof T, unknown>> & Record<string, unknown>
@@ -8,7 +8,7 @@ export async function findMany<T>(
   filter: Filter<T> = {},
 ): Promise<T[]> {
   await connectDB()
-  return model.find(filter).lean() as Promise<T[]>
+  return model.find(filter).lean({ virtuals: true }) as Promise<T[]>
 }
 
 export async function findOne<T>(
@@ -16,7 +16,7 @@ export async function findOne<T>(
   filter: Filter<T>,
 ): Promise<T | null> {
   await connectDB()
-  return model.findOne(filter).lean() as Promise<T | null>
+  return model.findOne(filter).lean({ virtuals: true }) as Promise<T | null>
 }
 
 export async function findById<T>(
@@ -24,7 +24,9 @@ export async function findById<T>(
   id: string,
 ): Promise<T | null> {
   await connectDB()
-  return model.findById(id).lean() as Promise<T | null>
+  return model.findOne({
+    id
+  }).lean({ virtuals: true }) as Promise<T | null>
 }
 
 export async function createOne<T>(
@@ -33,7 +35,7 @@ export async function createOne<T>(
 ): Promise<T> {
   await connectDB()
   const doc = await model.create(data)
-  return doc.toObject() as T
+  return doc.toObject({ virtuals: true }) as T
 }
 
 export async function createMany<T>(
@@ -41,8 +43,8 @@ export async function createMany<T>(
   data: Partial<T>[],
 ): Promise<T[]> {
   await connectDB()
-  const docs = await model.insertMany(data, { lean: true })
-  return docs as unknown as T[]
+  const docs = await model.insertMany(data)
+  return (docs as unknown as Document[]).map((doc) => doc.toObject({ virtuals: true })) as T[]
 }
 
 export async function updateOne<T>(
@@ -51,7 +53,7 @@ export async function updateOne<T>(
   data: UpdateQuery<T>,
 ): Promise<T | null> {
   await connectDB()
-  return model.findByIdAndUpdate(id, data, { new: true }).lean() as Promise<T | null>
+  return model.findOneAndUpdate({ id }, data, { new: true }).lean({ virtuals: true }) as Promise<T | null>
 }
 
 export async function updateMany<T>(
@@ -68,5 +70,5 @@ export async function deleteOne<T>(
   id: string,
 ): Promise<void> {
   await connectDB()
-  await model.findByIdAndDelete(id)
+  await model.findOneAndDelete({ id })
 }

@@ -90,7 +90,7 @@ export default function SaleTable({ sales, loading }: SaleTableProps) {
         </TableHeader>
         <TableBody>
           {sales.map((sale) => (
-            <TableRow key={String(sale._id)}>
+            <TableRow key={String(sale.id)}>
               <TableCell className="font-medium">{sale.name}</TableCell>
               <TableCell>
                 <Badge variant="outline" className="text-xs">
@@ -121,7 +121,7 @@ export default function SaleTable({ sales, loading }: SaleTableProps) {
                   <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(sale)}>
                     <Pencil size={13} />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(sale._id))}>
+                  <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(sale.id))}>
                     <Trash2 size={13} />
                   </Button>
                 </div>

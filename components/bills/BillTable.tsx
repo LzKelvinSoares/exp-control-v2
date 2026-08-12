@@ -23,8 +23,8 @@ interface BillTableProps {
   loading: boolean
 }
 
-function isDueSoon(dueDate: Date | string) {
-  const due = new Date(dueDate)
+function isDueSoon(expirationDate: Date | string) {
+  const due = new Date(expirationDate)
   const now = new Date()
   const diff = (due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
   return diff >= 0 && diff <= 5
@@ -59,13 +59,13 @@ export default function BillTable({ bills, loading }: BillTableProps) {
   }
 
   const unpaidBills = bills.filter((b) => !b.paid)
-  const allSelected = unpaidBills.length > 0 && unpaidBills.every((b) => selected.has(String(b._id)))
+  const allSelected = unpaidBills.length > 0 && unpaidBills.every((b) => selected.has(String(b.id)))
 
   function toggleAll() {
     if (allSelected) {
       setSelected(new Set())
     } else {
-      setSelected(new Set(unpaidBills.map((b) => String(b._id))))
+      setSelected(new Set(unpaidBills.map((b) => String(b.id))))
     }
   }
 
@@ -141,8 +141,8 @@ export default function BillTable({ bills, loading }: BillTableProps) {
         </TableHeader>
         <TableBody>
           {bills.map((bill) => {
-            const id = String(bill._id)
-            const dueSoon = !bill.paid && isDueSoon(bill.dueDate)
+            const id = String(bill.id)
+            const dueSoon = !bill.paid && isDueSoon(bill.expirationDate)
             return (
               <TableRow key={id} className={dueSoon ? 'bg-amber-50' : undefined}>
                 <TableCell>
@@ -150,12 +150,12 @@ export default function BillTable({ bills, loading }: BillTableProps) {
                     <Checkbox checked={selected.has(id)} onCheckedChange={() => toggleSelect(id)} />
                   )}
                 </TableCell>
-                <TableCell className="font-medium">{bill.name}</TableCell>
+                <TableCell className="font-medium">{bill.description}</TableCell>
                 <TableCell>
-                  <Badge variant="outline" className="text-xs">{getCategoryLabel(bill.category)}</Badge>
+                  <Badge variant="outline" className="text-xs">{getCategoryLabel(bill.type)}</Badge>
                 </TableCell>
                 <TableCell className={`text-sm ${dueSoon ? 'text-amber-700 font-medium' : 'text-muted-foreground'}`}>
-                  {formatDate(bill.dueDate)}
+                  {formatDate(bill.expirationDate)}
                   {dueSoon && ' ⚠'}
                 </TableCell>
                 <TableCell>

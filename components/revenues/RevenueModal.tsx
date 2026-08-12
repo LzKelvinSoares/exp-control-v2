@@ -28,32 +28,35 @@ export default function RevenueModal({ open, revenue, onClose }: RevenueModalPro
   const updateRevenue = useUpdateRevenue()
   const isEditing = !!revenue
 
-  const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<RevenueFormData>({
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm<RevenueFormData>({
     resolver: zodResolver(revenueSchema),
-    defaultValues: { installments: 1 },
+    defaultValues: { monthsLeft: 1 },
   })
 
   useEffect(() => {
     if (revenue) {
       reset({
-        description:  revenue.description,
-        category:     revenue.category,
-        responsible:  revenue.responsible,
-        value:        revenue.value,
-        installments: revenue.installments ?? 1,
+        description: revenue.description,
+        type:        revenue.type,
+        responsible: revenue.responsible,
+        value:       revenue.value,
+        monthsLeft:  revenue.monthsLeft ?? 1,
       })
     } else {
-      reset({ installments: 1 })
+      reset({ monthsLeft: 1 })
     }
   }, [revenue, reset])
 
   async function onSubmit(data: RevenueFormData) {
     try {
       if (isEditing) {
-        await updateRevenue.mutateAsync({ id: String(revenue._id), ...data })
+        await updateRevenue.mutateAsync({ id: String(revenue.id), ...data })
         toast.success('Receita atualizada')
       } else {
-        await createRevenue.mutateAsync({ ...data, month, year })
+        await createRevenue.mutateAsync({
+          ...data,
+          firstExpirationDate: new Date(year, month - 1, 1).toISOString(),
+        })
         toast.success('Receita criada')
       }
       onClose()
@@ -80,8 +83,8 @@ export default function RevenueModal({ open, revenue, onClose }: RevenueModalPro
             <div className="space-y-1">
               <Label>Categoria</Label>
               <Select
-                defaultValue={revenue?.category}
-                onValueChange={(v) => setValue('category', v as RevenueFormData['category'])}
+                value={watch('type') ?? ''}
+                onValueChange={(v) => setValue('type', v)}
               >
                 <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
                 <SelectContent>
@@ -90,7 +93,7 @@ export default function RevenueModal({ open, revenue, onClose }: RevenueModalPro
                   ))}
                 </SelectContent>
               </Select>
-              {errors.category && <p className="text-xs text-red-500">{errors.category.message}</p>}
+              {errors.type && <p className="text-xs text-red-500">{errors.type.message}</p>}
             </div>
 
             <div className="space-y-1">
@@ -109,8 +112,8 @@ export default function RevenueModal({ open, revenue, onClose }: RevenueModalPro
 
             <div className="space-y-1">
               <Label>Parcelas</Label>
-              <Input type="number" min="1" {...register('installments', { valueAsNumber: true })} placeholder="1" />
-              {errors.installments && <p className="text-xs text-red-500">{errors.installments.message}</p>}
+              <Input type="number" min="1" {...register('monthsLeft', { valueAsNumber: true })} placeholder="1" />
+              {errors.monthsLeft && <p className="text-xs text-red-500">{errors.monthsLeft.message}</p>}
             </div>
           </div>
 

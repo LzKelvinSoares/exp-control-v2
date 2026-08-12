@@ -19,7 +19,7 @@ interface FuelModalProps {
   onClose: () => void
 }
 
-function toDateInput(date?: Date | string) {
+function toDateInput(date?: string) {
   if (!date) return ''
   return new Date(date).toISOString().split('T')[0]
 }
@@ -33,18 +33,18 @@ export default function FuelModal({ open, fuel, onClose }: FuelModalProps) {
     resolver: zodResolver(fuelSchema),
   })
 
-  const totalCost = useWatch({ control, name: 'totalCost' })
-  const pricePerLiter = useWatch({ control, name: 'pricePerLiter' })
-  const liters = totalCost > 0 && pricePerLiter > 0
-    ? (totalCost / pricePerLiter).toFixed(3)
+  const value = useWatch({ control, name: 'value' })
+  const valuePerLiter = useWatch({ control, name: 'valuePerLiter' })
+  const liters = value > 0 && valuePerLiter > 0
+    ? (value / valuePerLiter).toFixed(3)
     : '—'
 
   useEffect(() => {
     if (fuel) {
       reset({
-        date:          toDateInput(fuel.date),
-        totalCost:     fuel.totalCost,
-        pricePerLiter: fuel.pricePerLiter,
+        creationDate:  toDateInput(fuel.creationDate),
+        value:         fuel.value,
+        valuePerLiter: fuel.valuePerLiter,
       })
     } else {
       reset()
@@ -54,7 +54,7 @@ export default function FuelModal({ open, fuel, onClose }: FuelModalProps) {
   async function onSubmit(data: FuelFormData) {
     try {
       if (isEditing) {
-        await updateFuel.mutateAsync({ id: String(fuel._id), ...data })
+        await updateFuel.mutateAsync({ id: String(fuel.id), ...data })
         toast.success('Abastecimento atualizado')
       } else {
         await createFuel.mutateAsync(data)
@@ -76,21 +76,21 @@ export default function FuelModal({ open, fuel, onClose }: FuelModalProps) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1">
             <Label>Data</Label>
-            <Input type="date" {...register('date')} />
-            {errors.date && <p className="text-xs text-red-500">{errors.date.message}</p>}
+            <Input type="date" {...register('creationDate')} />
+            {errors.creationDate && <p className="text-xs text-red-500">{errors.creationDate.message}</p>}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label>Custo total (R$)</Label>
-              <Input type="number" step="0.01" {...register('totalCost', { valueAsNumber: true })} placeholder="0,00" />
-              {errors.totalCost && <p className="text-xs text-red-500">{errors.totalCost.message}</p>}
+              <Input type="number" step="0.01" {...register('value', { valueAsNumber: true })} placeholder="0,00" />
+              {errors.value && <p className="text-xs text-red-500">{errors.value.message}</p>}
             </div>
 
             <div className="space-y-1">
               <Label>Preço por litro (R$)</Label>
-              <Input type="number" step="0.001" {...register('pricePerLiter', { valueAsNumber: true })} placeholder="0,000" />
-              {errors.pricePerLiter && <p className="text-xs text-red-500">{errors.pricePerLiter.message}</p>}
+              <Input type="number" step="0.001" {...register('valuePerLiter', { valueAsNumber: true })} placeholder="0,000" />
+              {errors.valuePerLiter && <p className="text-xs text-red-500">{errors.valuePerLiter.message}</p>}
             </div>
           </div>
 

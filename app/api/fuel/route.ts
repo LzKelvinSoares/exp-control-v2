@@ -2,13 +2,16 @@ import { NextRequest } from 'next/server'
 import { withAuth, ok, err } from '@/lib/api'
 import { getFuelEntries, createFuelEntry, updateFuelEntry, deleteFuelEntry } from '@/lib/db'
 
-export const GET = withAuth(async (_req, ctx) => {
-  return ok(await getFuelEntries(ctx.userId, ctx.currency))
+export const GET = withAuth(async (req, ctx) => {
+  const month = Number(req.nextUrl.searchParams.get('month'))
+  const year = Number(req.nextUrl.searchParams.get('year'))
+  if (!month || !year) return err('month and year are required')
+  return ok(await getFuelEntries(ctx.userId, ctx.currency, month, year))
 })
 
 export const POST = withAuth(async (req: NextRequest, ctx) => {
   const body = await req.json()
-  return ok(await createFuelEntry({ ...body, userId: ctx.userId, currency: ctx.currency }))
+  return ok(await createFuelEntry({ ...body, userId: ctx.userId, currencyCurrencyAccount: ctx.currency }))
 })
 
 export const PUT = withAuth(async (req: NextRequest, _ctx) => {

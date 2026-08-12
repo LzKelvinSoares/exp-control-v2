@@ -58,7 +58,7 @@ export default function SaleModal({ open, sale, onClose }: SaleModalProps) {
   async function onSubmit(data: SaleFormData) {
     try {
       if (isEditing) {
-        await updateSale.mutateAsync({ id: String(sale._id), ...data })
+        await updateSale.mutateAsync({ id: String(sale.id), ...data })
         toast.success('Venda atualizada')
       } else {
         await createSale.mutateAsync(data)

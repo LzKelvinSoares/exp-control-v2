@@ -5,7 +5,7 @@ import { useTransition } from 'react'
 import { Menu } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
@@ -45,14 +45,16 @@ export default function Header() {
               </Badge>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Conta</DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Conta</DropdownMenuLabel>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               {user.currencyAccounts.map((acc) => (
                 <DropdownMenuItem
-                  key={acc.currency}
-                  onClick={() => handleCurrencySwitch(acc.currency)}
+                  key={acc}
+                  onClick={() => handleCurrencySwitch(acc)}
                 >
-                  {acc.currency} — {acc.label}
+                  {acc}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -67,7 +69,9 @@ export default function Header() {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem disabled className="text-xs text-muted-foreground">
               {user?.points ?? 0} pontos

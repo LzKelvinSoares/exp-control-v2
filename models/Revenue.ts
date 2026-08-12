@@ -1,22 +1,22 @@
 import { Schema, model, models } from 'mongoose'
 import type { Revenue } from '@/types'
-import { CURRENCY_ENUM, REVENUE_CATEGORY_ENUM } from '@/constants/enums'
 
 const RevenueSchema = new Schema<Revenue>({
-  userId:          { type: String, required: true, index: true },
-  currency:        { type: String, enum: CURRENCY_ENUM, required: true },
-  description:     { type: String, required: true },
-  category:        { type: String, enum: REVENUE_CATEGORY_ENUM, required: true },
-  responsible:     { type: String, required: true },
-  value:           { type: Number, required: true },
-  month:           { type: Number, required: true },
-  year:            { type: Number, required: true },
-  installments:    { type: Number },
-  parentRevenueId: { type: String },
-  createdAt:       { type: Date, default: Date.now },
-})
+  id:                      { type: String, default: () => crypto.randomUUID() },
+  userId:                  { type: String, required: true, index: true },
+  currencyCurrencyAccount: { type: String, required: true },
+  description:             { type: String, required: true },
+  type:                    { type: String, required: true },
+  typeDescription:         { type: String },
+  responsible:             { type: String },
+  value:                   { type: Number, required: true },
+  firstExpirationDate:     { type: String, required: true },
+  monthsLeft:              { type: Number },
+  parentBudgetId:          { type: String },
+  creationDate:            { type: Date, default: Date.now },
+}, { id: false, collection: 'revenue' })
 
-RevenueSchema.index({ userId: 1, currency: 1, year: 1, month: 1 })
+RevenueSchema.index({ userId: 1, currencyCurrencyAccount: 1, firstExpirationDate: 1 })
 
 const RevenueModel = models.Revenue || model<Revenue>('Revenue', RevenueSchema)
 

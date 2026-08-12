@@ -1,21 +1,23 @@
 import { Schema, model, models } from 'mongoose'
 import type { Bill } from '@/types'
-import { CURRENCY_ENUM, BILL_CATEGORY_ENUM } from '@/constants/enums'
 
 const BillSchema = new Schema<Bill>({
-  userId:   { type: String, required: true, index: true },
-  currency: { type: String, enum: CURRENCY_ENUM, required: true },
-  name:     { type: String, required: true },
-  category: { type: String, enum: BILL_CATEGORY_ENUM, required: true },
-  value:    { type: Number, required: true },
-  dueDate:  { type: Date, required: true },
-  barcode:  { type: String },
-  paid:     { type: Boolean, default: false },
-  paidAt:   { type: Date },
-  createdAt:{ type: Date, default: Date.now },
-})
+  id:                      { type: String, default: () => crypto.randomUUID() },
+  userId:                  { type: String, required: true, index: true },
+  currencyCurrencyAccount: { type: String, required: true },
+  description:             { type: String, required: true },
+  type:                    { type: String, required: true },
+  typeDescription:         { type: String },
+  responsible:             { type: String },
+  value:                   { type: Number, required: true },
+  expirationDate:          { type: String, required: true },
+  barCode:                 { type: String },
+  paid:                    { type: Boolean, default: false },
+  paidAt:                  { type: Date },
+  creationDate:            { type: Date, default: Date.now },
+}, { id: false })
 
-BillSchema.index({ userId: 1, currency: 1, paid: 1, dueDate: 1 })
+BillSchema.index({ userId: 1, currencyCurrencyAccount: 1, paid: 1, expirationDate: 1 })
 
 const BillModel = models.Bill || model<Bill>('Bill', BillSchema)
 

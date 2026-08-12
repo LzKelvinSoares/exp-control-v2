@@ -8,7 +8,7 @@ declare module 'next-auth' {
       name: string
       email: string
       image?: string
-      currencyAccounts: CurrencyAccount[]
+      currencyAccounts: Currency[]
       currentCurrency: Currency
       points: number
     }
@@ -16,7 +16,7 @@ declare module 'next-auth' {
 
   interface User {
     id: string
-    currencyAccounts: CurrencyAccount[]
+    currencyAccounts: Currency[]
     currentCurrency: Currency
     points: number
   }

@@ -42,18 +42,18 @@ export default function BillsDueSoon() {
         {!isLoading && unpaid.length > 0 && (
           <ul className="space-y-2">
             {unpaid.map((bill) => (
-              <li key={String(bill._id)} className="flex items-center justify-between gap-3 text-sm">
+              <li key={String(bill.id)} className="flex items-center justify-between gap-3 text-sm">
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate">{bill.name}</p>
+                  <p className="font-medium truncate">{bill.description}</p>
                   <p className="text-xs text-muted-foreground">
-                    Vence: {new Date(bill.dueDate).toLocaleDateString('pt-BR')}
+                    Vence: {new Date(bill.expirationDate).toLocaleDateString('pt-BR')}
                   </p>
                 </div>
                 <Badge variant="outline" className="shrink-0">
                   {formatCurrency(bill.value, currency)}
                 </Badge>
                 <button
-                  onClick={() => payBill.mutate(String(bill._id))}
+                  onClick={() => payBill.mutate(String(bill.id))}
                   disabled={payBill.isPending}
                   className="text-emerald-600 hover:text-emerald-700 disabled:opacity-50"
                   title="Marcar como pago"

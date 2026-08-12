@@ -71,14 +71,14 @@ export default function ExpenseTable({ expenses, loading }: ExpenseTableProps) {
         </TableHeader>
         <TableBody>
           {expenses.map((expense) => (
-            <TableRow key={String(expense._id)}>
+            <TableRow key={String(expense.id)}>
               <TableCell className="font-medium">{expense.description}</TableCell>
               <TableCell>
-                <Badge variant="outline" className="text-xs">{getCategoryLabel(expense.category)}</Badge>
+                <Badge variant="outline" className="text-xs">{getCategoryLabel(expense.type)}</Badge>
               </TableCell>
               <TableCell className="text-sm text-muted-foreground">{expense.responsible}</TableCell>
               <TableCell className="text-sm text-muted-foreground">
-                {(expense.installments ?? 1) > 1 ? `${expense.installments}x` : '—'}
+                {(expense.monthsLeft ?? 1) > 1 ? `${expense.monthsLeft}x` : '—'}
               </TableCell>
               <TableCell className="text-right font-semibold">
                 {formatCurrency(expense.value, currency)}
@@ -88,7 +88,7 @@ export default function ExpenseTable({ expenses, loading }: ExpenseTableProps) {
                   <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(expense)}>
                     <Pencil size={13} />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(expense._id))}>
+                  <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(expense.id))}>
                     <Trash2 size={13} />
                   </Button>
                 </div>

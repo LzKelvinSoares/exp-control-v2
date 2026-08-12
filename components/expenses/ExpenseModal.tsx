@@ -33,24 +33,24 @@ export default function ExpenseModal({ open, expense, onClose }: ExpenseModalPro
 
   const methods = useForm<ExpenseFormData>({
     resolver: zodResolver(expenseSchema),
-    defaultValues: { installments: 1, marketItems: [] },
+    defaultValues: { monthsLeft: 1, marketItems: [] },
   })
 
-  const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = methods
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = methods
 
   useEffect(() => {
     if (expense) {
       reset({
-        description:  expense.description,
-        category:     expense.category,
-        responsible:  expense.responsible,
-        value:        expense.value,
-        installments: expense.installments ?? 1,
-        marketItems:  expense.marketItems ?? [],
+        description: expense.description,
+        type:        expense.type,
+        responsible: expense.responsible,
+        value:       expense.value,
+        monthsLeft:  expense.monthsLeft ?? 1,
+        marketItems: expense.marketItems ?? [],
       })
       setShowMarketItems((expense.marketItems?.length ?? 0) > 0)
     } else {
-      reset({ installments: 1, marketItems: [] })
+      reset({ monthsLeft: 1, marketItems: [] })
       setShowMarketItems(false)
     }
   }, [expense, reset])
@@ -58,10 +58,13 @@ export default function ExpenseModal({ open, expense, onClose }: ExpenseModalPro
   async function onSubmit(data: ExpenseFormData) {
     try {
       if (isEditing) {
-        await updateExpense.mutateAsync({ id: String(expense._id), ...data })
+        await updateExpense.mutateAsync({ id: String(expense.id), ...data })
         toast.success('Despesa atualizada')
       } else {
-        await createExpense.mutateAsync({ ...data, month, year })
+        await createExpense.mutateAsync({
+          ...data,
+          firstExpirationDate: new Date(year, month - 1, 1).toISOString(),
+        })
         toast.success('Despesa criada')
       }
       onClose()
@@ -89,8 +92,8 @@ export default function ExpenseModal({ open, expense, onClose }: ExpenseModalPro
               <div className="space-y-1">
                 <Label>Categoria</Label>
                 <Select
-                  defaultValue={expense?.category}
-                  onValueChange={(v) => setValue('category', v as ExpenseFormData['category'])}
+                  value={watch('type') ?? ''}
+                  onValueChange={(v) => setValue('type', v)}
                 >
                   <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
                   <SelectContent>
@@ -99,7 +102,7 @@ export default function ExpenseModal({ open, expense, onClose }: ExpenseModalPro
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.category && <p className="text-xs text-red-500">{errors.category.message}</p>}
+                {errors.type && <p className="text-xs text-red-500">{errors.type.message}</p>}
               </div>
 
               <div className="space-y-1">
@@ -118,8 +121,8 @@ export default function ExpenseModal({ open, expense, onClose }: ExpenseModalPro
 
               <div className="space-y-1">
                 <Label>Parcelas</Label>
-                <Input type="number" min="1" {...register('installments', { valueAsNumber: true })} placeholder="1" />
-                {errors.installments && <p className="text-xs text-red-500">{errors.installments.message}</p>}
+                <Input type="number" min="1" {...register('monthsLeft', { valueAsNumber: true })} placeholder="1" />
+                {errors.monthsLeft && <p className="text-xs text-red-500">{errors.monthsLeft.message}</p>}
               </div>
             </div>
 

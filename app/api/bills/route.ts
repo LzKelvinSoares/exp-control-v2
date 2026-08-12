@@ -17,7 +17,7 @@ export const GET = withAuth(async (req, ctx) => {
 
 export const POST = withAuth(async (req: NextRequest, ctx) => {
   const body = await req.json()
-  const bill = await createBill({ ...body, userId: ctx.userId, currency: ctx.currency })
+  const bill = await createBill({ ...body, userId: ctx.userId, currencyCurrencyAccount: ctx.currency })
   await addUserPoints(ctx.userId, POINTS.BILL_SAVED)
   return ok(bill)
 })
@@ -32,7 +32,7 @@ export const PUT = withAuth(async (req: NextRequest, ctx) => {
       (ids as string[]).map(async (billId) => {
         const bill = await findById<Bill>(BillModel, billId)
         if (!bill) return
-        const isLate = bill.dueDate && new Date(bill.dueDate) < new Date()
+        const isLate = bill.expirationDate && new Date(bill.expirationDate) < new Date()
         await addUserPoints(ctx.userId, isLate ? POINTS.BILL_PAID_LATE : POINTS.BILL_PAID_ON_TIME)
       })
     )
@@ -43,7 +43,7 @@ export const PUT = withAuth(async (req: NextRequest, ctx) => {
     const bill = await findById<Bill>(BillModel, id)
     await payBill(id)
     if (bill) {
-      const isLate = bill.dueDate && new Date(bill.dueDate) < new Date()
+      const isLate = bill.expirationDate && new Date(bill.expirationDate) < new Date()
       await addUserPoints(ctx.userId, isLate ? POINTS.BILL_PAID_LATE : POINTS.BILL_PAID_ON_TIME)
     }
     return ok({ success: true })

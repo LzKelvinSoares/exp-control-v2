@@ -31,7 +31,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!valid) return null
 
         return {
-          id: user._id.toString(),
+          id: user.id.toString(),
           name: user.name,
           email: user.email,
           currencyAccounts: user.currencyAccounts,
@@ -43,12 +43,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     ...authConfig.callbacks,
-    async jwt({ token, user }) {
+    async jwt({ token, user, account, trigger, session }) {
+      if (trigger === 'update' && session?.currentCurrency) {
+        token.currentCurrency = session.currentCurrency
+      }
       if (user) {
-        token.id = user.id
-        token.currencyAccounts = (user as any).currencyAccounts
-        token.currentCurrency = (user as any).currentCurrency as Currency
-        token.points = (user as any).points
+        if (account?.provider === 'google') {
+          await connectDB()
+          const dbUser = await UserModel.findOne({ email: user.email }).lean()
+          token.id = (dbUser as any)?.id.toString()
+          token.currencyAccounts = (dbUser as any)?.currencyAccounts
+          token.currentCurrency = (dbUser as any)?.currentCurrency as Currency
+          token.points = (dbUser as any)?.points
+        } else {
+          token.id = user.id
+          token.currencyAccounts = (user as any).currencyAccounts
+          token.currentCurrency = (user as any).currentCurrency as Currency
+          token.points = (user as any).points
+        }
       }
       return token
     },

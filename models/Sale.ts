@@ -3,6 +3,7 @@ import type { Sale } from '@/types'
 import { SALE_ROOM_ENUM, PAYMENT_STATUS_ENUM, DELIVERY_STATUS_ENUM } from '@/constants/enums'
 
 const SaleSchema = new Schema<Sale>({
+  id:             { type: String, default: () => crypto.randomUUID() },
   name:           { type: String, required: true },
   room:           { type: String, enum: SALE_ROOM_ENUM, required: true },
   buyer:          { type: String },
@@ -16,7 +17,7 @@ const SaleSchema = new Schema<Sale>({
   imageId:        { type: String },
   tiedSaleId:     { type: String },
   createdAt:      { type: Date, default: Date.now },
-})
+}, { id: false, collection: 'sale' })
 
 const SaleModel = models.Sale || model<Sale>('Sale', SaleSchema)
 

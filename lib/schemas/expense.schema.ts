@@ -1,6 +1,4 @@
 import { z } from 'zod'
-import { EXPENSE_CATEGORY_ENUM } from '@/constants'
-import { toZodEnum } from './helpers'
 
 const marketItemSchema = z.object({
   description:  z.string().min(1, 'Descrição obrigatória'),
@@ -11,12 +9,12 @@ const marketItemSchema = z.object({
 })
 
 export const expenseSchema = z.object({
-  description:  z.string().min(1, 'Descrição é obrigatória'),
-  category:     z.enum(toZodEnum(EXPENSE_CATEGORY_ENUM)),
-  responsible:  z.string().min(1, 'Responsável é obrigatório'),
-  value:        z.number().positive('Valor deve ser positivo'),
-  installments: z.number().int().min(1),
-  marketItems:  z.array(marketItemSchema).optional(),
+  description: z.string().min(1, 'Descrição é obrigatória'),
+  type:        z.string().min(1, 'Categoria é obrigatória'),
+  responsible: z.string().optional(),
+  value:       z.number().positive('Valor deve ser positivo'),
+  monthsLeft:  z.number().int().min(1),
+  marketItems: z.array(marketItemSchema).optional(),
 })
 
 export type ExpenseFormData = z.infer<typeof expenseSchema>

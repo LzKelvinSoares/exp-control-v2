@@ -6,7 +6,7 @@ export function getSales() {
   return findMany(SaleModel, {})
 }
 
-export function createSale(data: Omit<Sale, '_id' | 'createdAt'>) {
+export function createSale(data: Omit<Sale, 'id' | 'createdAt'>) {
   return createOne(SaleModel, data)
 }
 

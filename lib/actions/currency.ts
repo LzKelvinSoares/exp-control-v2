@@ -10,5 +10,5 @@ export async function switchCurrency(currency: Currency) {
   if (!session?.user?.id) throw new Error('Not authenticated')
 
   await connectDB()
-  await UserModel.findByIdAndUpdate(session.user.id, { currentCurrency: currency })
+  await UserModel.findOneAndUpdate({ id: session.user.id }, { currentCurrency: currency })
 }

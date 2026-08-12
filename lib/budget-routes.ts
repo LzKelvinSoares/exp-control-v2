@@ -19,7 +19,7 @@ export function createBudgetRoutes<T, TInput>(fns: BudgetRouteFns<T, TInput>) {
 
     POST: withAuth(async (req, ctx) => {
       const body = await req.json()
-      return ok(await fns.create({ ...body, userId: ctx.userId, currency: ctx.currency } as TInput))
+      return ok(await fns.create({ ...body, userId: ctx.userId, currencyCurrencyAccount: ctx.currency } as TInput))
     }),
 
     PUT: withAuth(async (req, _ctx) => {

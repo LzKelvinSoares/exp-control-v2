@@ -68,23 +68,23 @@ export default function FuelTable({ entries, loading }: FuelTableProps) {
         </TableHeader>
         <TableBody>
           {entries.map((entry) => (
-            <TableRow key={String(entry._id)}>
-              <TableCell className="font-medium">{formatDate(entry.date)}</TableCell>
+            <TableRow key={String(entry.id)}>
+              <TableCell className="font-medium">{formatDate(entry.creationDate)}</TableCell>
               <TableCell className="text-right text-sm text-muted-foreground">
-                {entry.pricePerLiter.toFixed(3)}
+                {Number(entry.valuePerLiter).toFixed(3)}
               </TableCell>
               <TableCell className="text-right text-sm text-muted-foreground">
-                {entry.liters.toFixed(3)} L
+                {(Number(entry.value) / Number(entry.valuePerLiter)).toFixed(3)} L
               </TableCell>
               <TableCell className="text-right font-semibold">
-                {formatCurrency(entry.totalCost, currency)}
+                {formatCurrency(Number(entry.value), currency)}
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-1 justify-end">
                   <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(entry)}>
                     <Pencil size={13} />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(entry._id))}>
+                  <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(entry.id))}>
                     <Trash2 size={13} />
                   </Button>
                 </div>

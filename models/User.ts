@@ -3,6 +3,7 @@ import type { CurrencyAccount, Currency } from '@/types'
 import { CURRENCY_ENUM } from '@/constants/enums'
 
 interface IUser {
+  id: string
   name: string
   email: string
   password: string
@@ -13,6 +14,7 @@ interface IUser {
 }
 
 const UserSchema = new Schema<IUser>({
+  id: { type: String, default: () => crypto.randomUUID() },
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: false, default: '' },
@@ -25,7 +27,7 @@ const UserSchema = new Schema<IUser>({
   currentCurrency: { type: String, enum: CURRENCY_ENUM, default: 'BRL' },
   points: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
-})
+}, { id: false })
 
 const UserModel = models.User || model<IUser>('User', UserSchema)
 
