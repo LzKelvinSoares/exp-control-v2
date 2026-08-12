@@ -1,8 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus } from 'lucide-react'
-import { TrendingUp } from 'lucide-react'
+import { Plus, Share2, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import MonthYearSelector from '@/components/shared/MonthYearSelector'
 import SummaryCard from '@/components/shared/SummaryCard'
@@ -29,12 +28,29 @@ export default function RevenuesPage() {
 
   const total = sumBy(filteredData, 'value')
 
+  function handleShare() {
+    if (typeof navigator === 'undefined' || !navigator.share) return
+    const text = filteredData
+      .map((r) => {
+        const value = formatCurrency(r.value, currency).replace(/ /g, ' ')
+        const line = `${r.description} - ${value}`
+        return r.monthsLeft && r.monthsLeft > 1 ? `${line} - Faltam: ${r.monthsLeft}` : line
+      })
+      .join('\n')
+    navigator.share({ title: 'Receitas', text })
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold text-slate-800">Receitas</h1>
         <div className="flex items-center justify-between sm:justify-end gap-3">
           <MonthYearSelector />
+          {filteredData.length > 0 && (
+            <Button size="sm" variant="outline" onClick={handleShare}>
+              <Share2 size={16} className="mr-1" /> Compartilhar
+            </Button>
+          )}
           <Button size="sm" onClick={() => setModalOpen(true)}>
             <Plus size={16} className="mr-1" /> Nova receita
           </Button>
