@@ -3,11 +3,11 @@
 import { useState } from 'react'
 import { Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
+import { DataTable, type ColumnDef } from '@/components/shared/DataTable'
+import { DataCard } from '@/components/shared/DataCard'
 import ExpenseModal from './ExpenseModal'
 import { useDeleteExpense } from '@/hooks/mutations/expenses/use-delete-expense'
 import { EXPENSE_CATEGORIES } from '@/constants'
@@ -44,93 +44,76 @@ export default function ExpenseTable({ expenses, loading }: ExpenseTableProps) {
     return EXPENSE_CATEGORIES.find((c) => c.value === value)?.label ?? value
   }
 
-  if (loading) return (
-    <div className="space-y-2">
-      {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
-    </div>
-  )
+  function renderActions(expense: Expense) {
+    return (
+      <>
+        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(expense)}>
+          <Pencil size={13} />
+        </Button>
+        <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(expense.id))}>
+          <Trash2 size={13} />
+        </Button>
+      </>
+    )
+  }
 
-  if (!expenses.length) return (
-    <p className="text-sm text-muted-foreground text-center py-10">
-      Nenhuma despesa encontrada neste mês
-    </p>
-  )
+  const columns: ColumnDef<Expense>[] = [
+    {
+      header: 'Descrição',
+      cell: (e) => <span className="font-medium">{e.description}</span>,
+    },
+    {
+      header: 'Categoria',
+      cell: (e) => <Badge variant="outline" className="text-xs">{getCategoryLabel(e.type)}</Badge>,
+    },
+    {
+      header: 'Responsável',
+      cell: (e) => <span className="text-sm text-muted-foreground">{e.responsible}</span>,
+    },
+    {
+      header: 'Parcelas',
+      cell: (e) => (
+        <span className="text-sm text-muted-foreground">
+          {(e.monthsLeft ?? 1) > 1 ? `${e.monthsLeft}x` : '—'}
+        </span>
+      ),
+    },
+    {
+      header: 'Valor',
+      headerClassName: 'text-right',
+      className: 'text-right font-semibold',
+      cell: (e) => formatCurrency(e.value, currency),
+    },
+    {
+      header: '',
+      headerClassName: 'w-20',
+      cell: (e) => <div className="flex items-center gap-1 justify-end">{renderActions(e)}</div>,
+    },
+  ]
 
   return (
     <>
-      {/* Desktop table */}
-      <div className="hidden md:block">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Descrição</TableHead>
-              <TableHead>Categoria</TableHead>
-              <TableHead>Responsável</TableHead>
-              <TableHead>Parcelas</TableHead>
-              <TableHead className="text-right">Valor</TableHead>
-              <TableHead className="w-20" />
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {expenses.map((expense) => (
-              <TableRow key={String(expense.id)}>
-                <TableCell className="font-medium">{expense.description}</TableCell>
-                <TableCell>
-                  <Badge variant="outline" className="text-xs">{getCategoryLabel(expense.type)}</Badge>
-                </TableCell>
-                <TableCell className="text-sm text-muted-foreground">{expense.responsible}</TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {(expense.monthsLeft ?? 1) > 1 ? `${expense.monthsLeft}x` : '—'}
-                </TableCell>
-                <TableCell className="text-right font-semibold">
-                  {formatCurrency(expense.value, currency)}
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1 justify-end">
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(expense)}>
-                      <Pencil size={13} />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(expense.id))}>
-                      <Trash2 size={13} />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-
-      {/* Mobile cards */}
-      <div className="md:hidden space-y-3">
-        {expenses.map((expense) => (
-          <div key={String(expense.id)} className="rounded-lg border bg-white p-4 space-y-3">
-            <div className="flex items-start justify-between gap-2">
-              <span className="font-medium text-sm truncate">{expense.description}</span>
-              <span className="font-semibold text-sm shrink-0">{formatCurrency(expense.value, currency)}</span>
-            </div>
-
-            <div className="flex items-center gap-2 flex-wrap">
-              <Badge variant="outline" className="text-xs">{getCategoryLabel(expense.type)}</Badge>
-              {expense.responsible && (
-                <span className="text-xs text-muted-foreground">{expense.responsible}</span>
-              )}
-              {(expense.monthsLeft ?? 1) > 1 && (
-                <span className="text-xs text-muted-foreground">{expense.monthsLeft}x</span>
-              )}
-            </div>
-
-            <div className="flex items-center gap-1 justify-end">
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(expense)}>
-                <Pencil size={13} />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => setDeletingId(String(expense.id))}>
-                <Trash2 size={13} />
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
+      <DataTable
+        data={expenses}
+        columns={columns}
+        keyExtractor={(e) => String(e.id)}
+        loading={loading}
+        emptyMessage="Nenhuma despesa encontrada neste mês"
+        renderCard={(e) => (
+          <DataCard
+            primary={<span className="font-medium text-sm">{e.description}</span>}
+            value={<span className="font-semibold text-sm">{formatCurrency(e.value, currency)}</span>}
+            meta={
+              <>
+                <Badge variant="outline" className="text-xs">{getCategoryLabel(e.type)}</Badge>
+                {e.responsible && <span className="text-xs text-muted-foreground">{e.responsible}</span>}
+                {(e.monthsLeft ?? 1) > 1 && <span className="text-xs text-muted-foreground">{e.monthsLeft}x</span>}
+              </>
+            }
+            actions={renderActions(e)}
+          />
+        )}
+      />
 
       <ExpenseModal open={!!editing} expense={editing} onClose={() => setEditing(undefined)} />
 
