@@ -9,6 +9,7 @@ import type { Currency } from '@/types'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
+  secret: process.env.AUTH_SECRET,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
