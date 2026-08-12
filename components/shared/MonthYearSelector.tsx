@@ -25,7 +25,7 @@ export default function MonthYearSelector() {
       <Button variant="ghost" size="icon" onClick={prev} className="h-8 w-8">
         <ChevronLeft size={16} />
       </Button>
-      <span className="text-sm font-semibold w-32 text-center">
+      <span className="text-sm font-semibold w-32 text-center" suppressHydrationWarning>
         {label} {year}
       </span>
       <Button variant="ghost" size="icon" onClick={next} className="h-8 w-8">
