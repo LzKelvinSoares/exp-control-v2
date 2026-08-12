@@ -12,8 +12,8 @@ export const saleSchema = z.object({
   installments: z.number().int().min(1).optional(),
   bookingDate:  z.string().optional(),
   saleDate:     z.string().optional(),
-  paid:         z.boolean().default(false),
-  delivered:    z.boolean().default(false),
+  paid:         z.boolean(),
+  delivered:    z.boolean(),
 })
 
 export type SaleFormData = z.infer<typeof saleSchema>

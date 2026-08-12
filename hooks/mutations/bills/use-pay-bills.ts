@@ -12,7 +12,7 @@ export function usePayBills() {
         body: JSON.stringify({ action: 'payMany', ids }),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: queryKeys.bills() })
+      qc.invalidateQueries({ queryKey: ['bills'] })
       qc.invalidateQueries({ queryKey: queryKeys.user() })
     },
   })

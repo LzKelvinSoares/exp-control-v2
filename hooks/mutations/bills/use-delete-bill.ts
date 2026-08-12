@@ -11,6 +11,6 @@ export function useDeleteBill() {
         headers: HTTP_HEADERS.JSON,
         body: JSON.stringify({ id }),
       }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.bills() }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['bills'] }),
   })
 }

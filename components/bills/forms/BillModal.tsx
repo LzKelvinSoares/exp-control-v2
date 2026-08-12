@@ -83,7 +83,7 @@ export default function BillModal({ open, bill, onClose }: BillModalProps) {
               <Label>Categoria</Label>
               <Select
                 defaultValue={bill?.type}
-                onValueChange={(v) => setValue('type', v)}
+                onValueChange={(v) => setValue('type', v ?? '')}
               >
                 <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
                 <SelectContent>

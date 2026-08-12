@@ -6,12 +6,12 @@ import type { Fuel } from '@/types'
 export function useCreateFuel() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (data: Pick<Fuel, 'date' | 'totalCost' | 'pricePerLiter'>) =>
+    mutationFn: (data: Pick<Fuel, 'creationDate' | 'value' | 'valuePerLiter'>) =>
       fetch(API_ROUTES.fuel, {
         method: HTTP_METHODS.POST,
         headers: HTTP_HEADERS.JSON,
         body: JSON.stringify(data),
       }).then((r) => r.json()),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.fuel() }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['fuel'] }),
   })
 }

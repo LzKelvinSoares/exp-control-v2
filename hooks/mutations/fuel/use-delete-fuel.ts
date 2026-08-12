@@ -11,6 +11,6 @@ export function useDeleteFuel() {
         headers: HTTP_HEADERS.JSON,
         body: JSON.stringify({ id }),
       }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.fuel() }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['fuel'] }),
   })
 }

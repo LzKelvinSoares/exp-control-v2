@@ -12,6 +12,6 @@ export function useUpdateBill() {
         headers: HTTP_HEADERS.JSON,
         body: JSON.stringify({ id, ...data }),
       }).then((r) => r.json()),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.bills() }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['bills'] }),
   })
 }

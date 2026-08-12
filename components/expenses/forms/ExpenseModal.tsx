@@ -93,7 +93,7 @@ export default function ExpenseModal({ open, expense, onClose }: ExpenseModalPro
                 <Label>Categoria</Label>
                 <Select
                   value={watch('type') ?? ''}
-                  onValueChange={(v) => setValue('type', v)}
+                  onValueChange={(v) => setValue('type', v ?? '')}
                 >
                   <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
                   <SelectContent>

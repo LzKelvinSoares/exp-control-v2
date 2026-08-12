@@ -13,7 +13,7 @@ export function useCreateBill() {
         body: JSON.stringify(data),
       }).then((r) => r.json()),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: queryKeys.bills() })
+      qc.invalidateQueries({ queryKey: ['bills'] })
       qc.invalidateQueries({ queryKey: queryKeys.user() })
     },
   })

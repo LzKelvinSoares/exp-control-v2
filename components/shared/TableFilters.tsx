@@ -36,7 +36,7 @@ export function TableFilters<T>({ defs, values, hasActive, onFilter, onClear }: 
           <Select
             key={def.key}
             value={values[def.key] ?? 'all'}
-            onValueChange={(v) => onFilter(def.key, v)}
+            onValueChange={(v) => onFilter(def.key, v ?? '')}
           >
             <SelectTrigger className="h-8 w-36 text-sm">
               <SelectValue placeholder={def.label}>
