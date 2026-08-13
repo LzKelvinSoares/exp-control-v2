@@ -29,7 +29,10 @@ export const POST = withAuth(async (req: NextRequest, ctx) => {
     if (!refreshToken) return
     const accessToken = await refreshAccessToken(refreshToken)
     if (!accessToken) return
-    await createCalendarEvent(accessToken, bill as Bill)
+    await createCalendarEvent(accessToken, {
+      ...bill as Bill,
+      expirationDate: String((bill as Bill).expirationDate),
+    })
   }).catch(() => {})
 
   return ok(bill)
