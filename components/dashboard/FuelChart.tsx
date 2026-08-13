@@ -23,7 +23,7 @@ export default function FuelChart() {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-semibold">Combustível — {year}</CardTitle>
+        <CardTitle className="text-sm">Combustível — {year}</CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={180}>

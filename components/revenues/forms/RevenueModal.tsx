@@ -22,6 +22,16 @@ interface RevenueModalProps {
   onClose: () => void
 }
 
+function toDateInput(d: Date | string) {
+  const dt = new Date(d)
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`
+}
+
+function fromDateInput(s: string) {
+  const [y, m, d] = s.split('-').map(Number)
+  return new Date(y, m - 1, d).toISOString()
+}
+
 export default function RevenueModal({ open, revenue, onClose }: RevenueModalProps) {
   const { month, year } = useCalendar()
   const createRevenue = useCreateRevenue()
@@ -30,33 +40,32 @@ export default function RevenueModal({ open, revenue, onClose }: RevenueModalPro
 
   const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm<RevenueFormData>({
     resolver: zodResolver(revenueSchema),
-    defaultValues: { monthsLeft: 1 },
+    defaultValues: { monthsLeft: 1, firstExpirationDate: toDateInput(new Date(year, month - 1, 1)) },
   })
 
   useEffect(() => {
     if (revenue) {
       reset({
-        description: revenue.description,
-        type:        revenue.type,
-        responsible: revenue.responsible,
-        value:       revenue.value,
-        monthsLeft:  revenue.monthsLeft ?? 1,
+        description:         revenue.description,
+        type:                revenue.type,
+        responsible:         revenue.responsible,
+        value:               revenue.value,
+        monthsLeft:          revenue.monthsLeft ?? 1,
+        firstExpirationDate: toDateInput(revenue.firstExpirationDate),
       })
     } else {
-      reset({ monthsLeft: 1 })
+      reset({ monthsLeft: 1, firstExpirationDate: toDateInput(new Date()) })
     }
-  }, [revenue, reset])
+  }, [revenue, reset, month, year])
 
   async function onSubmit(data: RevenueFormData) {
     try {
+      const firstExpirationDate = fromDateInput(data.firstExpirationDate)
       if (isEditing) {
-        await updateRevenue.mutateAsync({ id: String(revenue.id), ...data })
+        await updateRevenue.mutateAsync({ id: String(revenue.id), ...data, firstExpirationDate })
         toast.success('Receita atualizada')
       } else {
-        await createRevenue.mutateAsync({
-          ...data,
-          firstExpirationDate: new Date(year, month - 1, 1).toISOString(),
-        })
+        await createRevenue.mutateAsync({ ...data, firstExpirationDate })
         toast.success('Receita criada')
       }
       onClose()
@@ -115,6 +124,16 @@ export default function RevenueModal({ open, revenue, onClose }: RevenueModalPro
               <Input type="number" min="1" {...register('monthsLeft', { valueAsNumber: true })} placeholder="1" />
               {errors.monthsLeft && <p className="text-xs text-red-500">{errors.monthsLeft.message}</p>}
             </div>
+          </div>
+
+          <div className="space-y-1">
+            <Label>Primeiro vencimento</Label>
+            <Input
+              type="date"
+              value={watch('firstExpirationDate') ?? ''}
+              onChange={(e) => setValue('firstExpirationDate', e.target.value)}
+            />
+            {errors.firstExpirationDate && <p className="text-xs text-red-500">{errors.firstExpirationDate.message}</p>}
           </div>
 
           <div className="flex justify-end gap-2 pt-2">

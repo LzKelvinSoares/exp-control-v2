@@ -24,6 +24,16 @@ interface ExpenseModalProps {
   onClose: () => void
 }
 
+function toDateInput(d: Date | string) {
+  const dt = new Date(d)
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`
+}
+
+function fromDateInput(s: string) {
+  const [y, m, d] = s.split('-').map(Number)
+  return new Date(y, m - 1, d).toISOString()
+}
+
 export default function ExpenseModal({ open, expense, onClose }: ExpenseModalProps) {
   const { month, year } = useCalendar()
   const createExpense = useCreateExpense()
@@ -33,7 +43,7 @@ export default function ExpenseModal({ open, expense, onClose }: ExpenseModalPro
 
   const methods = useForm<ExpenseFormData>({
     resolver: zodResolver(expenseSchema),
-    defaultValues: { monthsLeft: 1, marketItems: [] },
+    defaultValues: { monthsLeft: 1, marketItems: [], firstExpirationDate: toDateInput(new Date(year, month - 1, 1)) },
   })
 
   const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = methods
@@ -41,30 +51,29 @@ export default function ExpenseModal({ open, expense, onClose }: ExpenseModalPro
   useEffect(() => {
     if (expense) {
       reset({
-        description: expense.description,
-        type:        expense.type,
-        responsible: expense.responsible,
-        value:       expense.value,
-        monthsLeft:  expense.monthsLeft ?? 1,
-        marketItems: expense.marketItems ?? [],
+        description:         expense.description,
+        type:                expense.type,
+        responsible:         expense.responsible,
+        value:               expense.value,
+        monthsLeft:          expense.monthsLeft ?? 1,
+        marketItems:         expense.marketItems ?? [],
+        firstExpirationDate: toDateInput(expense.firstExpirationDate),
       })
       setShowMarketItems((expense.marketItems?.length ?? 0) > 0)
     } else {
-      reset({ monthsLeft: 1, marketItems: [] })
+      reset({ monthsLeft: 1, marketItems: [], firstExpirationDate: toDateInput(new Date()) })
       setShowMarketItems(false)
     }
-  }, [expense, reset])
+  }, [expense, reset, month, year])
 
   async function onSubmit(data: ExpenseFormData) {
     try {
+      const firstExpirationDate = fromDateInput(data.firstExpirationDate)
       if (isEditing) {
-        await updateExpense.mutateAsync({ id: String(expense.id), ...data })
+        await updateExpense.mutateAsync({ id: String(expense.id), ...data, firstExpirationDate })
         toast.success('Despesa atualizada')
       } else {
-        await createExpense.mutateAsync({
-          ...data,
-          firstExpirationDate: new Date(year, month - 1, 1).toISOString(),
-        })
+        await createExpense.mutateAsync({ ...data, firstExpirationDate })
         toast.success('Despesa criada')
       }
       onClose()
@@ -124,6 +133,16 @@ export default function ExpenseModal({ open, expense, onClose }: ExpenseModalPro
                 <Input type="number" min="1" {...register('monthsLeft', { valueAsNumber: true })} placeholder="1" />
                 {errors.monthsLeft && <p className="text-xs text-red-500">{errors.monthsLeft.message}</p>}
               </div>
+            </div>
+
+            <div className="space-y-1">
+              <Label>Primeiro vencimento</Label>
+              <Input
+                type="date"
+                value={watch('firstExpirationDate') ?? ''}
+                onChange={(e) => setValue('firstExpirationDate', e.target.value)}
+              />
+              {errors.firstExpirationDate && <p className="text-xs text-red-500">{errors.firstExpirationDate.message}</p>}
             </div>
 
             <Separator />

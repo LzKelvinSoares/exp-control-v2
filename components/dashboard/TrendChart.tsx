@@ -23,7 +23,7 @@ export default function TrendChart() {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-semibold">Despesas vs Receitas — {year}</CardTitle>
+        <CardTitle className="text-sm">Despesas vs Receitas — {year}</CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={220}>

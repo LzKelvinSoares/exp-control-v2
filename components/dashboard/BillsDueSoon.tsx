@@ -21,7 +21,7 @@ export default function BillsDueSoon() {
   return (
     <Card>
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-semibold flex items-center gap-2">
+        <CardTitle className="text-sm flex items-center gap-2">
           <AlertCircle size={16} className="text-amber-500" />
           Contas a vencer (5 dias)
         </CardTitle>
