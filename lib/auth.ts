@@ -14,6 +14,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: 'openid email profile https://www.googleapis.com/auth/calendar.events',
+          access_type: 'offline',
+        },
+      },
     }),
     CredentialsProvider({
       name: 'credentials',
@@ -84,7 +90,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             currencyAccounts: [{ currency: 'BRL', label: 'Real' }],
             currentCurrency: 'BRL',
             points: 0,
+            googleRefreshToken: account.refresh_token ?? '',
           })
+        } else if (account.refresh_token) {
+          await UserModel.findOneAndUpdate(
+            { email: user.email },
+            { googleRefreshToken: account.refresh_token },
+          )
         }
       }
       return true

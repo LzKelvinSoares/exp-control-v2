@@ -1,10 +1,11 @@
 import { NextRequest } from 'next/server'
 import { withAuth, ok, err } from '@/lib/api'
 import { getBills, getBillsDueSoon, createBill, updateBill, payBill, payBills, deleteBill } from '@/lib/db'
-import { addUserPoints } from '@/lib/db/users'
+import { addUserPoints, getGoogleRefreshToken } from '@/lib/db/users'
 import { findById } from '@/lib/db/crud'
 import BillModel from '@/models/Bill'
 import { POINTS } from '@/constants'
+import { refreshAccessToken, createCalendarEvent } from '@/lib/google-calendar'
 import type { Bill } from '@/types'
 
 export const GET = withAuth(async (req, ctx) => {
@@ -22,6 +23,15 @@ export const POST = withAuth(async (req: NextRequest, ctx) => {
   const body = await req.json()
   const bill = await createBill({ ...body, userId: ctx.userId, currencyCurrencyAccount: ctx.currency })
   await addUserPoints(ctx.userId, POINTS.BILL_SAVED)
+
+  // Fire-and-forget: never block or fail bill creation
+  getGoogleRefreshToken(ctx.userId).then(async (refreshToken) => {
+    if (!refreshToken) return
+    const accessToken = await refreshAccessToken(refreshToken)
+    if (!accessToken) return
+    await createCalendarEvent(accessToken, bill as Bill)
+  }).catch(() => {})
+
   return ok(bill)
 })
 

@@ -10,6 +10,7 @@ export interface IUser {
   currencyAccounts: Currency[]
   currentCurrency: Currency
   points: number
+  googleRefreshToken?: string
   createdAt: Date
 }
 
@@ -23,6 +24,7 @@ const UserSchema = new Schema<IUser>({
   ],
   currentCurrency: { type: String, enum: CURRENCY_ENUM, default: 'BRL' },
   points: { type: Number, default: 0 },
+  googleRefreshToken: { type: String, required: false },
   createdAt: { type: Date, default: Date.now },
 }, { id: false })
 

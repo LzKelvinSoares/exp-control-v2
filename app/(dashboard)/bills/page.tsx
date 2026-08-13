@@ -8,6 +8,7 @@ import SummaryCard from '@/components/shared/SummaryCard'
 import { TableFilters } from '@/components/shared/TableFilters'
 import BillTable from '@/components/bills/BillTable'
 import BillModal from '@/components/bills/forms/BillModal'
+import GoogleCalendarBanner from '@/components/bills/GoogleCalendarBanner'
 import { useBills } from '@/hooks/queries/bills/use-bills'
 import { useTableFilter } from '@/hooks/useTableFilter'
 import { formatCurrency, sumBy } from '@/lib/utils'
@@ -58,6 +59,8 @@ export default function BillsPage() {
           loading={isLoading}
         />
       </div>
+
+      <GoogleCalendarBanner />
 
       <TableFilters defs={BILL_FILTER_DEFS} values={filterValues} hasActive={hasActiveFilters} onFilter={setFilter} onClear={clearFilters} />
 
