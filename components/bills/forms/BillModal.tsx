@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
 import { useCreateBill } from '@/hooks/mutations/bills/use-create-bill'
 import { useUpdateBill } from '@/hooks/mutations/bills/use-update-bill'
 import { billSchema, type BillFormData } from '@/lib/schemas/bill.schema'
@@ -31,9 +32,11 @@ export default function BillModal({ open, bill, onClose }: BillModalProps) {
   const updateBill = useUpdateBill()
   const isEditing = !!bill
 
-  const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<BillFormData>({
+  const { register, handleSubmit, reset, setValue, control, formState: { errors, isSubmitting } } = useForm<BillFormData>({
     resolver: zodResolver(billSchema),
   })
+  const saveAsExpense = useWatch({ control, name: 'saveAsExpense', defaultValue: false })
+  const typeValue = useWatch({ control, name: 'type', defaultValue: '' })
 
   useEffect(() => {
     if (bill) {
@@ -82,7 +85,7 @@ export default function BillModal({ open, bill, onClose }: BillModalProps) {
             <div className="space-y-1">
               <Label>Categoria</Label>
               <Select
-                defaultValue={bill?.type}
+                value={typeValue ?? ''}
                 onValueChange={(v) => setValue('type', v ?? '')}
               >
                 <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
@@ -112,6 +115,18 @@ export default function BillModal({ open, bill, onClose }: BillModalProps) {
             <Label>Código de barras <span className="text-muted-foreground text-xs">(opcional)</span></Label>
             <Input {...register('barCode')} placeholder="000000000000000" />
           </div>
+
+          {!isEditing && (
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={saveAsExpense}
+                onCheckedChange={(checked) => setValue('saveAsExpense', Boolean(checked))}
+              />
+              <Label className="cursor-pointer font-normal" onClick={() => setValue('saveAsExpense', !saveAsExpense)}>
+                Salvar também como despesa
+              </Label>
+            </div>
+          )}
 
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>

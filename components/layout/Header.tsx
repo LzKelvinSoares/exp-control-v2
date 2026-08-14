@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { switchCurrency } from '@/lib/actions/currency'
 import { useSidebar } from '@/store/sidebar'
+import { useQueryClient } from '@tanstack/react-query'
 import type { Currency } from '@/types'
 
 export default function Header() {
@@ -20,6 +21,7 @@ export default function Header() {
   const [pending, startTransition] = useTransition()
   const { toggle } = useSidebar()
   const { theme, setTheme } = useTheme()
+  const queryClient = useQueryClient()
 
   const user = session?.user
   const initials = user?.name?.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase() ?? '?'
@@ -28,6 +30,7 @@ export default function Header() {
     startTransition(async () => {
       await switchCurrency(currency)
       await update({ currentCurrency: currency })
+      queryClient.invalidateQueries()
     })
   }
 

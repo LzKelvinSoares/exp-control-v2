@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { withAuth, ok, err } from '@/lib/api'
-import { getBills, getBillsDueSoon, createBill, updateBill, payBill, payBills, deleteBill } from '@/lib/db'
+import { getBills, getBillsDueSoon, createBill, updateBill, payBill, payBills, deleteBill, createExpense } from '@/lib/db'
 import { addUserPoints, getGoogleRefreshToken } from '@/lib/db/users'
 import { findById } from '@/lib/db/crud'
 import BillModel from '@/models/Bill'
@@ -19,10 +19,27 @@ export const GET = withAuth(async (req, ctx) => {
   return ok(await getBills(ctx.userId, ctx.currency, month, year))
 })
 
+const EXPENSE_CATEGORIES = new Set([
+  'ENERGIA', 'AGUA', 'GAS', 'INTERNET', 'TELEFONE', 'ALUGUEL', 'CARTAO', 'OUTROS',
+])
+
 export const POST = withAuth(async (req: NextRequest, ctx) => {
-  const body = await req.json()
+  const { saveAsExpense, ...body } = await req.json()
   const bill = await createBill({ ...body, userId: ctx.userId, currencyCurrencyAccount: ctx.currency })
   await addUserPoints(ctx.userId, POINTS.BILL_SAVED)
+
+  if (saveAsExpense) {
+    const expenseType = EXPENSE_CATEGORIES.has(bill.type) ? bill.type : 'OUTROS'
+    await createExpense({
+      description: bill.description,
+      type: expenseType,
+      value: bill.value,
+      firstExpirationDate: bill.expirationDate as string,
+      monthsLeft: 1,
+      userId: ctx.userId,
+      currencyCurrencyAccount: ctx.currency,
+    })
+  }
 
   // Fire-and-forget: never block or fail bill creation
   getGoogleRefreshToken(ctx.userId).then(async (refreshToken) => {
