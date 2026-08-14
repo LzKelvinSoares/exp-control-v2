@@ -6,7 +6,7 @@ export const billSchema = z.object({
   value:       z.number().positive('Valor deve ser positivo'),
   expirationDate: z.string().min(1, 'Vencimento é obrigatório'),
   barCode:     z.string().optional(),
-  saveAsExpense: z.boolean().optional().default(false),
+  saveAsExpense: z.boolean(),
 })
 
 export type BillFormData = z.infer<typeof billSchema>

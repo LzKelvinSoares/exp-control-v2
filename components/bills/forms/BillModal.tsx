@@ -34,6 +34,7 @@ export default function BillModal({ open, bill, onClose }: BillModalProps) {
 
   const { register, handleSubmit, reset, setValue, control, formState: { errors, isSubmitting } } = useForm<BillFormData>({
     resolver: zodResolver(billSchema),
+    defaultValues: { barCode: '', saveAsExpense: false },
   })
   const saveAsExpense = useWatch({ control, name: 'saveAsExpense', defaultValue: false })
   const typeValue = useWatch({ control, name: 'type', defaultValue: '' })
@@ -46,9 +47,10 @@ export default function BillModal({ open, bill, onClose }: BillModalProps) {
         value:          bill.value,
         expirationDate: toDateInput(bill.expirationDate),
         barCode:        bill.barCode ?? '',
+        saveAsExpense:  false,
       })
     } else {
-      reset({ barCode: '' })
+      reset({ barCode: '', saveAsExpense: false })
     }
   }, [bill, reset])
 
