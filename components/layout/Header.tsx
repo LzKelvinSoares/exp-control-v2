@@ -35,7 +35,7 @@ export default function Header() {
   }
 
   return (
-    <header className="h-14 border-b bg-background flex items-center justify-between px-4 md:px-6">
+    <header className="relative h-14 bg-background flex items-center justify-between px-4 md:px-6">
       <Button variant="ghost" size="icon" className="md:hidden" onClick={toggle}>
         <Menu size={20} />
       </Button>
@@ -86,6 +86,16 @@ export default function Header() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+      </div>
+
+      <div className="absolute bottom-0 left-0 w-full h-[2px] overflow-hidden">
+        <div className="absolute inset-0 bg-border" />
+        {pending && (
+          <div
+            className="absolute h-full w-1/3"
+            style={{ backgroundColor: '#612d60', animation: 'slide-progress 1.4s linear infinite' }}
+          />
+        )}
       </div>
     </header>
   )
