@@ -14,13 +14,11 @@ import { useCalendar } from '@/store/calendar'
 import { formatCurrency, sumBy } from '@/lib/utils'
 import { EXPENSE_CATEGORIES, EXPENSE_FILTER_DEFS } from '@/constants'
 import { TrendingDown } from 'lucide-react'
-import { useSession } from 'next-auth/react'
-import type { Currency } from '@/types'
+import { useCurrencySession } from '@/hooks/use-currency-session'
 
 export default function ExpensesPage() {
   const { month, year } = useCalendar()
-  const { data: session } = useSession()
-  const currency = (session?.user?.currentCurrency ?? 'BRL') as Currency
+  const { currency } = useCurrencySession()
 
   const { data: expenses = [], isLoading } = useExpenses(month, year)
   const [modalOpen, setModalOpen] = useState(false)

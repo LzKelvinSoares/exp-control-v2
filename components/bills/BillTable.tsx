@@ -17,8 +17,8 @@ import { usePayBill } from '@/hooks/mutations/bills/use-pay-bill'
 import { usePayBills } from '@/hooks/mutations/bills/use-pay-bills'
 import { BILL_CATEGORIES } from '@/constants'
 import { formatCurrency } from '@/lib/utils'
-import { useSession } from 'next-auth/react'
-import type { Bill, Currency } from '@/types'
+import type { Bill } from '@/types'
+import { useCurrencySession } from '@/hooks/use-currency-session'
 
 interface BillTableProps {
   bills: Bill[]
@@ -37,8 +37,7 @@ function formatDate(date: Date | string) {
 }
 
 export default function BillTable({ bills, loading }: BillTableProps) {
-  const { data: session } = useSession()
-  const currency = (session?.user?.currentCurrency ?? 'BRL') as Currency
+  const { currency } = useCurrencySession()
   const deleteBill = useDeleteBill()
   const payBill = usePayBill()
   const payBills = usePayBills()

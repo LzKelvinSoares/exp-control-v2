@@ -1,7 +1,6 @@
 'use client'
 
 import { TrendingDown, TrendingUp, Wallet } from 'lucide-react'
-import { useSession } from 'next-auth/react'
 import MonthYearSelector from '@/components/shared/MonthYearSelector'
 import SummaryCard from '@/components/shared/SummaryCard'
 import BillsDueSoon from '@/components/dashboard/BillsDueSoon'
@@ -12,12 +11,11 @@ import { useRevenues } from '@/hooks/queries/revenues/use-revenues'
 import { useCalendar } from '@/store/calendar'
 import { formatCurrency, sumBy } from '@/lib/utils'
 import { EXPENSE_CATEGORIES, REVENUE_CATEGORIES } from '@/constants'
-import type { Currency } from '@/types'
+import { useCurrencySession } from '@/hooks/use-currency-session'
 
 export default function HomePage() {
   const { month, year } = useCalendar()
-  const { data: session } = useSession()
-  const currency = (session?.user?.currentCurrency ?? 'BRL') as Currency
+  const { currency } = useCurrencySession()
 
   const { data: expenses, isLoading: expLoading } = useExpenses(month, year)
   const { data: revenues, isLoading: revLoading } = useRevenues(month, year)

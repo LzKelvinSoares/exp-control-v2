@@ -13,12 +13,10 @@ import { useTableFilter } from '@/hooks/useTableFilter'
 import { formatCurrency } from '@/lib/utils'
 import { FUEL_FILTER_DEFS } from '@/constants'
 import { useCalendar } from '@/store/calendar'
-import { useSession } from 'next-auth/react'
-import type { Currency } from '@/types'
+import { useCurrencySession } from '@/hooks/use-currency-session'
 
 export default function FuelPage() {
-  const { data: session } = useSession()
-  const currency = (session?.user?.currentCurrency ?? 'BRL') as Currency
+  const { currency } = useCurrencySession()
   const { month, year } = useCalendar()
 
   const { data: entries = [], isLoading } = useFuel(month, year)

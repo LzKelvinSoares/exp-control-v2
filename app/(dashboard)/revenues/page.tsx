@@ -13,13 +13,11 @@ import { useTableFilter } from '@/hooks/useTableFilter'
 import { useCalendar } from '@/store/calendar'
 import { formatCurrency, sumBy } from '@/lib/utils'
 import { REVENUE_CATEGORIES, REVENUE_FILTER_DEFS } from '@/constants'
-import { useSession } from 'next-auth/react'
-import type { Currency } from '@/types'
+import { useCurrencySession } from '@/hooks/use-currency-session'
 
 export default function RevenuesPage() {
   const { month, year } = useCalendar()
-  const { data: session } = useSession()
-  const currency = (session?.user?.currentCurrency ?? 'BRL') as Currency
+    const { currency } = useCurrencySession()
 
   const { data: revenues = [], isLoading } = useRevenues(month, year)
   const [modalOpen, setModalOpen] = useState(false)

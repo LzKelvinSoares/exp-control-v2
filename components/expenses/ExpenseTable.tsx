@@ -12,8 +12,8 @@ import ExpenseModal from './forms/ExpenseModal'
 import { useDeleteExpense } from '@/hooks/mutations/expenses/use-delete-expense'
 import { EXPENSE_CATEGORIES } from '@/constants'
 import { formatCurrency } from '@/lib/utils'
-import { useSession } from 'next-auth/react'
 import type { Expense, Currency } from '@/types'
+import { useCurrencySession } from '@/hooks/use-currency-session'
 
 interface ExpenseTableProps {
   expenses: Expense[]
@@ -21,8 +21,7 @@ interface ExpenseTableProps {
 }
 
 export default function ExpenseTable({ expenses, loading }: ExpenseTableProps) {
-  const { data: session } = useSession()
-  const currency = (session?.user?.currentCurrency ?? 'BRL') as Currency
+  const { currency } = useCurrencySession()
   const deleteExpense = useDeleteExpense()
 
   const [editing, setEditing] = useState<Expense | undefined>()

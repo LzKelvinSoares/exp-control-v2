@@ -12,8 +12,8 @@ import RevenueModal from './forms/RevenueModal'
 import { useDeleteRevenue } from '@/hooks/mutations/revenues/use-delete-revenue'
 import { REVENUE_CATEGORIES } from '@/constants'
 import { formatCurrency } from '@/lib/utils'
-import { useSession } from 'next-auth/react'
-import type { Revenue, Currency } from '@/types'
+import type { Revenue } from '@/types'
+import { useCurrencySession } from '@/hooks/use-currency-session'
 
 interface RevenueTableProps {
   revenues: Revenue[]
@@ -21,8 +21,7 @@ interface RevenueTableProps {
 }
 
 export default function RevenueTable({ revenues, loading }: RevenueTableProps) {
-  const { data: session } = useSession()
-  const currency = (session?.user?.currentCurrency ?? 'BRL') as Currency
+  const { currency } = useCurrencySession()
   const deleteRevenue = useDeleteRevenue()
 
   const [editing, setEditing] = useState<Revenue | undefined>()

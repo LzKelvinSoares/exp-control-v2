@@ -12,8 +12,8 @@ import SaleModal from './forms/SaleModal'
 import { useDeleteSale } from '@/hooks/mutations/sales/use-delete-sale'
 import { SALE_ROOMS } from '@/constants'
 import { formatCurrency } from '@/lib/utils'
-import { useSession } from 'next-auth/react'
-import type { Sale, Currency } from '@/types'
+import type { Sale } from '@/types'
+import { useCurrencySession } from '@/hooks/use-currency-session'
 
 interface SaleTableProps {
   sales: Sale[]
@@ -34,8 +34,7 @@ function statusBadgeClass(active: boolean) {
 }
 
 export default function SaleTable({ sales, loading }: SaleTableProps) {
-  const { data: session } = useSession()
-  const currency = (session?.user?.currentCurrency ?? 'BRL') as Currency
+  const { currency } = useCurrencySession()
   const deleteSale = useDeleteSale()
 
   const [editing, setEditing] = useState<Sale | undefined>()

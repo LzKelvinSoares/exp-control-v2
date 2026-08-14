@@ -10,8 +10,8 @@ import { FuelTableActions } from './columns/FuelTableActions'
 import FuelModal from './forms/FuelModal'
 import { useDeleteFuel } from '@/hooks/mutations/fuel/use-delete-fuel'
 import { formatCurrency } from '@/lib/utils'
-import { useSession } from 'next-auth/react'
-import type { Fuel, Currency } from '@/types'
+import type { Fuel } from '@/types'
+import { useCurrencySession } from '@/hooks/use-currency-session'
 
 interface FuelTableProps {
   entries: Fuel[]
@@ -23,8 +23,7 @@ function formatDate(date: Date | string) {
 }
 
 export default function FuelTable({ entries, loading }: FuelTableProps) {
-  const { data: session } = useSession()
-  const currency = (session?.user?.currentCurrency ?? 'BRL') as Currency
+  const { currency } = useCurrencySession()
   const deleteFuel = useDeleteFuel()
 
   const [editing, setEditing] = useState<Fuel | undefined>()

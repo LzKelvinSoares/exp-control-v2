@@ -7,12 +7,10 @@ import { Badge } from '@/components/ui/badge'
 import { useBillsDueSoon } from '@/hooks/queries/bills/use-bills-due-soon'
 import { usePayBill } from '@/hooks/mutations/bills/use-pay-bill'
 import { formatCurrency } from '@/lib/utils'
-import { useSession } from 'next-auth/react'
-import type { Currency } from '@/types'
+import { useCurrencySession } from '@/hooks/use-currency-session'
 
 export default function BillsDueSoon() {
-  const { data: session } = useSession()
-  const currency = (session?.user?.currentCurrency ?? 'BRL') as Currency
+  const { currency } = useCurrencySession()
   const { data: bills, isLoading } = useBillsDueSoon(5)
   const payBill = usePayBill()
 
