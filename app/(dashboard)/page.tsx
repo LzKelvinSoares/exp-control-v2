@@ -12,6 +12,7 @@ import { useCalendar } from '@/store/calendar'
 import { formatCurrency, sumBy } from '@/lib/utils'
 import { EXPENSE_CATEGORIES, REVENUE_CATEGORIES } from '@/constants'
 import { useCurrencySession } from '@/hooks/use-currency-session'
+import { PageWrapper } from '@/components/shared/PageWrapper'
 
 export default function HomePage() {
   const { month, year } = useCalendar()
@@ -41,31 +42,26 @@ export default function HomePage() {
     .map((c) => ({ label: c.label, value: formatCurrency(c.value, currency) }))
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Início</h1>
-        <MonthYearSelector />
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <PageWrapper title='Início'>
+      <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
         <SummaryCard
-          label="Despesas"
+          label='Despesas'
           value={formatCurrency(totalExpenses, currency)}
           icon={TrendingDown}
           loading={expLoading}
-          variant="negative"
+          variant='negative'
           breakdown={expenseBreakdown}
         />
         <SummaryCard
-          label="Receitas"
+          label='Receitas'
           value={formatCurrency(totalRevenues, currency)}
           icon={TrendingUp}
           loading={revLoading}
-          variant="positive"
+          variant='positive'
           breakdown={revenueBreakdown}
         />
         <SummaryCard
-          label="Saldo"
+          label='Saldo'
           value={formatCurrency(balance, currency)}
           icon={Wallet}
           loading={expLoading || revLoading}
@@ -75,10 +71,10 @@ export default function HomePage() {
 
       <BillsDueSoon />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
         <TrendChart />
         <FuelChart />
       </div>
-    </div>
+    </PageWrapper>
   )
 }

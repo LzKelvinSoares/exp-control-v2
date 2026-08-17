@@ -1,8 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, ShoppingBag } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { ShoppingBag } from 'lucide-react'
 import SummaryCard from '@/components/shared/SummaryCard'
 import { TableFilters } from '@/components/shared/TableFilters'
 import SaleTable from '@/components/sales/SaleTable'
@@ -12,6 +11,7 @@ import { useTableFilter } from '@/hooks/useTableFilter'
 import { formatCurrency, sumBy } from '@/lib/utils'
 import { SALE_FILTER_DEFS } from '@/constants'
 import { useCurrencySession } from '@/hooks/use-currency-session'
+import { PageWrapper } from '@/components/shared/PageWrapper'
 
 export default function SalesPage() {
   const { currency } = useCurrencySession()
@@ -25,15 +25,7 @@ export default function SalesPage() {
   const pendingCount = filteredData.filter((s) => !s.paid).length
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Vendas</h1>
-        <Button size="sm" onClick={() => setModalOpen(true)}>
-          <Plus size={16} />
-          <span className="hidden sm:inline ml-1">Nova venda</span>
-        </Button>
-      </div>
-
+    <PageWrapper title='Vendas' addItem='Nova venda' setAddModalOpen={setModalOpen}>
       <div className="grid grid-cols-2 gap-4">
         <SummaryCard
           label="Total em vendas"
@@ -56,6 +48,6 @@ export default function SalesPage() {
       <SaleTable sales={filteredData} loading={isLoading} />
 
       <SaleModal open={modalOpen} onClose={() => setModalOpen(false)} />
-    </div>
+    </PageWrapper>
   )
 }

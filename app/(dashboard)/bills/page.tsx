@@ -1,9 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Receipt } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import MonthYearSelector from '@/components/shared/MonthYearSelector'
+import { Receipt } from 'lucide-react'
 import SummaryCard from '@/components/shared/SummaryCard'
 import { TableFilters } from '@/components/shared/TableFilters'
 import BillTable from '@/components/bills/BillTable'
@@ -15,6 +13,7 @@ import { formatCurrency, sumBy } from '@/lib/utils'
 import { BILL_FILTER_DEFS } from '@/constants'
 import { useCalendar } from '@/store/calendar'
 import { useCurrencySession } from '@/hooks/use-currency-session'
+import { PageWrapper } from '@/components/shared/PageWrapper'
 
 export default function BillsPage() {
   const { currency } = useCurrencySession()
@@ -30,28 +29,17 @@ export default function BillsPage() {
   const totalAll = sumBy(filteredData, 'value')
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold">Contas</h1>
-        <div className="flex items-center justify-between sm:justify-end gap-3">
-          <MonthYearSelector />
-          <Button size="sm" onClick={() => setModalOpen(true)}>
-            <Plus size={16} />
-            <span className="hidden sm:inline ml-1">Nova conta</span>
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
+    <PageWrapper title='Contas' addItem='Nova conta' setAddModalOpen={setModalOpen}>
+      <div className='grid grid-cols-2 gap-4'>
         <SummaryCard
-          label="Total em aberto"
+          label='Total em aberto'
           value={formatCurrency(totalUnpaid, currency)}
           icon={Receipt}
           loading={isLoading}
-          variant="negative"
+          variant='negative'
         />
         <SummaryCard
-          label="Total geral"
+          label='Total geral'
           value={formatCurrency(totalAll, currency)}
           icon={Receipt}
           loading={isLoading}
@@ -65,6 +53,6 @@ export default function BillsPage() {
       <BillTable bills={filteredData} loading={isLoading} />
 
       <BillModal open={modalOpen} onClose={() => setModalOpen(false)} />
-    </div>
+    </PageWrapper>
   )
 }

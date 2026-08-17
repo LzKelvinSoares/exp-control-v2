@@ -1,9 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Fuel } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import MonthYearSelector from '@/components/shared/MonthYearSelector'
+import { Fuel } from 'lucide-react'
 import SummaryCard from '@/components/shared/SummaryCard'
 import { TableFilters } from '@/components/shared/TableFilters'
 import FuelTable from '@/components/fuel/FuelTable'
@@ -14,6 +12,7 @@ import { formatCurrency } from '@/lib/utils'
 import { FUEL_FILTER_DEFS } from '@/constants'
 import { useCalendar } from '@/store/calendar'
 import { useCurrencySession } from '@/hooks/use-currency-session'
+import { PageWrapper } from '@/components/shared/PageWrapper'
 
 export default function FuelPage() {
   const { currency } = useCurrencySession()
@@ -28,28 +27,17 @@ export default function FuelPage() {
   const totalLiters = filteredData.reduce((acc, e) => acc + Number(e.value) / Number(e.valuePerLiter), 0)
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold">Combustível</h1>
-        <div className="flex items-center justify-between sm:justify-end gap-3">
-          <MonthYearSelector />
-          <Button size="sm" onClick={() => setModalOpen(true)}>
-            <Plus size={16} />
-            <span className="hidden sm:inline ml-1">Novo abastecimento</span>
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
+    <PageWrapper title='Combustível' addItem='Nova entrada' setAddModalOpen={setModalOpen}>
+      <div className='grid grid-cols-2 gap-4'>
         <SummaryCard
-          label="Total gasto"
+          label='Total gasto'
           value={formatCurrency(totalCost, currency)}
           icon={Fuel}
           loading={isLoading}
-          variant="negative"
+          variant='negative'
         />
         <SummaryCard
-          label="Total em litros"
+          label='Total em litros'
           value={`${totalLiters.toFixed(3)} L`}
           icon={Fuel}
           loading={isLoading}
@@ -61,6 +49,6 @@ export default function FuelPage() {
       <FuelTable entries={filteredData} loading={isLoading} />
 
       <FuelModal open={modalOpen} onClose={() => setModalOpen(false)} />
-    </div>
+    </PageWrapper>
   )
 }

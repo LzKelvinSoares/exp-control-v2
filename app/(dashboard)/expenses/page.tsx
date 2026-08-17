@@ -1,9 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import MonthYearSelector from '@/components/shared/MonthYearSelector'
 import SummaryCard from '@/components/shared/SummaryCard'
 import { TableFilters } from '@/components/shared/TableFilters'
 import ExpenseTable from '@/components/expenses/ExpenseTable'
@@ -15,6 +12,7 @@ import { formatCurrency, sumBy } from '@/lib/utils'
 import { EXPENSE_CATEGORIES, EXPENSE_FILTER_DEFS } from '@/constants'
 import { TrendingDown } from 'lucide-react'
 import { useCurrencySession } from '@/hooks/use-currency-session'
+import { PageWrapper } from '@/components/shared/PageWrapper'
 
 export default function ExpensesPage() {
   const { month, year } = useCalendar()
@@ -36,24 +34,13 @@ export default function ExpensesPage() {
     .map((c) => ({ label: c.label, value: formatCurrency(c.value, currency) }))
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold">Despesas</h1>
-        <div className="flex items-center justify-between sm:justify-end gap-3">
-          <MonthYearSelector />
-          <Button size="sm" onClick={() => setModalOpen(true)}>
-            <Plus size={16} />
-            <span className="hidden sm:inline ml-1">Nova despesa</span>
-          </Button>
-        </div>
-      </div>
-
+    <PageWrapper title='Despesas' addItem='Nova despesa' setAddModalOpen={setModalOpen}>
       <SummaryCard
-        label="Total de despesas"
+        label='Total de despesas'
         value={formatCurrency(total, currency)}
         icon={TrendingDown}
         loading={isLoading}
-        variant="negative"
+        variant='negative'
         breakdown={categoryBreakdown}
       />
 
@@ -62,6 +49,6 @@ export default function ExpensesPage() {
       <ExpenseTable expenses={filteredData} loading={isLoading} />
 
       <ExpenseModal open={modalOpen} onClose={() => setModalOpen(false)} />
-    </div>
+    </PageWrapper>
   )
 }

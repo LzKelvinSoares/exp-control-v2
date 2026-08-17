@@ -14,6 +14,7 @@ import { useCalendar } from '@/store/calendar'
 import { formatCurrency, sumBy } from '@/lib/utils'
 import { REVENUE_CATEGORIES, REVENUE_FILTER_DEFS } from '@/constants'
 import { useCurrencySession } from '@/hooks/use-currency-session'
+import { PageWrapper } from '@/components/shared/PageWrapper'
 
 export default function RevenuesPage() {
   const { month, year } = useCalendar()
@@ -46,31 +47,32 @@ export default function RevenuesPage() {
     navigator.share({ title: 'Receitas', text })
   }
 
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold">Receitas</h1>
-        <div className="flex items-center justify-between sm:justify-end gap-3">
-          <MonthYearSelector />
-          {filteredData.length > 0 && (
-            <Button size="sm" variant="outline" onClick={handleShare}>
-              <Share2 size={16} />
-              <span className="hidden sm:inline ml-1">Compartilhar</span>
-            </Button>
-          )}
-          <Button size="sm" onClick={() => setModalOpen(true)}>
-            <Plus size={16} />
-            <span className="hidden sm:inline ml-1">Nova receita</span>
-          </Button>
-        </div>
-      </div>
+  const RenderShareButton = () => {
+    return (
+      <Button 
+        size='sm' 
+        variant='outline' 
+        onClick={handleShare}
+        disabled={filteredData.length === 0}
+      >
+        <Share2 size={16} />
+        <span className='hidden sm:inline ml-1'>Compartilhar</span>
+      </Button>
+    )
+  }
 
+  return (
+    <PageWrapper title='Receitas' 
+        addItem='Nova receita' 
+        setAddModalOpen={setModalOpen} 
+        secondaryActions={<RenderShareButton />}
+      >
       <SummaryCard
-        label="Total de receitas"
+        label='Total de receitas'
         value={formatCurrency(total, currency)}
         icon={TrendingUp}
         loading={isLoading}
-        variant="positive"
+        variant='positive'
         breakdown={categoryBreakdown}
       />
 
@@ -79,6 +81,6 @@ export default function RevenuesPage() {
       <RevenueTable revenues={filteredData} loading={isLoading} />
 
       <RevenueModal open={modalOpen} onClose={() => setModalOpen(false)} />
-    </div>
+    </PageWrapper>
   )
 }
