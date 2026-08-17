@@ -3,13 +3,7 @@
 import type React from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-
-export interface ColumnDef<T> {
-  header: React.ReactNode
-  cell: (row: T) => React.ReactNode
-  className?: string
-  headerClassName?: string
-}
+import { ColumnDef } from '@/types/app-types'
 
 interface DataTableProps<T> {
   data: T[]

@@ -1,14 +1,14 @@
 import { Pencil, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { Fuel } from '@/types'
+import { Fuel } from '@/types/app-types'
 
-interface Props {
+interface FuelTableActionsProps {
   entry: Fuel
   onEdit: (entry: Fuel) => void
   onDelete: (id: string) => void
 }
 
-export function FuelTableActions({ entry, onEdit, onDelete }: Props) {
+export function FuelTableActions({ entry, onEdit, onDelete }: FuelTableActionsProps) {
   return (
     <>
       <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => onEdit(entry)}>

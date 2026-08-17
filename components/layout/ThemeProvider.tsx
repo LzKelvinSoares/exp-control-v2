@@ -1,15 +1,22 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 
 type Theme = 'light' | 'dark'
 
-const ThemeContext = createContext<{
+interface ThemeContextProps {
   theme: Theme
   setTheme: (theme: Theme) => void
-}>({ theme: 'light', setTheme: () => {} })
+}
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+const themeContextDefaultValue: ThemeContextProps = {
+  theme: 'light',
+  setTheme: () => {},
+}
+
+const ThemeContext = createContext<ThemeContextProps>(themeContextDefaultValue)
+
+export function ThemeProvider({ children }: PropsWithChildren<{}>) {
   const [theme, setThemeState] = useState<Theme>('light')
 
   useEffect(() => {

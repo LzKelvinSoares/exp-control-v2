@@ -3,7 +3,7 @@
 import { auth } from '@/lib/auth'
 import { connectDB } from '@/lib/mongodb'
 import UserModel from '@/models/User'
-import type { Currency } from '@/types'
+import { Currency } from '@/types/app-types'
 
 export async function switchCurrency(currency: Currency) {
   const session = await auth()

@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button'
 import { switchCurrency } from '@/lib/actions/currency'
 import { useSidebar } from '@/store/sidebar'
 import { useQueryClient } from '@tanstack/react-query'
-import type { Currency } from '@/types'
+import { Currency } from '@/types/app-types'
 
 export default function Header() {
   const { data: session, update } = useSession()

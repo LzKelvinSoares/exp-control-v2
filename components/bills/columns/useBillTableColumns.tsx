@@ -1,10 +1,9 @@
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
-import { type ColumnDef } from '@/components/shared/DataTable'
 import { BillTableActions } from './BillTableActions'
 import { BILL_CATEGORIES } from '@/constants'
-import { formatCurrency } from '@/lib/utils'
-import type { Bill, Currency } from '@/types'
+import { formatCurrency, formatDate } from '@/lib/utils'
+import { Bill, ColumnDef, Currency } from '@/types/app-types'
 
 interface Params {
   currency: Currency
@@ -25,9 +24,6 @@ function isDueSoon(expirationDate: Date | string) {
   return diff >= 0 && diff <= 5
 }
 
-function formatDate(date: Date | string) {
-  return new Date(date).toLocaleDateString('pt-BR')
-}
 
 export function useBillTableColumns({
   currency,

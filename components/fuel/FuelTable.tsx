@@ -9,18 +9,15 @@ import { useFuelTableColumns } from './columns/useFuelTableColumns'
 import { FuelTableActions } from './columns/FuelTableActions'
 import FuelModal from './forms/FuelModal'
 import { useDeleteFuel } from '@/hooks/mutations/fuel/use-delete-fuel'
-import { formatCurrency } from '@/lib/utils'
-import type { Fuel } from '@/types'
+import { formatCurrency, formatDate } from '@/lib/utils'
 import { useCurrencySession } from '@/hooks/use-currency-session'
+import { Fuel } from '@/types/app-types'
 
 interface FuelTableProps {
   entries: Fuel[]
   loading: boolean
 }
 
-function formatDate(date: Date | string) {
-  return new Date(date).toLocaleDateString('pt-BR')
-}
 
 export default function FuelTable({ entries, loading }: FuelTableProps) {
   const { currency } = useCurrencySession()

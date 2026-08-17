@@ -16,9 +16,9 @@ import { useDeleteBill } from '@/hooks/mutations/bills/use-delete-bill'
 import { usePayBill } from '@/hooks/mutations/bills/use-pay-bill'
 import { usePayBills } from '@/hooks/mutations/bills/use-pay-bills'
 import { BILL_CATEGORIES } from '@/constants'
-import { formatCurrency } from '@/lib/utils'
-import type { Bill } from '@/types'
+import { formatCurrency, formatDate } from '@/lib/utils'
 import { useCurrencySession } from '@/hooks/use-currency-session'
+import { Bill } from '@/types/app-types'
 
 interface BillTableProps {
   bills: Bill[]
@@ -30,10 +30,6 @@ function isDueSoon(expirationDate: Date | string) {
   const now = new Date()
   const diff = (due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
   return diff >= 0 && diff <= 5
-}
-
-function formatDate(date: Date | string) {
-  return new Date(date).toLocaleDateString('pt-BR')
 }
 
 export default function BillTable({ bills, loading }: BillTableProps) {

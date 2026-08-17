@@ -12,8 +12,8 @@ import SaleModal from './forms/SaleModal'
 import { useDeleteSale } from '@/hooks/mutations/sales/use-delete-sale'
 import { SALE_ROOMS } from '@/constants'
 import { formatCurrency } from '@/lib/utils'
-import type { Sale } from '@/types'
 import { useCurrencySession } from '@/hooks/use-currency-session'
+import { Sale } from '@/types/app-types'
 
 interface SaleTableProps {
   sales: Sale[]

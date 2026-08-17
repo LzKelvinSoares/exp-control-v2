@@ -1,11 +1,10 @@
 import { Badge } from '@/components/ui/badge'
-import { type ColumnDef } from '@/components/shared/DataTable'
 import { SaleTableActions } from './SaleTableActions'
 import { SALE_ROOMS } from '@/constants'
 import { formatCurrency } from '@/lib/utils'
-import type { Sale, Currency } from '@/types'
+import { ColumnDef, Currency, Sale } from '@/types/app-types'
 
-interface Params {
+interface UseSaleTableColumnsParams {
   currency: Currency
   onEdit: (sale: Sale) => void
   onDelete: (id: string) => void
@@ -24,7 +23,7 @@ function statusBadgeClass(active: boolean) {
   return active ? 'text-emerald-700 border-emerald-300' : 'text-amber-700 border-amber-300'
 }
 
-export function useSaleTableColumns({ currency, onEdit, onDelete }: Params): ColumnDef<Sale>[] {
+export function useSaleTableColumns({ currency, onEdit, onDelete }: UseSaleTableColumnsParams): ColumnDef<Sale>[] {
   return [
     {
       header: 'Item',

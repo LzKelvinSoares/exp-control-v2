@@ -1,17 +1,16 @@
 import { Badge } from '@/components/ui/badge'
-import { type ColumnDef } from '@/components/shared/DataTable'
 import { ExpenseTableActions } from './ExpenseTableActions'
 import { EXPENSE_CATEGORIES } from '@/constants'
 import { formatCurrency } from '@/lib/utils'
-import type { Expense, Currency } from '@/types'
+import { ColumnDef, Currency, Expense } from '@/types/app-types'
 
-interface Params {
+interface UseExpenseTableColumnsParams {
   currency: Currency
   onEdit: (expense: Expense) => void
   onDelete: (id: string) => void
 }
 
-export function useExpenseTableColumns({ currency, onEdit, onDelete }: Params): ColumnDef<Expense>[] {
+export function useExpenseTableColumns({ currency, onEdit, onDelete }: UseExpenseTableColumnsParams): ColumnDef<Expense>[] {
   function getCategoryLabel(value: string) {
     return EXPENSE_CATEGORIES.find((c) => c.value === value)?.label ?? value
   }

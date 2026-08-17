@@ -1,6 +1,6 @@
 import { Pencil, Trash2, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { Bill } from '@/types'
+import { Bill } from '@/types/app-types'
 
 interface Props {
   bill: Bill

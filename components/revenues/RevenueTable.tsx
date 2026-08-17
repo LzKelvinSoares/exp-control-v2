@@ -12,11 +12,11 @@ import RevenueModal from './forms/RevenueModal'
 import { useDeleteRevenue } from '@/hooks/mutations/revenues/use-delete-revenue'
 import { REVENUE_CATEGORIES } from '@/constants'
 import { formatCurrency } from '@/lib/utils'
-import type { Revenue } from '@/types'
 import { useCurrencySession } from '@/hooks/use-currency-session'
+import { Budget } from '@/types/app-types'
 
 interface RevenueTableProps {
-  revenues: Revenue[]
+  revenues: Budget[]
   loading: boolean
 }
 
@@ -24,7 +24,7 @@ export default function RevenueTable({ revenues, loading }: RevenueTableProps) {
   const { currency } = useCurrencySession()
   const deleteRevenue = useDeleteRevenue()
 
-  const [editing, setEditing] = useState<Revenue | undefined>()
+  const [editing, setEditing] = useState<Budget | undefined>()
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const columns = useRevenueTableColumns({ currency, onEdit: setEditing, onDelete: setDeletingId })

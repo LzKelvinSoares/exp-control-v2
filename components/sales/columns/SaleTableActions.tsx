@@ -1,14 +1,14 @@
 import { Pencil, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { Sale } from '@/types'
+import { Sale } from '@/types/app-types'
 
-interface Props {
+interface SaleTableActionsProps {
   sale: Sale
   onEdit: (sale: Sale) => void
   onDelete: (id: string) => void
 }
 
-export function SaleTableActions({ sale, onEdit, onDelete }: Props) {
+export function SaleTableActions({ sale, onEdit, onDelete }: SaleTableActionsProps) {
   return (
     <>
       <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => onEdit(sale)}>

@@ -1,14 +1,14 @@
 import { Pencil, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { Revenue } from '@/types'
+import { Budget } from '@/types/app-types'
 
-interface Props {
-  revenue: Revenue
-  onEdit: (revenue: Revenue) => void
+interface RevenueTableActionsProps {
+  revenue: Budget
+  onEdit: (revenue: Budget) => void
   onDelete: (id: string) => void
 }
 
-export function RevenueTableActions({ revenue, onEdit, onDelete }: Props) {
+export function RevenueTableActions({ revenue, onEdit, onDelete }: RevenueTableActionsProps) {
   return (
     <>
       <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => onEdit(revenue)}>

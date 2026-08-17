@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label'
 import { useCreateFuel } from '@/hooks/mutations/fuel/use-create-fuel'
 import { useUpdateFuel } from '@/hooks/mutations/fuel/use-update-fuel'
 import { fuelSchema, type FuelFormData } from '@/lib/schemas/fuel.schema'
-import type { Fuel } from '@/types'
+import { Fuel } from '@/types/app-types'
 
 interface FuelModalProps {
   open: boolean

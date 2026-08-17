@@ -14,7 +14,7 @@ import { useCreateBill } from '@/hooks/mutations/bills/use-create-bill'
 import { useUpdateBill } from '@/hooks/mutations/bills/use-update-bill'
 import { billSchema, type BillFormData } from '@/lib/schemas/bill.schema'
 import { BILL_CATEGORIES } from '@/constants'
-import type { Bill } from '@/types'
+import { Bill } from '@/types/app-types'
 
 interface BillModalProps {
   open: boolean

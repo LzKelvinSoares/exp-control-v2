@@ -1,19 +1,15 @@
-import { type ColumnDef } from '@/components/shared/DataTable'
+import { ColumnDef, Currency, Fuel } from '@/types/app-types'
 import { FuelTableActions } from './FuelTableActions'
-import { formatCurrency } from '@/lib/utils'
-import type { Fuel, Currency } from '@/types'
+import { formatCurrency, formatDate } from '@/lib/utils'
 
-interface Params {
+interface UseFuelTableColumnsParams {
   currency: Currency
   onEdit: (entry: Fuel) => void
   onDelete: (id: string) => void
 }
 
-function formatDate(date: Date | string) {
-  return new Date(date).toLocaleDateString('pt-BR')
-}
 
-export function useFuelTableColumns({ currency, onEdit, onDelete }: Params): ColumnDef<Fuel>[] {
+export function useFuelTableColumns({ currency, onEdit, onDelete }: UseFuelTableColumnsParams): ColumnDef<Fuel>[] {
   return [
     {
       header: 'Data',

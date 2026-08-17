@@ -14,7 +14,7 @@ import { useCreateSale } from '@/hooks/mutations/sales/use-create-sale'
 import { useUpdateSale } from '@/hooks/mutations/sales/use-update-sale'
 import { saleSchema, type SaleFormData } from '@/lib/schemas/sale.schema'
 import { SALE_ROOMS } from '@/constants'
-import type { Sale } from '@/types'
+import { Sale } from '@/types/app-types'
 
 interface SaleModalProps {
   open: boolean

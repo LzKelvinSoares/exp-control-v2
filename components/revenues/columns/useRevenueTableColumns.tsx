@@ -1,17 +1,16 @@
 import { Badge } from '@/components/ui/badge'
-import { type ColumnDef } from '@/components/shared/DataTable'
 import { RevenueTableActions } from './RevenueTableActions'
 import { REVENUE_CATEGORIES } from '@/constants'
 import { formatCurrency } from '@/lib/utils'
-import type { Revenue, Currency } from '@/types'
+import { Budget, ColumnDef, Currency } from '@/types/app-types'
 
 interface Params {
   currency: Currency
-  onEdit: (revenue: Revenue) => void
+  onEdit: (revenue: Budget) => void
   onDelete: (id: string) => void
 }
 
-export function useRevenueTableColumns({ currency, onEdit, onDelete }: Params): ColumnDef<Revenue>[] {
+export function useRevenueTableColumns({ currency, onEdit, onDelete }: Params): ColumnDef<Budget>[] {
   function getCategoryLabel(value: string) {
     return REVENUE_CATEGORIES.find((c) => c.value === value)?.label ?? value
   }

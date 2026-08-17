@@ -12,8 +12,8 @@ import ExpenseModal from './forms/ExpenseModal'
 import { useDeleteExpense } from '@/hooks/mutations/expenses/use-delete-expense'
 import { EXPENSE_CATEGORIES } from '@/constants'
 import { formatCurrency } from '@/lib/utils'
-import type { Expense, Currency } from '@/types'
 import { useCurrencySession } from '@/hooks/use-currency-session'
+import { Expense } from '@/types/app-types'
 
 interface ExpenseTableProps {
   expenses: Expense[]

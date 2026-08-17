@@ -14,11 +14,11 @@ import { useUpdateRevenue } from '@/hooks/mutations/revenues/use-update-revenue'
 import { revenueSchema, type RevenueFormData } from '@/lib/schemas/revenue.schema'
 import { REVENUE_CATEGORIES } from '@/constants'
 import { useCalendar } from '@/store/calendar'
-import type { Revenue } from '@/types'
+import { Budget } from '@/types/app-types'
 
 interface RevenueModalProps {
   open: boolean
-  revenue?: Revenue
+  revenue?: Budget
   onClose: () => void
 }
 

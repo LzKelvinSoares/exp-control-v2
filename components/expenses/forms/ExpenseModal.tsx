@@ -16,7 +16,7 @@ import { useUpdateExpense } from '@/hooks/mutations/expenses/use-update-expense'
 import { expenseSchema, type ExpenseFormData } from '@/lib/schemas/expense.schema'
 import { EXPENSE_CATEGORIES } from '@/constants'
 import { useCalendar } from '@/store/calendar'
-import type { Expense } from '@/types'
+import { Expense } from '@/types/app-types'
 
 interface ExpenseModalProps {
   open: boolean
