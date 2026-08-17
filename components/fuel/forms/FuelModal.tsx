@@ -12,16 +12,12 @@ import { useCreateFuel } from '@/hooks/mutations/fuel/use-create-fuel'
 import { useUpdateFuel } from '@/hooks/mutations/fuel/use-update-fuel'
 import { fuelSchema, type FuelFormData } from '@/lib/schemas/fuel.schema'
 import { Fuel } from '@/types/app-types'
+import { toDateInput } from '@/lib/utils'
 
 interface FuelModalProps {
   open: boolean
   fuel?: Fuel
   onClose: () => void
-}
-
-function toDateInput(date?: string) {
-  if (!date) return ''
-  return new Date(date).toISOString().split('T')[0]
 }
 
 export default function FuelModal({ open, fuel, onClose }: FuelModalProps) {

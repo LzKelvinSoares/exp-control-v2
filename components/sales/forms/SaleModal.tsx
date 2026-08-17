@@ -15,16 +15,12 @@ import { useUpdateSale } from '@/hooks/mutations/sales/use-update-sale'
 import { saleSchema, type SaleFormData } from '@/lib/schemas/sale.schema'
 import { SALE_ROOMS } from '@/constants'
 import { Sale } from '@/types/app-types'
+import { toDateInput } from '@/lib/utils'
 
 interface SaleModalProps {
   open: boolean
   sale?: Sale
   onClose: () => void
-}
-
-function toDateInput(date?: Date | string) {
-  if (!date) return ''
-  return new Date(date).toISOString().split('T')[0]
 }
 
 export default function SaleModal({ open, sale, onClose }: SaleModalProps) {

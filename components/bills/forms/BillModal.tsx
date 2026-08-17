@@ -15,16 +15,12 @@ import { useUpdateBill } from '@/hooks/mutations/bills/use-update-bill'
 import { billSchema, type BillFormData } from '@/lib/schemas/bill.schema'
 import { BILL_CATEGORIES } from '@/constants'
 import { Bill } from '@/types/app-types'
+import { toDateInput } from '@/lib/utils'
 
 interface BillModalProps {
   open: boolean
   bill?: Bill
   onClose: () => void
-}
-
-function toDateInput(date?: Date | string) {
-  if (!date) return ''
-  return new Date(date).toISOString().split('T')[0]
 }
 
 export default function BillModal({ open, bill, onClose }: BillModalProps) {

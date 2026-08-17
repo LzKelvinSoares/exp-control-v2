@@ -7,3 +7,8 @@ export function formatDate(date: Date | string) {
 export function formatCurrency(value: number, currency: Currency = 'BRL') {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency }).format(value)
 }
+
+export function toDateInput(date?: Date | string) {
+  if (!date) return ''
+  return new Date(date).toISOString().split('T')[0]
+}
