@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { API_ROUTES, HTTP_METHODS, HTTP_HEADERS } from '@/constants'
-import { queryKeys } from '@/hooks/query-keys'
 
 export function useDeleteBill() {
   const qc = useQueryClient()

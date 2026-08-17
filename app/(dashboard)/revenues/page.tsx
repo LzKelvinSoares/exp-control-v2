@@ -17,15 +17,15 @@ import { useCurrencySession } from '@/hooks/use-currency-session'
 import { PageWrapper } from '@/components/shared/PageWrapper'
 
 export default function RevenuesPage() {
-  const { month, year } = useCalendar()
-    const { currency } = useCurrencySession()
+  const { month, year } = useCalendar();
+    const { currency } = useCurrencySession();
 
-  const { data: revenues = [], isLoading } = useRevenues(month, year)
-  const [modalOpen, setModalOpen] = useState(false)
+  const { data: revenues = [], isLoading } = useRevenues(month, year);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const { filteredData, filterValues, setFilter, clearFilters, hasActiveFilters } = useTableFilter(revenues, REVENUE_FILTER_DEFS)
+  const { filteredData, filterValues, setFilter, clearFilters, hasActiveFilters } = useTableFilter(revenues, REVENUE_FILTER_DEFS);
 
-  const total = sumBy(filteredData, 'value')
+  const total = sumBy(filteredData, 'value');
 
   const categoryBreakdown = REVENUE_CATEGORIES
     .map((cat) => ({
@@ -33,7 +33,7 @@ export default function RevenuesPage() {
       value: sumBy(filteredData.filter((r) => r.type === cat.value), 'value'),
     }))
     .filter((c) => c.value > 0)
-    .map((c) => ({ label: c.label, value: formatCurrency(c.value, currency) }))
+    .map((c) => ({ label: c.label, value: formatCurrency(c.value, currency) }));
 
   function handleShare() {
     if (typeof navigator === 'undefined' || !navigator.share) return
@@ -45,7 +45,7 @@ export default function RevenuesPage() {
       })
       .join('\n')
     navigator.share({ title: 'Receitas', text })
-  }
+  };
 
   const RenderShareButton = () => {
     return (

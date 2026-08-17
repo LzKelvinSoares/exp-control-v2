@@ -26,16 +26,16 @@ export default function SalesPage() {
 
   return (
     <PageWrapper title='Vendas' addItem='Nova venda' setAddModalOpen={setModalOpen}>
-      <div className="grid grid-cols-2 gap-4">
+      <div className='grid grid-cols-2 gap-4'>
         <SummaryCard
-          label="Total em vendas"
+          label='Total em vendas'
           value={formatCurrency(totalValue, currency)}
           icon={ShoppingBag}
           loading={isLoading}
-          variant="positive"
+          variant='positive'
         />
         <SummaryCard
-          label="Pagamentos pendentes"
+          label='Pagamentos pendentes'
           value={String(pendingCount)}
           icon={ShoppingBag}
           loading={isLoading}

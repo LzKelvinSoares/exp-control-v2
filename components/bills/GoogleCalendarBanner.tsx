@@ -29,11 +29,11 @@ function Banner() {
   if (connected === null || connected === true) return null
 
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-dashed px-4 py-3 text-sm text-muted-foreground">
-      <CalendarDays size={16} className="shrink-0" />
+    <div className='flex items-center gap-3 rounded-lg border border-dashed px-4 py-3 text-sm text-muted-foreground'>
+      <CalendarDays size={16} className='shrink-0' />
       <span>Conecte o Google Calendar para criar lembretes automáticos nas datas de vencimento.</span>
       <a
-        href="/api/google-calendar/connect"
+        href='/api/google-calendar/connect'
         className={buttonVariants({ size: 'sm', variant: 'outline' }) + ' ml-auto shrink-0'}
       >
         Conectar

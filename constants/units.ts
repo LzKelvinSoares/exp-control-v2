@@ -1,4 +1,4 @@
-import type { UnitOption } from '@/types'
+import { UnitOption } from '@/types/app-types';
 
 export const UNITS_OF_MEASURE: UnitOption[] = [
   { value: 'UN',  label: 'Unidade' },

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { API_ROUTES, HTTP_METHODS, HTTP_HEADERS } from '@/constants'
-import { queryKeys } from '@/hooks/query-keys'
-import type { Sale } from '@/types'
+import { queryKeys } from '@/constants/query-keys'
+import { Sale } from '@/types/app-types'
 
 export function useCreateSale() {
   const qc = useQueryClient()

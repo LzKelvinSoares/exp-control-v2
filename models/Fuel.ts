@@ -1,6 +1,5 @@
+import { Fuel } from '@/types/app-types'
 import { Schema, model, models } from 'mongoose'
-import type { Fuel } from '@/types'
-import { CURRENCY_ENUM } from '@/constants/enums'
 
 const FuelSchema = new Schema<Fuel>({
   id:                      { type: String, default: () => crypto.randomUUID() },

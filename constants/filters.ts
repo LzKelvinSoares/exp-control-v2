@@ -1,7 +1,7 @@
 import { type FilterDef } from '@/hooks/useTableFilter'
 import { EXPENSE_CATEGORIES, REVENUE_CATEGORIES, BILL_CATEGORIES } from './categories'
 import { SALE_ROOMS } from './sales'
-import type { Expense, Revenue, Fuel, Sale, Bill } from '@/types'
+import { Bill, Budget, Expense, Fuel, Sale } from '@/types/app-types'
 
 export const EXPENSE_FILTER_DEFS: FilterDef<Expense>[] = [
   { key: 'description', label: 'Descrição', type: 'text', placeholder: 'Buscar por Descrição' },
@@ -9,7 +9,7 @@ export const EXPENSE_FILTER_DEFS: FilterDef<Expense>[] = [
   { key: 'responsible', label: 'Responsável', type: 'text', placeholder: 'Buscar por Responsável' },
 ]
 
-export const REVENUE_FILTER_DEFS: FilterDef<Revenue>[] = [
+export const REVENUE_FILTER_DEFS: FilterDef<Budget>[] = [
   { key: 'description', label: 'Descrição', type: 'text', placeholder: 'Buscar por Descrição' },
   { key: 'type', label: 'Categoria', type: 'select', options: REVENUE_CATEGORIES },
   { key: 'responsible', label: 'Responsável', type: 'text', placeholder: 'Buscar por Responsável' },

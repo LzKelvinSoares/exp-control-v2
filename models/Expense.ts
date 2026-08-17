@@ -1,5 +1,5 @@
+import { Expense } from '@/types/app-types'
 import { Schema, model, models } from 'mongoose'
-import type { Expense } from '@/types'
 
 const MarketShoppingItemSchema = new Schema({
   id:           { type: String, default: () => crypto.randomUUID() },

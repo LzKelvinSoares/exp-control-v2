@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { switchCurrency } from '@/lib/actions/currency'
+import { switchCurrency } from '@/lib/actions/currency.service'
 import { useSidebar } from '@/store/sidebar'
 import { useQueryClient } from '@tanstack/react-query'
 import { Currency } from '@/types/app-types'

@@ -1,9 +1,8 @@
 import { createBudgetRoutes } from '@/lib/budget-routes'
-import { getRevenues, createRevenue, updateRevenue, deleteRevenue } from '@/lib/db'
+import { useService } from '@/lib/providers/service-provider';
 
-export const { GET, POST, PUT, DELETE } = createBudgetRoutes({
-  getMany: getRevenues,
-  create:  createRevenue,
-  update:  updateRevenue,
-  remove:  deleteRevenue,
-})
+const routes = () => {
+  const { revenuesService } = useService();
+  return createBudgetRoutes(revenuesService);
+};
+export const { GET, POST, PUT, DELETE } = routes();

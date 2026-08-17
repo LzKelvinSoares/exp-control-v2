@@ -5,7 +5,7 @@ import { BILL_CATEGORIES } from '@/constants'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { Bill, ColumnDef, Currency } from '@/types/app-types'
 
-interface Params {
+interface UseBillTableColumnsParams {
   currency: Currency
   selected: Set<string>
   allSelected: boolean
@@ -24,7 +24,6 @@ function isDueSoon(expirationDate: Date | string) {
   return diff >= 0 && diff <= 5
 }
 
-
 export function useBillTableColumns({
   currency,
   selected,
@@ -35,7 +34,7 @@ export function useBillTableColumns({
   onEdit,
   onDelete,
   onPay,
-}: Params): ColumnDef<Bill>[] {
+}: UseBillTableColumnsParams): ColumnDef<Bill>[] {
   function getCategoryLabel(value: string) {
     return BILL_CATEGORIES.find((c) => c.value === value)?.label ?? value
   }

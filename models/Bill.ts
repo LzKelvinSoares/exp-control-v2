@@ -1,5 +1,5 @@
+import { Bill } from '@/types/app-types'
 import { Schema, model, models } from 'mongoose'
-import type { Bill } from '@/types'
 
 const BillSchema = new Schema<Bill>({
   id:                      { type: String, default: () => crypto.randomUUID() },

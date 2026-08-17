@@ -109,10 +109,10 @@ export default function BillTable({ bills, loading }: BillTableProps) {
   return (
     <>
       {selected.size > 0 && (
-        <div className="flex items-center gap-3 p-3 bg-emerald-50 dark:bg-emerald-950/30 rounded-lg border border-emerald-200 dark:border-emerald-800">
-          <span className="text-sm text-emerald-700 dark:text-emerald-400">{selected.size} selecionada(s)</span>
-          <Button size="sm" variant="outline" className="text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700" onClick={handlePaySelected} disabled={payBills.isPending}>
-            <CheckCircle2 size={14} className="mr-1" />
+        <div className='flex items-center gap-3 p-3 bg-emerald-50 dark:bg-emerald-950/30 rounded-lg border border-emerald-200 dark:border-emerald-800'>
+          <span className='text-sm text-emerald-700 dark:text-emerald-400'>{selected.size} selecionada(s)</span>
+          <Button size='sm' variant='outline' className='text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700' onClick={handlePaySelected} disabled={payBills.isPending}>
+            <CheckCircle2 size={14} className='mr-1' />
             {payBills.isPending ? 'Pagando...' : 'Pagar selecionadas'}
           </Button>
         </div>

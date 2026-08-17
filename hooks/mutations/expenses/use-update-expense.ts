@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { API_ROUTES, HTTP_METHODS, HTTP_HEADERS } from '@/constants'
-import { queryKeys } from '@/hooks/query-keys'
-import type { Expense } from '@/types'
+import { queryKeys } from '@/constants/query-keys'
+import { Expense } from '@/types/app-types'
 
 export function useUpdateExpense() {
   const qc = useQueryClient()

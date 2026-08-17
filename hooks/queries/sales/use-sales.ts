@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
-import { queryKeys } from '@/hooks/query-keys'
+import { queryKeys } from '@/constants/query-keys'
 import { API_ROUTES } from '@/constants'
-import type { Sale } from '@/types'
+import { Sale } from '@/types/app-types'
 
 export function useSales() {
   return useQuery<Sale[]>({

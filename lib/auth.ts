@@ -5,7 +5,7 @@ import { connectDB } from '@/lib/mongodb'
 import UserModel, { type IUser } from '@/models/User'
 import bcrypt from 'bcryptjs'
 import { authConfig } from '@/auth.config'
-import type { Currency } from '@/types'
+import { Currency } from '@/types/app-types'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,

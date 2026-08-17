@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { API_ROUTES, HTTP_METHODS, HTTP_HEADERS } from '@/constants'
-import { queryKeys } from '@/hooks/query-keys'
-import type { Fuel } from '@/types'
+import { Fuel } from '@/types/app-types'
 
 export function useCreateFuel() {
   const qc = useQueryClient()

@@ -1,4 +1,4 @@
-import type { UserLevel } from '@/types'
+import { UserLevel } from '@/types/app-types'
 
 export const USER_LEVELS: UserLevel[] = [
   { level: 1, label: 'Iniciante',    minPoints: 0,   maxPoints: 20 },

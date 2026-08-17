@@ -1,8 +1,10 @@
 import { auth } from '@/lib/auth'
+import { useService } from '@/lib/providers/service-provider';
 import { NextRequest, NextResponse } from 'next/server'
-import { saveGoogleRefreshToken } from '@/lib/db/users'
 
 export async function GET(req: NextRequest) {
+    const { userService } = useService();
+
   const session = await auth()
   if (!session?.user?.id) {
     return NextResponse.redirect(new URL('/login', req.url))
@@ -28,7 +30,7 @@ export async function GET(req: NextRequest) {
   if (res.ok) {
     const data = await res.json()
     if (data.refresh_token) {
-      await saveGoogleRefreshToken(session.user.id, data.refresh_token)
+      await userService.saveGoogleRefreshToken(session.user.id, data.refresh_token)
     }
   }
 

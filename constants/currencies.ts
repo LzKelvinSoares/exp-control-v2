@@ -1,4 +1,4 @@
-import type { Currency, CurrencyAccount } from '@/types'
+import { Currency, CurrencyAccount } from '@/types/app-types'
 
 export const CURRENCIES: CurrencyAccount[] = [
   { currency: 'BRL', label: 'Real Brasileiro' },

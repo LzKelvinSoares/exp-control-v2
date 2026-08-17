@@ -1,5 +1,5 @@
+import { NavItem } from '@/types/app-types'
 import { Home, TrendingDown, TrendingUp, FileText, Fuel, ShoppingBag } from 'lucide-react'
-import type { NavItem } from '@/types'
 
 export const NAV_ITEMS: NavItem[] = [
   { href: '/',          label: 'Início',      icon: Home },

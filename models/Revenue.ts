@@ -1,7 +1,7 @@
+import { Budget } from '@/types/app-types'
 import { Schema, model, models } from 'mongoose'
-import type { Revenue } from '@/types'
 
-const RevenueSchema = new Schema<Revenue>({
+const RevenueSchema = new Schema<Budget>({
   id:                      { type: String, default: () => crypto.randomUUID() },
   userId:                  { type: String, required: true, index: true },
   currencyCurrencyAccount: { type: String, required: true },
@@ -18,6 +18,6 @@ const RevenueSchema = new Schema<Revenue>({
 
 RevenueSchema.index({ userId: 1, currencyCurrencyAccount: 1, firstExpirationDate: 1 })
 
-const RevenueModel = models.Revenue || model<Revenue>('Revenue', RevenueSchema)
+const RevenueModel = models.Revenue || model<Budget>('Revenue', RevenueSchema)
 
 export default RevenueModel

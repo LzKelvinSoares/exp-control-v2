@@ -1,4 +1,4 @@
-import type { MonthOption } from '@/types'
+import { MonthOption } from '@/types/app-types';
 
 export const MONTHS: MonthOption[] = [
   { value: 1,  label: 'Janeiro',   short: 'Jan' },

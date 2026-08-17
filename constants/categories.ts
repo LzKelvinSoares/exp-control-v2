@@ -1,4 +1,4 @@
-import type { CategoryOption, ExpenseCategory, RevenueCategory, BillCategory } from '@/types'
+import { BillCategory, CategoryOption, ExpenseCategory, RevenueCategory } from '@/types/app-types'
 
 export const EXPENSE_CATEGORIES: CategoryOption<ExpenseCategory>[] = [
   { value: 'CARTAO',              label: 'Cartão de Crédito' },

@@ -1,6 +1,6 @@
 import mongoose, { Schema, model, models } from 'mongoose'
-import type { CurrencyAccount, Currency } from '@/types'
 import { CURRENCY_ENUM } from '@/constants/enums'
+import { Currency } from '@/types/app-types'
 
 export interface IUser {
   id: string

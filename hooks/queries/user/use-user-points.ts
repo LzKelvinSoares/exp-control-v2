@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { queryKeys } from '@/hooks/query-keys'
+import { queryKeys } from '@/constants/query-keys'
 import { API_ROUTES } from '@/constants'
 
 export function useUserPoints() {

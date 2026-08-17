@@ -1,6 +1,6 @@
 import { Schema, model, models } from 'mongoose'
-import type { Sale } from '@/types'
 import { SALE_ROOM_ENUM } from '@/constants/enums'
+import { Sale } from '@/types/app-types'
 
 const SaleSchema = new Schema<Sale>({
   id:               { type: String, default: () => crypto.randomUUID() },

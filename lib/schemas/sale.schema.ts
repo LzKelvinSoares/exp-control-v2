@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { SALE_ROOM_ENUM } from '@/constants'
-import { toZodEnum } from './helpers'
+import { toZodEnum } from '../utils'
 
 export const saleSchema = z.object({
   description:  z.string().min(1, 'Descrição é obrigatória'),

@@ -1,4 +1,4 @@
-import type { CategoryOption, SaleRoom } from '@/types'
+import { CategoryOption, SaleRoom } from '@/types/app-types';
 
 export const SALE_ROOMS: CategoryOption<SaleRoom>[] = [
   { value: 'SALA',       label: 'Sala' },
