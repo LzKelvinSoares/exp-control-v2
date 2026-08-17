@@ -1,5 +1,5 @@
+import { useService } from '@/hooks/api';
 import { createBudgetRoutes } from '@/lib/budget-routes'
-import { useService } from '@/lib/providers/service-provider';
 
 const routes = () => {
   const { revenuesService } = useService();

@@ -1,7 +1,7 @@
 import { withAuth, ok } from '@/lib/api'
 import { MONTHS } from '@/constants'
 import { MonthlyChartData } from '@/types/app-types'
-import { useService } from '@/lib/providers/service-provider'
+import { useService } from '@/hooks/api';
 
 export const GET = withAuth(async (req, ctx) => {
   const {expensesService, fuelService, revenuesService} = useService();

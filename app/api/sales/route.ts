@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { withAuth, ok, err } from '@/lib/api'
-import { useService } from '@/lib/providers/service-provider'
+import { useService } from '@/hooks/api';
 
 export const GET = withAuth(async (_req, _ctx) => {
   const { salesService } = useService();

@@ -5,7 +5,7 @@ import BillModel from '@/models/Bill'
 import { POINTS } from '@/constants'
 import { refreshAccessToken, createCalendarEvent } from '@/lib/google-calendar'
 import { Bill } from '@/types/app-types'
-import { useService } from '@/lib/providers/service-provider'
+import { useService } from '@/hooks/api'
 
 export const GET = withAuth(async (req, ctx) => {
   const {billsService} = useService();

@@ -1,5 +1,5 @@
+import { useService } from '@/hooks/api';
 import { auth } from '@/lib/auth'
-import { useService } from '@/lib/providers/service-provider';
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
