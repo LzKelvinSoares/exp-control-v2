@@ -2,6 +2,7 @@ import type { NextConfig } from 'next'
 import withSerwistInit from '@serwist/next'
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ['mongoose'],
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'drive.google.com' },
