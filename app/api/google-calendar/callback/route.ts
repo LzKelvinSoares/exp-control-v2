@@ -1,38 +1,6 @@
-import { useService } from '@/hooks/api';
-import { auth } from '@/lib/auth'
-import { NextRequest, NextResponse } from 'next/server'
+import { createGoogleCalendarCallbackRoutes } from '@/lib/actions/controllers/google-calendar';
 
-export async function GET(req: NextRequest) {
-    const { userService } = useService();
-
-  const session = await auth()
-  if (!session?.user?.id) {
-    return NextResponse.redirect(new URL('/login', req.url))
-  }
-
-  const code = req.nextUrl.searchParams.get('code')
-  if (!code) {
-    return NextResponse.redirect(new URL('/bills', req.url))
-  }
-
-  const res = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      client_id: process.env.GOOGLE_CLIENT_ID!,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET!,
-      redirect_uri: `${process.env.NEXTAUTH_URL}/api/google-calendar/callback`,
-      code,
-      grant_type: 'authorization_code',
-    }),
-  })
-
-  if (res.ok) {
-    const data = await res.json()
-    if (data.refresh_token) {
-      await userService.saveGoogleRefreshToken(session.user.id, data.refresh_token)
-    }
-  }
-
-  return NextResponse.redirect(new URL('/bills?calendar=connected', req.url))
-}
+const routes = () => {
+  return createGoogleCalendarCallbackRoutes();
+};
+export const { GET } = routes();

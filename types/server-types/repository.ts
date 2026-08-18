@@ -1,5 +1,3 @@
-import { Currency } from '../app-types';
-
 export interface IGetByYearProps {
     userId: string;
     currency: string;
@@ -10,23 +8,23 @@ export interface IGetByMonthAndYearProps extends IGetByYearProps {
     month: number;
 }
 
-export interface IReadService<T> {
+export interface IReadRepository<T> {
     getAll?: () => Promise<T[]>;
 }
 
-export interface IReadPerYearService<T> {
+export interface IReadPerYearRepository<T> {
     getByMonthAndYear: (props: IGetByMonthAndYearProps) => Promise<T[]>;
     getByYear: (props: IGetByYearProps) => Promise<T[]>
 }
 
-export interface IWriteService<T> {
+export interface IWriteRepository<T> {
     create: (data: T) => Promise<T[]>;
     update: (id: string, data: Partial<T>) => Promise<T>;
 }
 
-export interface IDeleteService {
+export interface IDeleteRepository {
     delete: (id: string) => Promise<void>;
 }
 
-export type ITableCrudService<T> =  IReadService<T> & IWriteService<T> & IDeleteService;
-export type IFullTableCrudService<T> =  IReadPerYearService<T> & ITableCrudService<T>;
+export type ITableCrudRepository<T> =  IReadRepository<T> & IWriteRepository<T> & IDeleteRepository;
+export type IFullTableCrudRepository<T> =  IReadPerYearRepository<T> & ITableCrudRepository<T>;

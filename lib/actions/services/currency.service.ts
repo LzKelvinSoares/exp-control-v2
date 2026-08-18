@@ -1,6 +1,6 @@
 'use server'
 
-import { auth } from '@/lib/auth'
+import { auth } from '@/lib/actions/services/auth.service'
 import { connectDB } from '@/lib/mongodb'
 import UserModel from '@/models/User'
 import { Currency } from '@/types/app-types'

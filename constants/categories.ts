@@ -1,4 +1,4 @@
-import { BillCategory, CategoryOption, ExpenseCategory, RevenueCategory } from '@/types/app-types'
+import { BillCategory, CategoryOption, ExpenseCategory, RevenueCategory } from '@/types/app-types';
 
 export const EXPENSE_CATEGORIES: CategoryOption<ExpenseCategory>[] = [
   { value: 'CARTAO',              label: 'Cartão de Crédito' },
@@ -13,7 +13,7 @@ export const EXPENSE_CATEGORIES: CategoryOption<ExpenseCategory>[] = [
   { value: 'ALUGUEL',             label: 'Aluguel' },
   { value: 'COMBUSTIVEL',         label: 'Combustível' },
   { value: 'OUTROS',              label: 'Outros' },
-]
+];
 
 export const REVENUE_CATEGORIES: CategoryOption<RevenueCategory>[] = [
   { value: 'SALARIO',      label: 'Salário' },
@@ -21,7 +21,7 @@ export const REVENUE_CATEGORIES: CategoryOption<RevenueCategory>[] = [
   { value: 'INVESTIMENTO', label: 'Investimento' },
   { value: 'EMPRESTIMO',   label: 'Empréstimo' },
   { value: 'OUTROS',       label: 'Outros' },
-]
+];
 
 export const BILL_CATEGORIES: CategoryOption<BillCategory>[] = [
   { value: 'ENERGIA',     label: 'Energia' },
@@ -33,4 +33,8 @@ export const BILL_CATEGORIES: CategoryOption<BillCategory>[] = [
   { value: 'UTILIDADES',  label: 'Utilidades' },
   { value: 'CARTAO',      label: 'Cartão' },
   { value: 'OUTROS',      label: 'Outros' },
-]
+];
+
+export const BILLS_EXPENSE_CATEGORIES = new Set([
+    'ENERGIA', 'AGUA', 'GAS', 'INTERNET', 'TELEFONE', 'ALUGUEL', 'CARTAO', 'OUTROS',
+]);

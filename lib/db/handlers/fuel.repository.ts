@@ -1,9 +1,9 @@
 import FuelModel from '@/models/Fuel'
-import { findMany, createOne, updateOne, deleteOne } from './crud'
+import { findMany, createOne, updateOne, deleteOne } from '../crud'
 import { Fuel } from '@/types/app-types'
-import { IGetByMonthAndYearProps, IGetByYearProps, IFullTableCrudService } from '@/types/server-types'
+import { IGetByMonthAndYearProps, IGetByYearProps, IFullTableCrudRepository } from '@/types/server-types'
 
-export class FuelService implements IFullTableCrudService<Fuel> {
+export class FuelRepository implements IFullTableCrudRepository<Fuel> {
   async getByMonthAndYear({ userId, currency, month, year }: IGetByMonthAndYearProps) {
     const start = new Date(year, month - 1, 1).toISOString();
     const end = new Date(year, month, 1).toISOString();

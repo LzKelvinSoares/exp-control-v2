@@ -1,14 +1,14 @@
 import UserModel from '@/models/User'
 import { connectDB } from '@/lib/mongodb'
 
-export interface IUserService {
+export interface IUserRepository {
   addUserPoints: (userId: string, delta: number) => Promise<void>;
   getUserPoints: (userId: string) => Promise<number>;
   saveGoogleRefreshToken: (userId: string, refreshToken: string) => Promise<void>;
   getGoogleRefreshToken: (userId: string) => Promise<string | null>;
 }
 
-export class UserService implements IUserService {
+export class UserRepository implements IUserRepository {
   async addUserPoints(userId: string, delta: number): Promise<void> {
     await connectDB()
     await UserModel.findOneAndUpdate({ id: userId }, { $inc: { points: delta } })

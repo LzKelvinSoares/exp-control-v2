@@ -1,4 +1,4 @@
-import { auth } from '@/lib/auth'
+import { auth } from '@/lib/actions/services/auth.service'
 import { NextRequest, NextResponse } from 'next/server'
 
 export interface AuthContext {

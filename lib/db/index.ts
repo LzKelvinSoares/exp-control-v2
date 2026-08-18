@@ -1,6 +1,1 @@
-export * from './expenses.service'
-export * from './revenues.service'
-export * from './bills.service'
-export * from './fuel.service'
-export * from './sales.service'
-export * from './user.service'
+export * from './handlers';

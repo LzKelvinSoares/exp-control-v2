@@ -1,16 +1,16 @@
 import BillModel from '@/models/Bill'
-import { findMany, createOne, updateOne, updateMany, deleteOne } from './crud'
+import { findMany, createOne, updateOne, updateMany, deleteOne } from '../crud'
 import { Bill } from '@/types/app-types'
-import { IGetByMonthAndYearProps, IGetByYearProps, IFullTableCrudService } from '@/types/server-types';
-import { toGmtRange } from '../utils';
+import { IGetByMonthAndYearProps, IGetByYearProps, IFullTableCrudRepository } from '@/types/server-types';
+import { toGmtRange } from '../../utils';
 
-export interface IBillsService extends IFullTableCrudService<Bill> {
+export interface IBillsRepository extends IFullTableCrudRepository<Bill> {
   getBillsDueSoon: (userId: string, currency: string, withinDays?: number) => Promise<Bill[]>;
   payBill: (id: string) => Promise<void>;
   payBills: (ids: string[]) => Promise<void>;
 }
 
-export class BillsService implements IBillsService {
+export class BillsRepository implements IBillsRepository {
   async getByMonthAndYear({ userId, currency, month, year }: IGetByMonthAndYearProps) {
     const start = new Date(year, month - 1, 1).toISOString();
     const end = new Date(year, month, 1).toISOString();

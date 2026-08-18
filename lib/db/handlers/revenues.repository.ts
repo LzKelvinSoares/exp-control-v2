@@ -1,9 +1,9 @@
 import RevenueModel from '@/models/Revenue'
-import { findMany, createMany, updateOne, deleteOne } from './crud'
+import { findMany, createMany, updateOne, deleteOne } from '../crud'
 import { Budget } from '@/types/app-types'
-import { IGetByMonthAndYearProps, IGetByYearProps, IFullTableCrudService } from '@/types/server-types';
+import { IGetByMonthAndYearProps, IGetByYearProps, IFullTableCrudRepository } from '@/types/server-types';
 
-export class RevenuesService implements IFullTableCrudService<Budget> {
+export class RevenuesRepository implements IFullTableCrudRepository<Budget> {
   async getByMonthAndYear({ userId, currency, month, year }: IGetByMonthAndYearProps) {
     const start = new Date(year, month - 1, 1).toISOString();
     const end = new Date(year, month, 1).toISOString();

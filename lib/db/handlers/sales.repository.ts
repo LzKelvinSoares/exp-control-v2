@@ -1,9 +1,9 @@
 import SaleModel from '@/models/Sale'
-import { findMany, createOne, updateOne, deleteOne, findById } from './crud'
+import { findMany, createOne, updateOne, deleteOne, findById } from '../crud'
 import { Sale } from '@/types/app-types'
-import { ITableCrudService } from '@/types/server-types';
+import { ITableCrudRepository } from '@/types/server-types';
 
-export class SalesService implements ITableCrudService<Sale> {
+export class SalesRepository implements ITableCrudRepository<Sale> {
   async getAll() {
     return findMany(SaleModel, {});
   }

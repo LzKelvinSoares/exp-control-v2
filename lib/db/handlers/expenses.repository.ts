@@ -1,9 +1,9 @@
 import ExpenseModel from '@/models/Expense'
-import { findMany, createMany, updateOne, deleteOne } from './crud'
+import { findMany, createMany, updateOne, deleteOne } from '../crud'
 import { Expense } from '@/types/app-types'
-import { IGetByMonthAndYearProps, IGetByYearProps, IFullTableCrudService } from '@/types/server-types'
+import { IGetByMonthAndYearProps, IGetByYearProps, IFullTableCrudRepository } from '@/types/server-types'
 
-export class ExpensesService implements IFullTableCrudService<Expense> {
+export class ExpensesRepository implements IFullTableCrudRepository<Expense> {
   async getByMonthAndYear({ userId, currency, month, year }: IGetByMonthAndYearProps) {
     const start = new Date(year, month - 1, 1).toISOString()
     const end = new Date(year, month, 1).toISOString()

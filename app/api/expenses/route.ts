@@ -1,8 +1,8 @@
-import { useService } from '@/hooks/api';
-import { createBudgetRoutes } from '@/lib/budget-routes'
+import { useRepository } from '@/hooks/api';
+import { createBudgetRoutes } from '@/lib/actions/controllers'
 
 const routes = () => {
-  const { expensesService } = useService();
-  return createBudgetRoutes(expensesService);
+  const { expensesRepository } = useRepository();
+  return createBudgetRoutes(expensesRepository);
 };
 export const { GET, POST, PUT, DELETE } = routes();
