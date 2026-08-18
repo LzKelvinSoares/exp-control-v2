@@ -3,9 +3,9 @@ import { withAuth, ok, err, AuthContext } from '@/lib/actions/services/api.servi
 import { findById } from '@/lib/db/crud';
 import BillModel from '@/models/Bill';
 import { BILLS_EXPENSE_CATEGORIES, POINTS } from '@/constants';
-import { refreshAccessToken, createCalendarEvent } from '@/lib/google-calendar';
 import { Bill } from '@/types/app-types';
 import { useRepository } from '@/hooks/api';
+import { createCalendarEvent, refreshAccessToken } from '../services';
 
 export function createBillsRoutes() {
     return {

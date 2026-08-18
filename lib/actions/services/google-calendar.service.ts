@@ -1,5 +1,5 @@
-const TOKEN_URL = 'https://oauth2.googleapis.com/token'
-const CALENDAR_API = 'https://www.googleapis.com/calendar/v3'
+import { CALENDAR_API, TOKEN_URL } from '@/constants';
+
 
 export async function refreshAccessToken(refreshToken: string): Promise<string | null> {
   const res = await fetch(TOKEN_URL, {

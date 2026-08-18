@@ -13,3 +13,6 @@ export const queryParams = {
   year:      (year: number)                => `?year=${year}`,
   dueSoon:   (days: number)               => `?dueSoon=${days}`,
 } as const
+
+export const TOKEN_URL = 'https://oauth2.googleapis.com/token';
+export const CALENDAR_API = 'https://www.googleapis.com/calendar/v3';
