@@ -7,18 +7,14 @@ import { BILLS_EXPENSE_CATEGORIES, POINTS } from '@/constants';
 import { findById } from '@/lib/db/crud';
 import BillModel from '@/models/Bill';
 import { IUserRepository } from '@/lib/db';
-import { AuthContext } from '@/types/server-types';
+import { AuthContext, ITableCrudService } from '@/types/server-types';
 
-export interface IBillsService {
-    getBills(req: NextRequest, ctx: AuthContext): Promise<Bill[]>;
-    createBill(req: NextRequest, ctx: AuthContext): Promise<Bill>;
-    updateBill(req: NextRequest): Promise<Bill>;
+export interface IBillsService extends ITableCrudService<Bill> {
     pay(req: NextRequest, ctx: AuthContext): Promise<void>;
-    deleteBill(id: string): Promise<void>;
 }
 
 export class BillsService implements IBillsService {
-    async getBills(req: NextRequest, ctx: AuthContext): Promise<Bill[]> {
+    async get(req: NextRequest, ctx: AuthContext): Promise<Bill[]> {
         const { billsRepository } = useRepository();
         const dueSoon = req.nextUrl.searchParams.get('dueSoon');
         if (dueSoon) {
@@ -29,7 +25,7 @@ export class BillsService implements IBillsService {
         return await billsRepository.getByMonthAndYear({ userId: ctx.userId, currency: ctx.currency, month, year });
     }
     
-    async createBill(req: NextRequest, ctx: AuthContext): Promise<Bill> {
+    async create(req: NextRequest, ctx: AuthContext): Promise<Bill> {
         const { billsRepository, expensesRepository, userRepository } = useRepository();
         const { saveAsExpense, ...body } = await req.json();
         const bill = await billsRepository.create({ ...body, userId: ctx.userId, currencyCurrencyAccount: ctx.currency });
@@ -70,14 +66,14 @@ export class BillsService implements IBillsService {
             await this._addUserPointsForBill(ctx, id, userRepository);
         }
     }
-    async updateBill(req: NextRequest): Promise<Bill> {
+    async update(req: NextRequest): Promise<Bill> {
         const { id, body } = await req.json();
         if (!id) throw new Error('id is required');
         const { billsRepository } = useRepository();
         return await billsRepository.update(id, body);
     }
 
-    async deleteBill(id: string): Promise<void> {
+    async delete(id: string): Promise<void> {
         const { billsRepository } = useRepository();
         await billsRepository.delete(id);
     }

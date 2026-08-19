@@ -2,9 +2,9 @@ import { Budget } from '@/types/app-types';
 import { NextRequest } from 'next/server';
 import { getMonthYearParams } from './params.service';
 import { useRepository } from '@/hooks/api';
-import { AuthContext, IBudgetService } from '@/types/server-types';
+import { AuthContext, ITableCrudService } from '@/types/server-types';
 
-export class RevenuesService implements IBudgetService<Budget> {
+export class RevenuesService implements ITableCrudService<Budget> {
     async get(req: NextRequest, ctx: AuthContext): Promise<Budget[]> {
         const { revenuesRepository } = useRepository();
         const { month, year } = getMonthYearParams(req);
