@@ -14,7 +14,7 @@ interface IBillsService {
     createBill(req: NextRequest, ctx: AuthContext): Promise<Bill>;
     updateBill(req: NextRequest, ctx: AuthContext): Promise<Bill>;
     pay(req: NextRequest, ctx: AuthContext): Promise<void>;
-    deleteBill(req: NextRequest, ctx: AuthContext): Promise<void>;
+    deleteBill(id: string): Promise<void>;
 }
 
 export class BillsService implements IBillsService {
@@ -77,9 +77,7 @@ export class BillsService implements IBillsService {
         return await billsRepository.update(id, body);
     }
 
-    async deleteBill(req: NextRequest, ctx: AuthContext): Promise<void> {
-        const { id } = await req.json();
-        if (!id) throw new Error('id is required');
+    async deleteBill(id: string): Promise<void> {
         const { billsRepository } = useRepository();
         await billsRepository.delete(id);
     }

@@ -1,11 +1,6 @@
 import { NextRequest } from 'next/server';
 import { withAuth, ok, err, AuthContext } from '@/lib/actions/services/api.service';
-import { findById } from '@/lib/db/crud';
-import BillModel from '@/models/Bill';
-import { BILLS_EXPENSE_CATEGORIES, POINTS } from '@/constants';
-import { Bill } from '@/types/app-types';
-import { useRepository, useServices } from '@/hooks/api';
-import { createCalendarEvent, getMonthYearParams, refreshAccessToken } from '../services';
+import { useServices } from '@/hooks/api';
 
 export function createBillsRoutes() {
     return {
@@ -33,7 +28,7 @@ export function createBillsRoutes() {
             const { id } = await req.json();
             const { billsService } = useServices();
             if (!id) return err('id is required');
-            await billsService.deleteBill(req, _ctx);
+            await billsService.deleteBill(id);
             return ok({ success: true });
         })
     }
