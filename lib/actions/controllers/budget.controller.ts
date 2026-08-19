@@ -1,13 +1,11 @@
 import { withAuth, ok, err } from '@/lib/actions/services/api.service'
 import { IFullTableCrudRepository } from '@/types/server-types'
+import { getMonthYearParams } from '../services';
 
 export function createBudgetRoutes<T>(repository: IFullTableCrudRepository<T>) {
   return {
     GET: withAuth(async (req, ctx) => {
-      const { searchParams } = req.nextUrl
-      const month = Number(searchParams.get('month'))
-      const year = Number(searchParams.get('year'))
-      if (!month || !year) return err('month and year are required')
+      const { month, year } = getMonthYearParams(req);
       return ok(await repository.getByMonthAndYear({ userId: ctx.userId, currency: ctx.currency, month, year }))
     }),
 

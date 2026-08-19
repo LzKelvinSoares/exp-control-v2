@@ -1,12 +1,7 @@
-import { BillsRepository, ExpensesRepository, FuelRepository, RevenuesRepository, SalesRepository, UserRepository } from '@/lib/db';
+import { BillsService } from '@/lib/actions/services';
 
-export function useRepository() {
+export function useServices() {
     return {    
-        billsRepository: new BillsRepository(),
-        expensesRepository: new ExpensesRepository(),
-        fuelRepository: new FuelRepository(),
-        revenuesRepository: new RevenuesRepository(),
-        salesRepository: new SalesRepository(),
-        userRepository: new UserRepository(),
+        billsService: new BillsService(),
     };
 }

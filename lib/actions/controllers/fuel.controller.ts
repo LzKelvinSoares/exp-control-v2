@@ -1,14 +1,12 @@
 import { useRepository } from '@/hooks/api';
-import { err, ok, withAuth } from '../services';
+import { err, getMonthYearParams, ok, withAuth } from '../services';
 import { NextRequest } from 'next/server';
 
 export function createFuelRoutes() {
     return {
         GET: withAuth(async (req, ctx) => {
             const { fuelRepository } = useRepository();
-            const month = Number(req.nextUrl.searchParams.get('month'));
-            const year = Number(req.nextUrl.searchParams.get('year'));
-            if (!month || !year) return err('month and year are required');
+            const { month, year } = getMonthYearParams(req);
             return ok(await fuelRepository.getByMonthAndYear({ userId: ctx.userId, currency: ctx.currency, month, year }));
         }),
         POST: withAuth(async (req: NextRequest, ctx) => {
