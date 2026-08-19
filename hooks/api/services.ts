@@ -1,4 +1,4 @@
-import { BillsService, ChartService, ExpensesService, RevenuesService } from '@/lib/actions/services';
+import { BillsService, ChartService, ExpensesService, RevenuesService, SalesService } from '@/lib/actions/services';
 
 export function useServices() {
     return {    
@@ -6,5 +6,6 @@ export function useServices() {
         expensesService: new ExpensesService(),
         revenuesService: new RevenuesService(),
         chartService: new ChartService(),
+        salesService: new SalesService(),
     };
 }

@@ -1,29 +1,29 @@
-import { useRepository } from '@/hooks/api';
+import { useServices } from '@/hooks/api';
 import { err, ok, withAuth } from '../services';
 import { NextRequest } from 'next/server';
+import { AuthContext } from '@/types/server-types';
 
 export function createSalesRoutes() {
     return {
-        GET: withAuth(async (_req, _ctx) => {
-            const { salesRepository } = useRepository();
-            return ok(await salesRepository.getAll?.());
+        GET: withAuth(async (req, ctx) => {
+            const { salesService } = useServices();
+            return ok(await salesService.get(req, ctx));
         }),
-        POST: withAuth(async (req: NextRequest, _ctx) => {
-            const { salesRepository } = useRepository();
-            const body = await req.json();
-            return ok(await salesRepository.create(body));
+        POST: withAuth(async (req: NextRequest, ctx: AuthContext) => {
+            const { salesService } = useServices();
+            return ok(await salesService.create(req, ctx));
         }),
         PUT: withAuth(async (req: NextRequest, _ctx) => {
-            const { salesRepository } = useRepository();
-            const { id, ...body } = await req.json();
-            if (!id) return err('id is required');
-            return ok(await salesRepository.update(id, body));
-        }),
-        DELETE: withAuth(async (req: NextRequest, _ctx) => {
-            const { salesRepository } = useRepository();
+            const { salesService } = useServices();
             const { id } = await req.json();
             if (!id) return err('id is required');
-            await salesRepository.delete(id);
+            return ok(await salesService.update(req));
+        }),
+        DELETE: withAuth(async (req: NextRequest, _ctx) => {
+            const { salesService } = useServices();
+            const { id } = await req.json();
+            if (!id) return err('id is required');
+            await salesService.delete(id);
             return ok({ success: true });
         })
     }

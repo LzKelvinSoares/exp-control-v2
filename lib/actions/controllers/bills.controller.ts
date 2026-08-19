@@ -6,10 +6,10 @@ import { AuthContext } from '@/types/server-types';
 export function createBillsRoutes(billsService: IBillsService) {
     return {
         GET: withAuth(async (req, ctx) => {
-            return ok(await billsService.getBills(req, ctx));
+            return ok(await billsService.get(req, ctx));
         }),
         POST: withAuth(async (req: NextRequest, ctx: AuthContext) => {
-            return ok(await billsService.createBill(req, ctx));
+            return ok(await billsService.create(req, ctx));
         }),
         PUT: withAuth(async (req: NextRequest, ctx: AuthContext) => {
             const { id, action } = await req.json();
@@ -20,12 +20,12 @@ export function createBillsRoutes(billsService: IBillsService) {
             }
 
             if (!id) return err('id is required');
-            return ok(await billsService.updateBill(req));
+            return ok(await billsService.update(req));
         }),
         DELETE: withAuth(async (req: NextRequest, _ctx: AuthContext) => {
             const { id } = await req.json();
             if (!id) return err('id is required');
-            await billsService.deleteBill(id);
+            await billsService.delete(id);
             return ok({ success: true });
         })
     }

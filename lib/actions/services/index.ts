@@ -7,3 +7,4 @@ export * from './expenses.service';
 export * from './google-calendar.service';
 export * from './params.service';
 export * from './revenues.service';
+export * from './sales.service';

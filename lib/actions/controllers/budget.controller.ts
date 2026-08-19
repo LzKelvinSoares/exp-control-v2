@@ -1,8 +1,7 @@
 import { withAuth, ok, err } from '@/lib/actions/services/api.service'
-import { IBudgetService } from '@/types/server-types'
-import { getMonthYearParams } from '../services';
+import { ITableCrudService } from '@/types/server-types';
 
-export function createBudgetRoutes<T>(service: IBudgetService<T>) {
+export function createBudgetRoutes<T>(service: ITableCrudService<T>) {
   return {
     GET: withAuth(async (req, ctx) => {
       return ok(await service.get(req, ctx));
