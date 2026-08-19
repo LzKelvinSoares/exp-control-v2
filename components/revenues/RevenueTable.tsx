@@ -25,9 +25,14 @@ export default function RevenueTable({ revenues, loading }: RevenueTableProps) {
   const deleteRevenue = useDeleteRevenue()
 
   const [editing, setEditing] = useState<Budget | undefined>()
+  const [cloning, setCloning] = useState<Budget | undefined>()
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const columns = useRevenueTableColumns({ currency, onEdit: setEditing, onDelete: setDeletingId })
+  function handleClone(r: Budget) {
+    setCloning({ ...r, id: undefined })
+  }
+
+  const columns = useRevenueTableColumns({ currency, onEdit: setEditing, onClone: handleClone, onDelete: setDeletingId })
 
   async function handleDelete() {
     if (!deletingId) return
@@ -64,12 +69,13 @@ export default function RevenueTable({ revenues, loading }: RevenueTableProps) {
                 {(r.monthsLeft ?? 1) > 1 && <span className="text-xs text-muted-foreground">{r.monthsLeft}x</span>}
               </>
             }
-            actions={<RevenueTableActions revenue={r} onEdit={setEditing} onDelete={setDeletingId} />}
+            actions={<RevenueTableActions revenue={r} onEdit={setEditing} onClone={handleClone} onDelete={setDeletingId} />}
           />
         )}
       />
 
       <RevenueModal open={!!editing} revenue={editing} onClose={() => setEditing(undefined)} />
+      <RevenueModal open={!!cloning} revenue={cloning} onClose={() => setCloning(undefined)} />
 
       <ConfirmDialog
         open={!!deletingId}

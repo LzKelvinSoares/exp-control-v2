@@ -36,7 +36,7 @@ export default function RevenueModal({ open, revenue, onClose }: RevenueModalPro
   const { month, year } = useCalendar()
   const createRevenue = useCreateRevenue()
   const updateRevenue = useUpdateRevenue()
-  const isEditing = !!revenue
+  const isEditing = !!revenue?.id
 
   const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm<RevenueFormData>({
     resolver: zodResolver(revenueSchema),

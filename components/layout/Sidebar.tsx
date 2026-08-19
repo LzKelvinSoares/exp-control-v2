@@ -27,7 +27,7 @@ export default function Sidebar() {
       <aside
         style={{ backgroundColor: '#291b2a' }}
         className={cn(
-          'fixed inset-y-0 left-0 z-30 flex flex-col text-white overflow-hidden transition-[width,transform] duration-100 ease-in-out md:static md:translate-x-0 md:z-auto',
+          'fixed inset-y-0 left-0 z-30 flex flex-col text-white overflow-hidden transition-[width,translate] duration-300 md:duration-100 ease-in-out md:static md:translate-x-0 md:z-auto',
           isOpen ? 'translate-x-0' : '-translate-x-full',
           isCollapsed ? 'w-16' : 'w-64',
         )}

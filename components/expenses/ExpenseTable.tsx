@@ -25,9 +25,14 @@ export default function ExpenseTable({ expenses, loading }: ExpenseTableProps) {
   const deleteExpense = useDeleteExpense()
 
   const [editing, setEditing] = useState<Expense | undefined>()
+  const [cloning, setCloning] = useState<Expense | undefined>()
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const columns = useExpenseTableColumns({ currency, onEdit: setEditing, onDelete: setDeletingId })
+  function handleClone(e: Expense) {
+    setCloning({ ...e, id: undefined })
+  }
+
+  const columns = useExpenseTableColumns({ currency, onEdit: setEditing, onClone: handleClone, onDelete: setDeletingId })
 
   async function handleDelete() {
     if (!deletingId) return
@@ -64,12 +69,13 @@ export default function ExpenseTable({ expenses, loading }: ExpenseTableProps) {
                 {(e.monthsLeft ?? 1) > 1 && <span className="text-xs text-muted-foreground">{e.monthsLeft}x</span>}
               </>
             }
-            actions={<ExpenseTableActions expense={e} onEdit={setEditing} onDelete={setDeletingId} />}
+            actions={<ExpenseTableActions expense={e} onEdit={setEditing} onClone={handleClone} onDelete={setDeletingId} />}
           />
         )}
       />
 
       <ExpenseModal open={!!editing} expense={editing} onClose={() => setEditing(undefined)} />
+      <ExpenseModal open={!!cloning} expense={cloning} onClose={() => setCloning(undefined)} />
 
       <ConfirmDialog
         open={!!deletingId}

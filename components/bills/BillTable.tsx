@@ -39,8 +39,13 @@ export default function BillTable({ bills, loading }: BillTableProps) {
   const payBills = usePayBills()
 
   const [editing, setEditing] = useState<Bill | undefined>()
+  const [cloning, setCloning] = useState<Bill | undefined>()
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [selected, setSelected] = useState<Set<string>>(new Set())
+
+  function handleClone(b: Bill) {
+    setCloning({ ...b, id: undefined, paid: false, paidAt: undefined })
+  }
 
   const unpaidBills = bills.filter((b) => !b.paid)
   const allSelected = unpaidBills.length > 0 && unpaidBills.every((b) => selected.has(String(b.id)))
@@ -102,6 +107,7 @@ export default function BillTable({ bills, loading }: BillTableProps) {
     onToggleAll: toggleAll,
     onToggleSelect: toggleSelect,
     onEdit: setEditing,
+    onClone: handleClone,
     onDelete: setDeletingId,
     onPay: handlePayOne,
   })
@@ -154,6 +160,7 @@ export default function BillTable({ bills, loading }: BillTableProps) {
                 <BillTableActions
                   bill={b}
                   onEdit={setEditing}
+                  onClone={handleClone}
                   onDelete={setDeletingId}
                   onPay={handlePayOne}
                   isPaying={payBill.isPending}
@@ -165,6 +172,7 @@ export default function BillTable({ bills, loading }: BillTableProps) {
       />
 
       <BillModal open={!!editing} bill={editing} onClose={() => setEditing(undefined)} />
+      <BillModal open={!!cloning} bill={cloning} onClose={() => setCloning(undefined)} />
 
       <ConfirmDialog
         open={!!deletingId}

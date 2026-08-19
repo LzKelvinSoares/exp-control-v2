@@ -13,6 +13,7 @@ interface UseBillTableColumnsParams {
   onToggleAll: () => void
   onToggleSelect: (id: string) => void
   onEdit: (bill: Bill) => void
+  onClone: (bill: Bill) => void
   onDelete: (id: string) => void
   onPay: (id: string) => void
 }
@@ -32,6 +33,7 @@ export function useBillTableColumns({
   onToggleAll,
   onToggleSelect,
   onEdit,
+  onClone,
   onDelete,
   onPay,
 }: UseBillTableColumnsParams): ColumnDef<Bill>[] {
@@ -83,7 +85,7 @@ export function useBillTableColumns({
       headerClassName: 'w-24',
       cell: (b) => (
         <div className="flex items-center gap-1 justify-end">
-          <BillTableActions bill={b} onEdit={onEdit} onDelete={onDelete} onPay={onPay} isPaying={isPaying} />
+          <BillTableActions bill={b} onEdit={onEdit} onClone={onClone} onDelete={onDelete} onPay={onPay} isPaying={isPaying} />
         </div>
       ),
     },

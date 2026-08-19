@@ -39,7 +39,7 @@ export default function ExpenseModal({ open, expense, onClose }: ExpenseModalPro
   const createExpense = useCreateExpense()
   const updateExpense = useUpdateExpense()
   const [showMarketItems, setShowMarketItems] = useState(false)
-  const isEditing = !!expense
+  const isEditing = !!expense?.id
 
   const methods = useForm<ExpenseFormData>({
     resolver: zodResolver(expenseSchema),

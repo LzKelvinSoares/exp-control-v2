@@ -7,10 +7,11 @@ import { ColumnDef, Currency, Expense } from '@/types/app-types'
 interface UseExpenseTableColumnsParams {
   currency: Currency
   onEdit: (expense: Expense) => void
+  onClone: (expense: Expense) => void
   onDelete: (id: string) => void
 }
 
-export function useExpenseTableColumns({ currency, onEdit, onDelete }: UseExpenseTableColumnsParams): ColumnDef<Expense>[] {
+export function useExpenseTableColumns({ currency, onEdit, onClone, onDelete }: UseExpenseTableColumnsParams): ColumnDef<Expense>[] {
   function getCategoryLabel(value: string) {
     return EXPENSE_CATEGORIES.find((c) => c.value === value)?.label ?? value
   }
@@ -47,7 +48,7 @@ export function useExpenseTableColumns({ currency, onEdit, onDelete }: UseExpens
       headerClassName: 'w-20',
       cell: (e) => (
         <div className="flex items-center gap-1 justify-end">
-          <ExpenseTableActions expense={e} onEdit={onEdit} onDelete={onDelete} />
+          <ExpenseTableActions expense={e} onEdit={onEdit} onClone={onClone} onDelete={onDelete} />
         </div>
       ),
     },

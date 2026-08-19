@@ -7,10 +7,11 @@ import { Budget, ColumnDef, Currency } from '@/types/app-types'
 interface Params {
   currency: Currency
   onEdit: (revenue: Budget) => void
+  onClone: (revenue: Budget) => void
   onDelete: (id: string) => void
 }
 
-export function useRevenueTableColumns({ currency, onEdit, onDelete }: Params): ColumnDef<Budget>[] {
+export function useRevenueTableColumns({ currency, onEdit, onClone, onDelete }: Params): ColumnDef<Budget>[] {
   function getCategoryLabel(value: string) {
     return REVENUE_CATEGORIES.find((c) => c.value === value)?.label ?? value
   }
@@ -47,7 +48,7 @@ export function useRevenueTableColumns({ currency, onEdit, onDelete }: Params): 
       headerClassName: 'w-20',
       cell: (r) => (
         <div className="flex items-center gap-1 justify-end">
-          <RevenueTableActions revenue={r} onEdit={onEdit} onDelete={onDelete} />
+          <RevenueTableActions revenue={r} onEdit={onEdit} onClone={onClone} onDelete={onDelete} />
         </div>
       ),
     },

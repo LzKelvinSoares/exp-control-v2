@@ -26,7 +26,7 @@ interface BillModalProps {
 export default function BillModal({ open, bill, onClose }: BillModalProps) {
   const createBill = useCreateBill()
   const updateBill = useUpdateBill()
-  const isEditing = !!bill
+  const isEditing = !!bill?.id
 
   const { register, handleSubmit, reset, setValue, control, formState: { errors, isSubmitting } } = useForm<BillFormData>({
     resolver: zodResolver(billSchema),
