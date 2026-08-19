@@ -1,7 +1,8 @@
 import { useServices } from '@/hooks/api';
-import { err, ok, withAuth } from '../services';
+import { err, ok } from '../services';
 import { NextRequest } from 'next/server';
 import { AuthContext } from '@/types/server-types';
+import { withAuth } from '../middlewares';
 
 export function createSalesRoutes() {
     return {

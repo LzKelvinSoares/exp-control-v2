@@ -1,5 +1,6 @@
-import { withAuth, ok, err } from '@/lib/actions/services/api.service'
+import { ok, err } from '@/lib/actions/services/api.service'
 import { ITableCrudService } from '@/types/server-types';
+import { withAuth } from '../middlewares';
 
 export function createBudgetRoutes<T>(service: ITableCrudService<T>) {
   return {

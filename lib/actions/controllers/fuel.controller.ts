@@ -1,6 +1,7 @@
 import { useRepository, useServices } from '@/hooks/api';
-import { err, ok, withAuth } from '../services';
+import { err, ok } from '../services';
 import { NextRequest } from 'next/server';
+import { withAuth } from '../middlewares';
 
 export function createFuelRoutes() {
     return {

@@ -1,5 +1,6 @@
 import { useRepository } from '@/hooks/api';
-import { ok, withAuth } from '../services';
+import { ok } from '../services';
+import { withAuth } from '../middlewares';
 
 export function createUserRoutes() {
     return {

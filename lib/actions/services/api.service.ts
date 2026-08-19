@@ -1,3 +1,4 @@
+import { IServicesContext } from '@/hooks/api'
 import { auth } from '@/lib/actions/services/auth.service'
 import { AuthContext } from '@/types/server-types'
 import { NextRequest, NextResponse } from 'next/server'
@@ -23,14 +24,4 @@ export function err(message: string, status = 400) {
 
 export function isAuthContext(val: unknown): val is AuthContext {
   return typeof val === 'object' && val !== null && 'userId' in val
-}
-
-type AuthHandler = (req: NextRequest, ctx: AuthContext) => Promise<NextResponse>
-
-export function withAuth(handler: AuthHandler) {
-  return async (req: NextRequest): Promise<NextResponse> => {
-    const ctx = await getAuthContext()
-    if (!isAuthContext(ctx)) return ctx
-    return handler(req, ctx)
-  }
 }

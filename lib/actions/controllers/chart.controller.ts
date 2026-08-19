@@ -1,5 +1,6 @@
 import { useServices } from '@/hooks/api';
-import { ok, withAuth } from '../services';
+import { ok } from '../services';
+import { withAuth } from '../middlewares';
 
 export function createChartRoutes() {
     return {
