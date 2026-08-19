@@ -45,7 +45,7 @@ export class BillsRepository implements IBillsRepository {
     });
   }
 
-  async create(data: Omit<Bill, 'id' | 'creationDate'>): Promise<Bill[]> {
+  async create(data: Omit<Bill, 'id' | 'creationDate'>): Promise<Bill> {
     return createOne(BillModel, data);
   }
 

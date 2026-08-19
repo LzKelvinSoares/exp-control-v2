@@ -25,32 +25,29 @@ export function createBillsRoutes() {
             const { saveAsExpense, ...body } = await req.json();
             const bill = await billsRepository.create({ ...body, userId: ctx.userId, currencyCurrencyAccount: ctx.currency });
             await userRepository.addUserPoints(ctx.userId, POINTS.BILL_SAVED);
-
-            if (bill && bill.length > 0) {
-                if (saveAsExpense) {
-                    const expenseType = BILLS_EXPENSE_CATEGORIES.has(bill[0].type) ? bill[0].type : 'OUTROS';
-                    await expensesRepository.create({
-                        description: bill[0].description,
-                        type: expenseType,
-                        value: bill[0].value,
-                        firstExpirationDate: bill[0].expirationDate as string,
-                        monthsLeft: 1,
-                        userId: ctx.userId,
-                        currencyCurrencyAccount: ctx.currency,
-                    });
-                }
-
-                // Fire-and-forget: never block or fail bill creation
-                userRepository.getGoogleRefreshToken(ctx.userId).then(async (refreshToken: string | null) => {
-                    if (!refreshToken) return;
-                    const accessToken = await refreshAccessToken(refreshToken);
-                    if (!accessToken) return;
-                    await createCalendarEvent(accessToken, {
-                        ...bill[0] as Bill,
-                        expirationDate: String((bill[0] as Bill).expirationDate),
-                    });
-                }).catch(() => { });
+            if (saveAsExpense) {
+                const expenseType = BILLS_EXPENSE_CATEGORIES.has(bill.type) ? bill.type : 'OUTROS';
+                await expensesRepository.create({
+                    description: bill.description,
+                    type: expenseType,
+                    value: bill.value,
+                    firstExpirationDate: bill.expirationDate as string,
+                    monthsLeft: 1,
+                    userId: ctx.userId,
+                    currencyCurrencyAccount: ctx.currency,
+                });
             }
+
+            // Fire-and-forget: never block or fail bill creation
+            userRepository.getGoogleRefreshToken(ctx.userId).then(async (refreshToken: string | null) => {
+                if (!refreshToken) return;
+                const accessToken = await refreshAccessToken(refreshToken);
+                if (!accessToken) return;
+                await createCalendarEvent(accessToken, {
+                    ...bill as Bill,
+                    expirationDate: String((bill as Bill).expirationDate),
+                });
+            }).catch(() => { });
 
             return ok(bill);
         }),

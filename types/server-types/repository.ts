@@ -18,7 +18,7 @@ export interface IReadPerYearRepository<T> {
 }
 
 export interface IWriteRepository<T> {
-    create: (data: T) => Promise<T[]>;
+    create: (data: T) => Promise<T[] | T>;
     update: (id: string, data: Partial<T>) => Promise<T>;
 }
 
