@@ -1,10 +1,6 @@
 import { auth } from '@/lib/actions/services/auth.service'
+import { AuthContext } from '@/types/server-types'
 import { NextRequest, NextResponse } from 'next/server'
-
-export interface AuthContext {
-  userId: string
-  currency: string
-}
 
 export async function getAuthContext(): Promise<AuthContext | NextResponse> {
   const session = await auth()

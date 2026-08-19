@@ -2,17 +2,17 @@ import { useRepository } from '@/hooks/api';
 import { Bill } from '@/types/app-types';
 import { getMonthYearParams } from './params.service';
 import { NextRequest } from 'next/server';
-import { AuthContext } from './api.service';
 import { createCalendarEvent, refreshAccessToken } from './google-calendar.service';
 import { BILLS_EXPENSE_CATEGORIES, POINTS } from '@/constants';
 import { findById } from '@/lib/db/crud';
 import BillModel from '@/models/Bill';
 import { IUserRepository } from '@/lib/db';
+import { AuthContext } from '@/types/server-types';
 
-interface IBillsService {
+export interface IBillsService {
     getBills(req: NextRequest, ctx: AuthContext): Promise<Bill[]>;
     createBill(req: NextRequest, ctx: AuthContext): Promise<Bill>;
-    updateBill(req: NextRequest, ctx: AuthContext): Promise<Bill>;
+    updateBill(req: NextRequest): Promise<Bill>;
     pay(req: NextRequest, ctx: AuthContext): Promise<void>;
     deleteBill(id: string): Promise<void>;
 }
@@ -70,7 +70,7 @@ export class BillsService implements IBillsService {
             await this._addUserPointsForBill(ctx, id, userRepository);
         }
     }
-    async updateBill(req: NextRequest, ctx: AuthContext): Promise<Bill> {
+    async updateBill(req: NextRequest): Promise<Bill> {
         const { id, body } = await req.json();
         if (!id) throw new Error('id is required');
         const { billsRepository } = useRepository();
