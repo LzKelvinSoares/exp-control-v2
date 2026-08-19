@@ -4,7 +4,7 @@ import { withAuth } from '../middlewares';
 
 export function createUserRoutes() {
     return {
-        GET: withAuth(async (req, ctx) => {
+        GET: withAuth(async (_req, ctx) => {
             const { userRepository } = useRepository();
             const points = await userRepository.getUserPoints(ctx.userId);
             return ok({ points });
