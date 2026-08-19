@@ -25,7 +25,7 @@ export default function SalesPage() {
   const pendingCount = filteredData.filter((s) => !s.paid).length
 
   return (
-    <PageWrapper title='Vendas' addItem='Nova venda' setAddModalOpen={setModalOpen}>
+    <PageWrapper title='Vendas' addItem='Nova venda' setAddModalOpen={setModalOpen} hideMonthYearSelector>
       <div className='grid grid-cols-2 gap-4'>
         <SummaryCard
           label='Total em vendas'
