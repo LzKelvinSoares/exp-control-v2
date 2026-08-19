@@ -1,6 +1,5 @@
 import { Sale } from '@/types/app-types';
 import { NextRequest } from 'next/server';
-import { getMonthYearParams } from './params.service';
 import { useRepository } from '@/hooks/api';
 import { AuthContext, ITableCrudService } from '@/types/server-types';
 

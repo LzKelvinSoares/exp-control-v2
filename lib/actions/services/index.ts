@@ -4,6 +4,7 @@ export * from './bills.service';
 export * from './chart.service';
 export * from './currency.service';
 export * from './expenses.service';
+export * from './fuel.service';
 export * from './google-calendar.service';
 export * from './params.service';
 export * from './revenues.service';
