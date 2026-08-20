@@ -1,11 +1,11 @@
-import { useRepository } from '@/hooks/api';
+import { useRepositories } from '@/hooks/api';
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '../../services';
 
 export function createGoogleCalendarCallbackRoutes() {
     return {
         GET: async (req: NextRequest) => {
-            const { userRepository } = useRepository();
+            const { userRepository } = useRepositories();
 
             const session = await auth();
             if (!session?.user?.id) {

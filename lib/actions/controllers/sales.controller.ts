@@ -1,26 +1,21 @@
-import { err, ok } from '../services';
+import { err, executeDeleteWithIdValidation, executeUpdateWithIdValidation, ok } from '../services';
 import { NextRequest } from 'next/server';
 import { AuthContext } from '@/types/server-types';
 import { withServices } from '../middlewares';
 
 export function createSalesRoutes() {
     return {
-        GET: withServices(async (req, { salesService }, ctx) => {
+        GET: withServices(async (req, ctx, { salesService }) => {
             return ok(await salesService.get(req, ctx));
         }),
-        POST: withServices(async (req: NextRequest, { salesService }, ctx: AuthContext) => {
+        POST: withServices(async (req: NextRequest, ctx: AuthContext, { salesService }) => {
             return ok(await salesService.create(req, ctx));
         }),
-        PUT: withServices(async (req: NextRequest, { salesService }, _ctx) => {
-            const { id } = await req.json();
-            if (!id) return err('id is required');
-            return ok(await salesService.update(req));
+        PUT: withServices(async (req: NextRequest, ctx: AuthContext, { salesService }) => {
+            return executeUpdateWithIdValidation(req, ctx, salesService);
         }),
-        DELETE: withServices(async (req: NextRequest, { salesService }, _ctx) => {
-            const { id } = await req.json();
-            if (!id) return err('id is required');
-            await salesService.delete(id);
-            return ok({ success: true });
+        DELETE: withServices(async (req: NextRequest, ctx: AuthContext, { salesService }) => {
+           return executeDeleteWithIdValidation(req, ctx, salesService);
         })
     }
 }

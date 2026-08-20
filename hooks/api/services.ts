@@ -1,23 +1,35 @@
-import { BillsService, ChartService, ExpensesService, FuelService, IBillsService, RevenuesService, SalesService } from '@/lib/actions/services';
+import { BillsService, ChartService, ExpensesService, FuelService, IBillsService, RevenuesService, SalesService, UserService } from '@/lib/actions/services';
 import { Budget, Expense, Fuel, MonthlyChartData, Sale } from '@/types/app-types';
-import { IReadService, ITableCrudService } from '@/types/server-types';
+import { HasPoints, IReadService, ITableCrudService, ITableReadAndUpdateService } from '@/types/server-types';
+import { useRepositories } from './repositories';
 
 export interface IServicesContext {
     billsService: IBillsService;
-    expensesService: ITableCrudService<Expense>;
-    revenuesService: ITableCrudService<Budget>;
+    expensesService: ITableCrudService<Expense, Expense>;
+    revenuesService: ITableCrudService<Budget, Budget>;
     chartService: IReadService<MonthlyChartData>;
-    fuelService: ITableCrudService<Fuel>;
-    salesService: ITableCrudService<Sale>;
+    fuelService: ITableCrudService<Fuel, Fuel>;
+    salesService: ITableCrudService<Sale, Sale>;
+    userService: ITableReadAndUpdateService<number, HasPoints>;
 }
 
 export function useServices() {
+    const {
+        billsRepository,
+        expensesRepository,
+        revenuesRepository,
+        fuelRepository,
+        salesRepository,
+        userRepository
+    } = useRepositories();
+
     return {    
-        billsService: new BillsService(),
-        expensesService: new ExpensesService(),
-        revenuesService: new RevenuesService(),
-        chartService: new ChartService(),
-        fuelService: new FuelService(),
-        salesService: new SalesService(),
+        billsService: new BillsService(billsRepository, expensesRepository, userRepository),
+        expensesService: new ExpensesService(expensesRepository),
+        revenuesService: new RevenuesService(revenuesRepository),
+        chartService: new ChartService(expensesRepository, revenuesRepository, fuelRepository),
+        fuelService: new FuelService(fuelRepository),
+        salesService: new SalesService(salesRepository),
+        userService: new UserService(userRepository),
     };
 }

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { IServicesContext, useServices } from '@/hooks/api';
+import { IServicesContext, useRepositories, useServices } from '@/hooks/api';
 import { AuthContext } from '@/types/server-types';
 import { withAuth } from './auth.middleware';
 
 type ServicesHandler = (
   req: NextRequest,
-  services: IServicesContext,
-  ctx: AuthContext
+  ctx: AuthContext,
+  services: IServicesContext
 ) => Promise<NextResponse>;
 
 export function withServices(handler: ServicesHandler) {
@@ -14,7 +14,7 @@ export function withServices(handler: ServicesHandler) {
     const services = useServices();
 
     // withAuth only knows about (req, ctx), so close over `services` here
-    const authed = withAuth((req, ctx) => handler(req, services, ctx));
+    const authed = withAuth((req, ctx) => handler(req, ctx, services));
 
     return authed(req);
   };

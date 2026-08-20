@@ -1,18 +1,22 @@
 import { MONTHS } from '@/constants';
-import { useRepository } from '@/hooks/api';
 import { Budget, Expense, Fuel, MonthlyChartData } from '@/types/app-types';
-import { AuthContext, IReadService } from '@/types/server-types';
+import { AuthContext, IFullTableCrudRepository, IReadService } from '@/types/server-types';
 import { NextRequest } from 'next/server';
 
 export class ChartService implements IReadService<MonthlyChartData> {
+    constructor(
+        private expensesRepository: IFullTableCrudRepository<Expense>, 
+        private revenuesRepository: IFullTableCrudRepository<Budget>, 
+        private fuelRepository: IFullTableCrudRepository<Fuel>) {
+    }
+
     async get(req: NextRequest, ctx: AuthContext): Promise<MonthlyChartData[]> {
-        const { expensesRepository, fuelRepository, revenuesRepository } = useRepository();
         const year = Number(req.nextUrl.searchParams.get('year')) || new Date().getFullYear();
 
         const [expenses, revenues, fuel] = await Promise.all([
-            expensesRepository.getByYear({ userId: ctx.userId, currency: ctx.currency, year }),
-            revenuesRepository.getByYear({ userId: ctx.userId, currency: ctx.currency, year }),
-            fuelRepository.getByYear({ userId: ctx.userId, currency: ctx.currency, year }),
+            this.expensesRepository.getByYear({ userId: ctx.userId, currency: ctx.currency, year }),
+            this.revenuesRepository.getByYear({ userId: ctx.userId, currency: ctx.currency, year }),
+            this.fuelRepository.getByYear({ userId: ctx.userId, currency: ctx.currency, year }),
         ]);
 
         return this._buildChartDataValues((expenses || []), (revenues || []), (fuel || []));

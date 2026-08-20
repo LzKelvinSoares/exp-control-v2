@@ -1,33 +1,30 @@
-import { ok, err } from '@/lib/actions/services/api.service';
+import { ok, err, executeDeleteWithIdValidation } from '@/lib/actions/services/api.service';
 import { withServices } from '../middlewares';
 
 export function createBillsRoutes() {
     return {
-        GET: withServices(async (req, { billsService }, ctx) => {
+        GET: withServices(async (req, ctx, { billsService }) => {
             return ok(await billsService.get(req, ctx));
         }),
 
-        POST: withServices(async (req, { billsService }, ctx) => {
+        POST: withServices(async (req, ctx, { billsService }) => {
             return ok(await billsService.create(req, ctx));
         }),
 
-        PUT: withServices(async (req, { billsService }, ctx) => {
-            const { id, action } = await req.json();
+        PUT: withServices(async (req, ctx, { billsService }) => {
+            const { action, ...body } = await req.json();
 
             if (['pay', 'payMany'].includes(action)) {
                 await billsService.pay(req, ctx);
                 return ok({ success: true });
             }
-
-            if (!id) return err('id is required');
-            return ok(await billsService.update(req));
+       
+            if (!body.id) return err('id is required');
+            return ok(await billsService.update(body, ctx));
         }),
 
-        DELETE: withServices(async (req, { billsService }, _ctx) => {
-            const { id } = await req.json();
-            if (!id) return err('id is required');
-            await billsService.delete(id);
-            return ok({ success: true });
+        DELETE: withServices(async (req, ctx, { billsService }) => {
+           return executeDeleteWithIdValidation(req, ctx, billsService);
         })
     }
 }

@@ -1,27 +1,22 @@
-import { ok, err } from '@/lib/actions/services/api.service'
+import { ok, err, executeUpdateWithIdValidation, executeDeleteWithIdValidation } from '@/lib/actions/services/api.service'
 import { withServices } from '../middlewares';
 
 export function createRevenuesRoutes() {
   return {
-    GET: withServices(async (req, { revenuesService }, ctx) => {
+    GET: withServices(async (req, ctx, { revenuesService }) => {
       return ok(await revenuesService.get(req, ctx));
     }),
 
-    POST: withServices(async (req, { revenuesService }, ctx) => {
+    POST: withServices(async (req, ctx, { revenuesService }) => {
       return ok(await revenuesService.create(req, ctx));
     }),
 
-    PUT: withServices(async (req, { revenuesService }, _ctx) => {
-      const { id } = await req.json();
-      if (!id) return err('id is required');
-      return ok(await revenuesService.update(req));
+    PUT: withServices(async (req, ctx, { revenuesService }) => {
+      return executeUpdateWithIdValidation(req, ctx, revenuesService);
     }),
 
-    DELETE: withServices(async (req, { revenuesService }, _ctx) => {
-      const { id } = await req.json();
-      if (!id) return err('id is required');
-      await revenuesService.delete(id);
-      return ok({ success: true });
+    DELETE: withServices(async (req, ctx, { revenuesService }) => {
+           return executeDeleteWithIdValidation(req, ctx, revenuesService);
     }),
   }
 }

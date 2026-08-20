@@ -1,26 +1,26 @@
 import { Sale } from '@/types/app-types';
 import { NextRequest } from 'next/server';
-import { useRepository } from '@/hooks/api';
-import { AuthContext, ITableCrudService } from '@/types/server-types';
+import { useRepositories } from '@/hooks/api';
+import { AuthContext, ITableCrudRepository, ITableCrudService } from '@/types/server-types';
 
-export class SalesService implements ITableCrudService<Sale> {
+export class SalesService implements ITableCrudService<Sale, Sale> {
+    constructor(private salesRepository: ITableCrudRepository<Sale>) {
+    }
+
     async get(_req: NextRequest, _ctx: AuthContext): Promise<Sale[]> {
-        const { salesRepository } = useRepository();
-        return await salesRepository.getAll?.();
+        return await this.salesRepository.getAll?.() || [];
     }
     async create(req: NextRequest, ctx: AuthContext): Promise<Sale[]> {
-        const { salesRepository } = useRepository();
         const body = await req.json();
-        return await salesRepository.create(body);
+        return await this.salesRepository.create(body) as Sale[];
     }
-    async update(req: NextRequest): Promise<Sale> {
-        const { salesRepository } = useRepository();
-        const { id, ...body } = await req.json();
-        return await salesRepository.update(id, body as Partial<Sale>);
+    async update(item: Sale): Promise<Sale> {
+        const { id, ...body } = item;
+        if (!id) throw new Error('id is required');
+        return await this.salesRepository.update(id, body as Partial<Sale>);
     }
     async delete(id: string): Promise<void> {
-        const { salesRepository } = useRepository();
-        await salesRepository.delete(id);
+        await this.salesRepository.delete(id);
     }
 
 }
