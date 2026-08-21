@@ -1,7 +1,7 @@
 import { Expense } from '@/types/app-types';
 import { NextRequest } from 'next/server';
 import { getMonthYearParams } from './params.service';
-import { AuthContext, IFullTableCrudRepository, ITableCrudService, HasId } from '@/types/server-types';
+import { AuthContext, IFullTableCrudRepository, ITableCrudService } from '@/types/server-types';
 
 export class ExpensesService implements ITableCrudService<Expense, Expense> {
     constructor(private expensesRepository: IFullTableCrudRepository<Expense>) {
