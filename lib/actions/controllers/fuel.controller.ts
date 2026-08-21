@@ -1,4 +1,4 @@
-import { err, executeDeleteWithIdValidation, executeUpdateWithIdValidation, ok } from '../services';
+import { executeDeleteWithIdValidation, executeUpdateWithIdValidation, ok } from '../services';
 import { NextRequest } from 'next/server';
 import { withServices } from '../middlewares';
 
@@ -11,7 +11,7 @@ export function createFuelRoutes() {
             return ok(await fuelService.create(req, ctx));
         }),
         PUT: withServices(async (req: NextRequest, ctx, { fuelService }) => {
-              return executeUpdateWithIdValidation(req, ctx, fuelService);
+            return executeUpdateWithIdValidation(req, ctx, fuelService);
         }),
         DELETE: withServices(async (req: NextRequest, ctx, { fuelService }) => {
            return executeDeleteWithIdValidation(req, ctx, fuelService);

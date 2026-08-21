@@ -1,4 +1,4 @@
-import { ok, err, executeUpdateWithIdValidation, executeDeleteWithIdValidation } from '@/lib/actions/services/api.service'
+import { ok, executeUpdateWithIdValidation, executeDeleteWithIdValidation } from '@/lib/actions/services/api.service'
 import { withServices } from '../middlewares';
 
 export function createExpensesRoutes() {

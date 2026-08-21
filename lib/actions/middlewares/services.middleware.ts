@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { IServicesContext, useRepositories, useServices } from '@/hooks/api';
+import { IServicesContext, useServices } from '@/hooks/api';
 import { AuthContext } from '@/types/server-types';
 import { withAuth } from './auth.middleware';
 

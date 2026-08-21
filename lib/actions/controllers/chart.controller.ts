@@ -1,5 +1,5 @@
 import { ok } from '../services';
-import {  withServices } from '../middlewares';
+import { withServices } from '../middlewares';
 
 export function createChartRoutes() {
     return {

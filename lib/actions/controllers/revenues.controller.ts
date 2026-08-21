@@ -16,7 +16,7 @@ export function createRevenuesRoutes() {
     }),
 
     DELETE: withServices(async (req, ctx, { revenuesService }) => {
-           return executeDeleteWithIdValidation(req, ctx, revenuesService);
+      return executeDeleteWithIdValidation(req, ctx, revenuesService);
     }),
   }
 }

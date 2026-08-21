@@ -45,7 +45,7 @@ export async function executeUpdateWithIdValidation<T, R extends HasId>(
 
 export async function executeDeleteWithIdValidation<T, R extends HasId>(
   req: NextRequest,
-  ctx: AuthContext,
+  _ctx: AuthContext,
   service: ITableCrudService<T, R>
 ) {
   const { id } = await req.json();
