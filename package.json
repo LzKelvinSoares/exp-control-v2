@@ -10,6 +10,7 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage"
   },
+  "pre-commit": ["eslint", "test"],
   "dependencies": {
     "@base-ui/react": "^1.7.0",
     "@hookform/resolvers": "^5.7.1",
