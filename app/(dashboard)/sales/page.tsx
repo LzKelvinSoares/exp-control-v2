@@ -20,7 +20,7 @@ export default function SalesPage() {
   const router = useRouter()
 
   useEffect(() => {
-    if (session && !session.user.access.includes('sales')) {
+    if (session && !session.user.access?.includes('sales')) {
       router.replace('/')
     }
   }, [session, router])
