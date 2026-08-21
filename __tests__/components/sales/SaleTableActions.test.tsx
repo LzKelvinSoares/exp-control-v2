@@ -3,7 +3,12 @@ import userEvent from '@testing-library/user-event'
 import { SaleTableActions } from '@/components/sales/columns/SaleTableActions'
 import type { Sale } from '@/types/app-types'
 
-const sale: Sale = { id: '2', userId: 'u1', currencyCurrencyAccount: 'BRL', description: 'Venda', type: 'OUTROS', value: 500, saleDate: '2025-01-01' }
+const sale: Sale = {
+  id: '2', description: 'Venda', roomDescription: 'OUTROS', value: 500, saleDate: '2025-01-01',
+  room: 'SALA',
+  paid: false,
+  delivered: false
+}
 
 describe('SaleTableActions', () => {
   it('calls onEdit with the sale when edit button is clicked', async () => {
