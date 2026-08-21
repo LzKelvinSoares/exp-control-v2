@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { ShoppingBag } from 'lucide-react'
 import SummaryCard from '@/components/shared/SummaryCard'
 import { TableFilters } from '@/components/shared/TableFilters'
@@ -14,6 +16,15 @@ import { useCurrencySession } from '@/hooks/use-currency-session'
 import { PageWrapper } from '@/components/shared/PageWrapper'
 
 export default function SalesPage() {
+  const { data: session } = useSession()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (session && !session.user.access?.includes('sales')) {
+      router.replace('/')
+    }
+  }, [session, router])
+
   const { currency } = useCurrencySession()
 
   const { data: sales = [], isLoading } = useSales()

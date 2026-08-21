@@ -6,6 +6,7 @@ import UserModel, { type IUser } from '@/models/User'
 import bcrypt from 'bcryptjs'
 import { authConfig } from '@/auth.config'
 import { Currency } from '@/types/app-types'
+import { type PageKey } from '@/types/app-types/auth'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
@@ -44,6 +45,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           currencyAccounts: user.currencyAccounts,
           currentCurrency: user.currentCurrency,
           points: user.points,
+          access: user.access,
         }
       },
     }),
@@ -62,11 +64,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.currencyAccounts = dbUser?.currencyAccounts ?? []
           token.currentCurrency = dbUser?.currentCurrency ?? 'BRL'
           token.points = dbUser?.points ?? 0
+          token.access = dbUser?.access ?? []
         } else {
           token.id = user.id
           token.currencyAccounts = user.currencyAccounts
           token.currentCurrency = user.currentCurrency
           token.points = user.points
+          token.access = user.access
         }
       }
       return token
@@ -76,6 +80,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.user.currencyAccounts = token.currencyAccounts as Currency[]
       session.user.currentCurrency = token.currentCurrency as Currency
       session.user.points = token.points as number
+      session.user.access = token.access as PageKey[]
       return session
     },
     async signIn({ user, account }) {
@@ -91,6 +96,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             currentCurrency: 'BRL',
             points: 0,
             googleRefreshToken: account.refresh_token ?? '',
+            access: user.access
           })
         } else if (account.refresh_token) {
           await UserModel.findOneAndUpdate(

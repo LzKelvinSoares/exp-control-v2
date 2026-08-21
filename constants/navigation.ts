@@ -7,5 +7,5 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/revenues',  label: 'Receitas',    icon: TrendingUp },
   { href: '/bills',     label: 'Contas',      icon: FileText },
   { href: '/fuel',      label: 'Combustível', icon: Fuel },
-  { href: '/sales',     label: 'Vendas',      icon: ShoppingBag },
+  { href: '/sales',     label: 'Vendas',      icon: ShoppingBag, access: 'sales' },
 ]
