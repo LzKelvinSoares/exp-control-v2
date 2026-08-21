@@ -64,13 +64,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.currencyAccounts = dbUser?.currencyAccounts ?? []
           token.currentCurrency = dbUser?.currentCurrency ?? 'BRL'
           token.points = dbUser?.points ?? 0
-          token.access = dbUser?.access ?? []
+          token.access = (dbUser?.access ?? []).map(a => a.toLowerCase()) as PageKey[]
         } else {
           token.id = user.id
           token.currencyAccounts = user.currencyAccounts
           token.currentCurrency = user.currentCurrency
           token.points = user.points
-          token.access = user.access
+          token.access = (user.access ?? []).map(a => a.toLowerCase()) as PageKey[]
         }
       }
       return token
