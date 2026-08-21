@@ -1,6 +1,7 @@
 import mongoose, { Schema, model, models } from 'mongoose'
 import { CURRENCY_ENUM } from '@/constants/enums'
 import { Currency } from '@/types/app-types'
+import { PageKey } from '@/types/app-types/auth'
 
 export interface IUser {
   id: string
@@ -10,6 +11,7 @@ export interface IUser {
   currencyAccounts: Currency[]
   currentCurrency: Currency
   points: number
+  access: PageKey[]
   googleRefreshToken?: string
   createdAt: Date
 }
@@ -24,6 +26,7 @@ const UserSchema = new Schema<IUser>({
   ],
   currentCurrency: { type: String, enum: CURRENCY_ENUM, default: 'BRL' },
   points: { type: Number, default: 0 },
+  access: { type: [String], default: [] },
   googleRefreshToken: { type: String, required: false },
   createdAt: { type: Date, default: Date.now },
 }, { id: false })

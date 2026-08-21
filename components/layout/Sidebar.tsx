@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { LogOut, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,11 @@ import { useSidebar } from '@/store/sidebar'
 export default function Sidebar() {
   const pathname = usePathname()
   const { isOpen, close, isCollapsed, toggleCollapsed } = useSidebar()
+  const { data: session } = useSession()
+
+  const visibleNavItems = NAV_ITEMS.filter(
+    ({ access }) => !access || session?.user.access?.includes(access)
+  )
 
   return (
     <>
@@ -49,7 +54,7 @@ export default function Sidebar() {
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-1">
-          {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
+          {visibleNavItems.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
               href={href}

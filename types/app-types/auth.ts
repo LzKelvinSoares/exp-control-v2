@@ -1,5 +1,7 @@
 import { Currency, CurrencyAccount } from './currency'
 
+export type PageKey = 'sales'
+
 export interface UserSession {
   id: string
   name: string
@@ -7,6 +9,7 @@ export interface UserSession {
   currencyAccounts: CurrencyAccount[]
   currentCurrency: Currency
   points: number
+  access: PageKey[]
 }
 
 export interface UserLevel {
