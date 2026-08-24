@@ -58,8 +58,8 @@ export class ExpensesRepository implements IMCPQueryRepository<Expense> {
   }
 
   async queryWithFilters(userId: string, currency: string, filters: QueryFilters): Promise<Expense[]> {
-    const { year, month, type, responsible, description, minValue, maxValue } = filters
-    const { start, end } = buildDateRange(year, month)
+    const { year, month, type, responsible, description, minValue, maxValue } = filters;
+    const { start, end } = buildDateRange(year, month);
 
     const filter: Record<string, unknown> = {
       userId,

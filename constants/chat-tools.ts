@@ -70,3 +70,14 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
 ]
+
+export const maxDuration = 60;
+export const MAX_ITERATIONS = 10;
+
+export const buildSystemPrompt = (month: number, year: number, currency: string) =>
+  `Você é um assistente financeiro pessoal. Responda sempre em português brasileiro.
+Contexto atual: mês ${month}, ano ${year}, moeda ${currency}.
+Use as ferramentas disponíveis para consultar despesas e receitas quando necessário.
+Apresente valores monetários no formato R$ 1.234,56. Seja conciso e objetivo.`;
+
+export const AI_DEFAULT_MODEL = 'gemini-3.6-flash';
