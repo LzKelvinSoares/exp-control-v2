@@ -1,9 +1,10 @@
 import ExpenseModel from '@/models/Expense'
 import { findMany, createMany, updateOne, deleteOne } from '../crud'
 import { Expense } from '@/types/app-types'
-import { IGetByMonthAndYearProps, IGetByYearProps, IFullTableCrudRepository, QueryFilters } from '@/types/server-types'
+import { IGetByMonthAndYearProps, IGetByYearProps, IMCPQueryRepository, QueryFilters } from '@/types/server-types'
+import { buildDateRange } from '@/lib/utils'
 
-export class ExpensesRepository implements IFullTableCrudRepository<Expense> {
+export class ExpensesRepository implements IMCPQueryRepository<Expense> {
   async getByMonthAndYear({ userId, currency, month, year }: IGetByMonthAndYearProps) {
     const start = new Date(year, month - 1, 1).toISOString()
     const end = new Date(year, month, 1).toISOString()
@@ -56,15 +57,9 @@ export class ExpensesRepository implements IFullTableCrudRepository<Expense> {
     return deleteOne(ExpenseModel, id)
   }
 
-  private buildDateRange(year: number, month?: number): { start: string; end: string } {
-    return month
-      ? { start: new Date(year, month - 1, 1).toISOString(), end: new Date(year, month, 1).toISOString() }
-      : { start: new Date(year, 0, 1).toISOString(), end: new Date(year + 1, 0, 1).toISOString() }
-  }
-
   async queryWithFilters(userId: string, currency: string, filters: QueryFilters): Promise<Expense[]> {
     const { year, month, type, responsible, description, minValue, maxValue } = filters
-    const { start, end } = this.buildDateRange(year, month)
+    const { start, end } = buildDateRange(year, month)
 
     const filter: Record<string, unknown> = {
       userId,

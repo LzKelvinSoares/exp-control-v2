@@ -10,9 +10,9 @@ export function ChatButton() {
   return (
     <Button
       onClick={toggle}
-      size="icon"
-      className="fixed bottom-6 right-6 z-40 rounded-full shadow-lg"
-      aria-label="Abrir assistente financeiro"
+      size='icon-lg'
+      className='fixed bottom-6 right-3 z-40 rounded-full shadow-lg'
+      aria-label='Abrir assistente financeiro'
       aria-expanded={isOpen}
     >
       <MessageCircle />
