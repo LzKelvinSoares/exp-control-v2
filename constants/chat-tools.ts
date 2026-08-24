@@ -1,0 +1,72 @@
+import { Type, type FunctionDeclaration } from '@google/genai'
+
+export const CHAT_TOOLS: FunctionDeclaration[] = [
+  {
+    name: 'query_expenses',
+    description:
+      "Query the user's expenses with optional filters. Use when the user asks about spending, costs, or expenses. Always pass the year. Pass month when the user refers to a specific month.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        year:        { type: Type.NUMBER, description: 'The year to query (e.g. 2025). Required.' },
+        month:       { type: Type.NUMBER, description: 'Optional month 1–12. Omit to query the full year.' },
+        type: {
+          type: Type.STRING,
+          enum: ['CARTAO','COMPRAS','COMPRAS_AVULSAS','RESTAURANTE','ENERGIA','AGUA','GAS','INTERNET','TELEFONE','ALUGUEL','COMBUSTIVEL','OUTROS'],
+          description: 'Filter by expense category.',
+        },
+        responsible:  { type: Type.STRING, description: 'Filter by responsible person (partial match).' },
+        description:  { type: Type.STRING, description: 'Filter by description keyword (partial match).' },
+        minValue:     { type: Type.NUMBER, description: 'Minimum value inclusive.' },
+        maxValue:     { type: Type.NUMBER, description: 'Maximum value inclusive.' },
+      },
+      required: ['year'],
+    },
+  },
+  {
+    name: 'query_revenues',
+    description:
+      "Query the user's revenues (income) with optional filters. Use when asked about salary, freelance, investments, or income.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        year:        { type: Type.NUMBER, description: 'The year to query. Required.' },
+        month:       { type: Type.NUMBER, description: 'Optional month 1–12.' },
+        type: {
+          type: Type.STRING,
+          enum: ['SALARIO','FREELANCE','INVESTIMENTO','EMPRESTIMO','OUTROS'],
+          description: 'Filter by revenue category.',
+        },
+        responsible:  { type: Type.STRING, description: 'Filter by responsible person (partial match).' },
+        description:  { type: Type.STRING, description: 'Filter by description keyword (partial match).' },
+        minValue:     { type: Type.NUMBER, description: 'Minimum value inclusive.' },
+        maxValue:     { type: Type.NUMBER, description: 'Maximum value inclusive.' },
+      },
+      required: ['year'],
+    },
+  },
+  {
+    name: 'summarize_expenses',
+    description:
+      'Returns expense totals grouped by category or by responsible person. Use when asked for a breakdown, summary, or comparison by group.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        groupBy: { type: Type.STRING, enum: ['type', 'responsible'], description: 'Group by this field.' },
+        year:    { type: Type.NUMBER, description: 'The year to query. Required.' },
+        month:   { type: Type.NUMBER, description: 'Optional month 1–12.' },
+      },
+      required: ['groupBy', 'year'],
+    },
+  },
+  {
+    name: 'get_expense_categories',
+    description:
+      'Returns the list of valid expense categories with their Portuguese labels. Call this if you need to know valid type values.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {},
+      required: [],
+    },
+  },
+]

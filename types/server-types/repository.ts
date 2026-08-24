@@ -28,3 +28,13 @@ export interface IDeleteRepository {
 
 export type ITableCrudRepository<T> =  IReadRepository<T> & IWriteRepository<T> & IDeleteRepository;
 export type IFullTableCrudRepository<T> =  IReadPerYearRepository<T> & ITableCrudRepository<T>;
+
+export interface QueryFilters {
+  year: number
+  month?: number
+  type?: string
+  responsible?: string
+  description?: string
+  minValue?: number
+  maxValue?: number
+}

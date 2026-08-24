@@ -1,5 +1,7 @@
 import Sidebar from '@/components/layout/Sidebar'
 import Header from '@/components/layout/Header'
+import { ChatButton } from '@/components/chatbot/ChatButton'
+import { ChatPanel } from '@/components/chatbot/ChatPanel'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,6 +13,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {children}
         </main>
       </div>
+      <ChatButton />
+      <ChatPanel />
     </div>
   )
 }
