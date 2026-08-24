@@ -2,7 +2,6 @@ export * from './auth';
 export * from './bill';
 export * from './budget';
 export * from './chart';
-export * from './chat';
 export * from './currency';
 export * from './data-table';
 export * from './fuel';

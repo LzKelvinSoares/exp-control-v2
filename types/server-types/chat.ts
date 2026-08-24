@@ -16,3 +16,5 @@ export interface ToolInput {
   maxValue?: number;
   groupBy?: ToolInputGroupBy;
 }
+
+export type GroupSummary = { [key: string]: string | number; total: number };
