@@ -15,7 +15,7 @@ export function createBillsRoutes() {
             const { action, ...body } = await req.json();
 
             if (['pay', 'payMany'].includes(action)) {
-                await billsService.pay(req, ctx);
+                await billsService.pay(action, body.id, body.ids, ctx);
                 return ok({ success: true });
             }
        
