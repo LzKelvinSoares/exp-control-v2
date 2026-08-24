@@ -2,17 +2,7 @@ import { ExpensesRepository } from '@/lib/db/handlers/expenses.repository'
 import { RevenuesRepository } from '@/lib/db/handlers/revenues.repository'
 import { EXPENSE_CATEGORIES } from '@/constants/categories'
 import type { QueryFilters } from '@/types/server-types'
-
-export interface ToolInput {
-  year?: number
-  month?: number
-  type?: string
-  responsible?: string
-  description?: string
-  minValue?: number
-  maxValue?: number
-  groupBy?: 'type' | 'responsible'
-}
+import { ToolInput } from '@/types/app-types'
 
 type GroupSummary = { [key: string]: string | number; total: number }
 
