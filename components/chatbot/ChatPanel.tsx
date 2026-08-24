@@ -20,7 +20,7 @@ export function ChatPanel() {
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => { if (!open) close() }}>
-      <SheetContent side="right" className="flex flex-col w-full sm:max-w-md p-0" showCloseButton={false}>
+      <SheetContent side="right" className="flex flex-col w-full max-w-none data-[side=right]:w-full sm:max-w-md p-0" showCloseButton={false}>
         <SheetHeader className="flex flex-row items-center justify-between px-4 pt-4 pb-2 border-b">
           <SheetTitle>Assistente Financeiro</SheetTitle>
           <div className="flex items-center gap-1">
