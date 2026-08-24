@@ -1,5 +1,6 @@
 export * from './bills.controller';
 export * from './chart.controller';
+export * from './chat.controller';
 export * from './fuel.controller';
 export * from './expenses.controller';
 export * from './revenues.controller';

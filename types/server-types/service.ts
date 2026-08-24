@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+import { ToolInput } from './chat';
 
 export interface HasId {
     id?: string;
@@ -27,6 +28,13 @@ export interface IUpdateService<T, R extends HasId> {
 
 export interface IDeleteService {
     delete(id: string): Promise<void>;
+}
+
+export interface ToolCallProps {
+  toolName: string;
+  toolInput: ToolInput;
+  userId: string;
+  currency: string;
 }
 
 export interface ITableReadAndUpdateService<T, R extends HasId> extends IReadService<T>, IUpdateService<T, R> {}

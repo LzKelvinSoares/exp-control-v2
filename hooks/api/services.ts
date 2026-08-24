@@ -2,12 +2,14 @@ import { BillsService, ChartService, ExpensesService, FuelService, IBillsService
 import { Budget, Expense, Fuel, MonthlyChartData, Sale } from '@/types/app-types';
 import { HasPoints, IReadService, ITableCrudService, ITableReadAndUpdateService } from '@/types/server-types';
 import { useRepositories } from './repositories';
+import { ChatService, IChatService } from '@/lib/actions/services/mcp';
 
 export interface IServicesContext {
     billsService: IBillsService;
     expensesService: ITableCrudService<Expense, Expense>;
     revenuesService: ITableCrudService<Budget, Budget>;
     chartService: IReadService<MonthlyChartData>;
+    chatService: IChatService;
     fuelService: ITableCrudService<Fuel, Fuel>;
     salesService: ITableCrudService<Sale, Sale>;
     userService: ITableReadAndUpdateService<number, HasPoints>;
@@ -28,6 +30,7 @@ export function useServices() {
         expensesService: new ExpensesService(expensesRepository),
         revenuesService: new RevenuesService(revenuesRepository),
         chartService: new ChartService(expensesRepository, revenuesRepository, fuelRepository),
+        chatService: new ChatService(expensesRepository, revenuesRepository),
         fuelService: new FuelService(fuelRepository),
         salesService: new SalesService(salesRepository),
         userService: new UserService(userRepository),

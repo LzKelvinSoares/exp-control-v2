@@ -1,8 +1,19 @@
-import { Type, type FunctionDeclaration } from '@google/genai'
+import { Type, type FunctionDeclaration } from '@google/genai';
+
+export const TOOL_HANDLER_NAME_OPTIONS = {
+  QUERIES: {
+    EXPENSES: 'query_expenses',
+    REVENUES: 'query_revenues',
+    EXPENSE_CATEGORIES: 'get_expense_categories'
+  },
+  SUMMARIES: {
+    EXPENSES: 'summarize_expenses',
+  }
+}
 
 export const CHAT_TOOLS: FunctionDeclaration[] = [
   {
-    name: 'query_expenses',
+    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.EXPENSES,
     description:
       "Query the user's expenses with optional filters. Use when the user asks about spending, costs, or expenses. Always pass the year. Pass month when the user refers to a specific month.",
     parameters: {
@@ -24,7 +35,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: 'query_revenues',
+    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.REVENUES,
     description:
       "Query the user's revenues (income) with optional filters. Use when asked about salary, freelance, investments, or income.",
     parameters: {
@@ -46,7 +57,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: 'summarize_expenses',
+    name: TOOL_HANDLER_NAME_OPTIONS.SUMMARIES.EXPENSES,
     description:
       'Returns expense totals grouped by category or by responsible person. Use when asked for a breakdown, summary, or comparison by group.',
     parameters: {
@@ -60,7 +71,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: 'get_expense_categories',
+    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.EXPENSE_CATEGORIES,
     description:
       'Returns the list of valid expense categories with their Portuguese labels. Call this if you need to know valid type values.',
     parameters: {
@@ -70,3 +81,14 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
 ]
+
+export const maxDuration = 60;
+export const MAX_ITERATIONS = 10;
+
+export const buildSystemPrompt = (month: number, year: number, currency: string) =>
+  `Você é um assistente financeiro pessoal. Responda sempre em português brasileiro.
+Contexto atual: mês ${month}, ano ${year}, moeda ${currency}.
+Use as ferramentas disponíveis para consultar despesas e receitas quando necessário.
+Apresente valores monetários no formato R$ 1.234,56. Seja conciso e objetivo.`;
+
+export const AI_DEFAULT_MODEL = 'gemini-3.6-flash';
