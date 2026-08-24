@@ -9,7 +9,7 @@ import { IBillsRepository, IUserRepository } from '@/lib/db';
 import { AuthContext, IFullTableCrudRepository, ITableCrudService } from '@/types/server-types';
 
 export interface IBillsService extends ITableCrudService<Bill, Bill> {
-    pay(req: NextRequest, ctx: AuthContext): Promise<void>;
+    pay(action: string, id: string, ids: string[], ctx: AuthContext): Promise<void>;
 }
 
 export class BillsService implements IBillsService {
@@ -49,8 +49,7 @@ export class BillsService implements IBillsService {
         return bill;
     }
 
-    async pay(req: NextRequest, ctx: AuthContext): Promise<void> {
-        const { id, action, ids } = await req.json();
+    async pay(action: string, id: string, ids: string[], ctx: AuthContext): Promise<void> {
         if (!id && !ids) throw new Error('id is required');
 
         if (action === 'payMany' && ids) {
@@ -69,9 +68,9 @@ export class BillsService implements IBillsService {
         }
     }
 
-    async update(item: Bill, _ctx: AuthContext): Promise<Bill> {
+    async update(item: Bill): Promise<Bill> {
         if (!item.id) throw new Error('id is required');
-        const { id, ...data } = item;
+        const data: Omit<Bill, 'id'> = item;
         return await this.billsRepository.update(item.id, data);
     }
 
