@@ -6,6 +6,12 @@ export interface ClientMessage {
   content: string;
 }
 
+export interface IChatRequest {
+  messages: ClientMessage[];
+  month: number;
+  year: number;
+}
+
 export interface ToolInput {
   year?: number;
   month?: number;
