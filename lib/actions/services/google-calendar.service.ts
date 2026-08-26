@@ -1,4 +1,5 @@
-import { CALENDAR_API, TOKEN_URL } from '@/constants';
+import { CALENDAR_API, CURRENCY_SYMBOLS, TOKEN_URL } from '@/constants';
+import { Currency } from '@/types/app-types';
 
 
 export async function refreshAccessToken(refreshToken: string): Promise<string | null> {
@@ -19,7 +20,7 @@ export async function refreshAccessToken(refreshToken: string): Promise<string |
 
 export async function createCalendarEvent(
   accessToken: string,
-  bill: { description: string; value: number; expirationDate: string; type?: string },
+  bill: { description: string; value: number; expirationDate: string; type?: string, currency: string },
 ): Promise<void> {
   const date = (bill.expirationDate as string).slice(0, 10) // YYYY-MM-DD
 
@@ -30,7 +31,7 @@ export async function createCalendarEvent(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      summary: `${bill.description} — R$ ${bill.value.toFixed(2)}`,
+      summary: `${bill.description} — ${CURRENCY_SYMBOLS[bill.currency as Currency]} ${bill.value.toFixed(2)}`,
       description: `Conta a pagar\nValor: R$ ${bill.value.toFixed(2)}\nCategoria: ${bill.type ?? ''}`,
       start: { date },
       end: { date },

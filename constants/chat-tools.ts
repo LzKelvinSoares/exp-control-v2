@@ -1,9 +1,11 @@
 import { Type, type FunctionDeclaration } from '@google/genai';
+import { BILL_CATEGORIES } from './categories';
 
 export const TOOL_HANDLER_NAME_OPTIONS = {
   QUERIES: {
     EXPENSES: 'query_expenses',
     REVENUES: 'query_revenues',
+    BILLS: 'query_bills',
     EXPENSE_CATEGORIES: 'get_expense_categories'
   },
   SUMMARIES: {
@@ -50,6 +52,29 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
         },
         responsible:  { type: Type.STRING, description: 'Filter by responsible person (partial match).' },
         description:  { type: Type.STRING, description: 'Filter by description keyword (partial match).' },
+        minValue:     { type: Type.NUMBER, description: 'Minimum value inclusive.' },
+        maxValue:     { type: Type.NUMBER, description: 'Maximum value inclusive.' },
+      },
+      required: ['year'],
+    },
+  },
+  {
+    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.BILLS,
+    description:
+      "Query the user's bills with optional filters. Use when asked about due bills, future bills, or past bills.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        year:        { type: Type.NUMBER, description: 'The year to query. Required.' },
+        month:       { type: Type.NUMBER, description: 'Optional month 1–12.' },
+        type: {
+          type: Type.STRING,
+          enum: BILL_CATEGORIES.map(b => b.value),
+          description: 'Filter by revenue category.',
+        },
+        responsible:  { type: Type.STRING, description: 'Filter by responsible person (partial match).' },
+        description:  { type: Type.STRING, description: 'Filter by description keyword (partial match).' },
+        paid:         { type: Type.BOOLEAN, description: 'Filter by paid/unpaid bills.' },
         minValue:     { type: Type.NUMBER, description: 'Minimum value inclusive.' },
         maxValue:     { type: Type.NUMBER, description: 'Maximum value inclusive.' },
       },

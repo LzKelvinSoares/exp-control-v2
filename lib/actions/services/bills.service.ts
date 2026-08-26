@@ -94,6 +94,7 @@ export class BillsService implements IBillsService {
             await createCalendarEvent(accessToken, {
                 ...bill as Bill,
                 expirationDate: String((bill as Bill).expirationDate),
+                currency: bill.currencyCurrencyAccount
             });
         }).catch(() => { });
     }

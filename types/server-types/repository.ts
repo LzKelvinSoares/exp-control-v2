@@ -12,6 +12,7 @@ export interface QueryFilters {
   description?: string
   minValue?: number
   maxValue?: number
+  paid?: boolean
 }
 
 export interface IGetByMonthAndYearProps extends IGetByYearProps {
