@@ -25,7 +25,7 @@ export function useServices() {
         salesRepository,
         userRepository
     } = useRepositories();
-    const chatService = new ChatService(expensesRepository, revenuesRepository);
+    const chatService = new ChatService(expensesRepository, revenuesRepository, billsRepository);
 
     return {
         aiContextService: new AIContextService(chatService),

@@ -3,6 +3,7 @@ import { IMCPQueryRepository, ToolCallProps, ToolInput } from '@/types/server-ty
 import { TOOL_HANDLER_NAME_OPTIONS } from '@/constants';
 import { getBudgetQueryFilters, groupAndSum, validateYear } from '@/lib/utils';
 import { Budget, Expense } from '@/types/app-types';
+import { IBillsRepository } from '@/lib/db';
 
 export interface IChatService {
   executeToolCall(toolCallProps: ToolCallProps): Promise<unknown>
@@ -11,7 +12,8 @@ export interface IChatService {
 export class ChatService implements IChatService {
   constructor(
     private expensesRepository: IMCPQueryRepository<Expense>,
-    private revenuesRepository: IMCPQueryRepository<Budget>) { }
+    private revenuesRepository: IMCPQueryRepository<Budget>,
+    private billsRepository: IBillsRepository) { }
 
   async executeToolCall({
     toolName,
@@ -26,6 +28,14 @@ export class ChatService implements IChatService {
 
       case TOOL_HANDLER_NAME_OPTIONS.QUERIES.REVENUES: {
         return await this.getBudgetsWithFilter(userId, currency, toolInput, this.revenuesRepository);
+      }
+
+      case TOOL_HANDLER_NAME_OPTIONS.QUERIES.BILLS: {
+        const filters = getBudgetQueryFilters(toolInput);
+        const items = await this.billsRepository.queryWithFilters(userId, currency, filters);
+        return items.map(({ id, description, type, typeDescription, responsible, value, expirationDate, paid, barCode }) => ({
+          id, description, type, typeDescription, responsible, value, expirationDate, paid, barCode
+        }));
       }
       case TOOL_HANDLER_NAME_OPTIONS.SUMMARIES.EXPENSES: {
         const { groupBy, year, month } = toolInput;
