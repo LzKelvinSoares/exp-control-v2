@@ -21,6 +21,16 @@ export interface ToolInput {
   minValue?: number;
   maxValue?: number;
   groupBy?: ToolInputGroupBy;
+  // mutation fields
+  value?: number;
+  firstExpirationDate?: string;
+  expirationDate?: string;
+  monthsLeft?: number;
+  paid?: boolean;
+  barCode?: string;
+  saveAsExpense?: boolean;
+  creationDate?: string;
+  valuePerLiter?: number;
 }
 
 export type GroupSummary = { [key: string]: string | number; total: number };
