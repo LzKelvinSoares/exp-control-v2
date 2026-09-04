@@ -1,6 +1,7 @@
 import { useState, type KeyboardEvent } from 'react'
 import { useChat } from '@/store/chat'
 import { useCalendar } from '@/store/calendar'
+import { AI_ROLES, API_ROUTES, HTTP_HEADERS, HTTP_METHODS } from '@/constants'
 
 export function useChatPanel() {
   const { messages, isLoading, addMessage, setLoading } = useChat()
@@ -11,7 +12,7 @@ export function useChatPanel() {
     const text = input.trim()
     if (!text || isLoading) return
 
-    const userMessage = { id: crypto.randomUUID(), role: 'user' as const, content: text }
+    const userMessage = { id: crypto.randomUUID(), role: AI_ROLES.USER, content: text }
     addMessage(userMessage)
     setInput('')
     setLoading(true)
@@ -19,20 +20,20 @@ export function useChatPanel() {
     try {
       const history = [...messages, userMessage].map(({ role, content }) => ({ role, content }))
 
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch(API_ROUTES.chat, {
+        method: HTTP_METHODS.POST,
+        headers: HTTP_HEADERS.JSON,
         body: JSON.stringify({ messages: history, month, year }),
       })
 
       if (!res.ok) throw new Error('Falha ao obter resposta')
 
       const data = await res.json() as { content: string }
-      addMessage({ id: crypto.randomUUID(), role: 'assistant', content: data.content })
+      addMessage({ id: crypto.randomUUID(), role: AI_ROLES.ASSISTANT, content: data.content })
     } catch {
       addMessage({
         id: crypto.randomUUID(),
-        role: 'assistant',
+        role: AI_ROLES.ASSISTANT,
         content: 'Desculpe, ocorreu um erro. Tente novamente.',
       })
     } finally {

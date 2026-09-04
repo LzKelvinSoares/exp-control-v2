@@ -1,10 +1,11 @@
 'use client'
 
+import { MessageRole } from '@/types/server-types'
 import { create } from 'zustand'
 
 export interface ChatMessage {
   id: string
-  role: 'user' | 'assistant'
+  role: MessageRole
   content: string
 }
 

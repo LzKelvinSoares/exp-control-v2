@@ -4,13 +4,14 @@ import { cn } from '@/lib/utils'
 import { hasTableData } from '@/lib/utils/helpers'
 import { DataTableCards } from './DataTableCards'
 import type { ChatMessage as ChatMessageType } from '@/store/chat'
+import { AI_ROLES } from '@/constants'
 
 interface ChatMessageProps {
   message: ChatMessageType
 }
 
 export function ChatMessage({ message }: ChatMessageProps) {
-  const isUser = message.role === 'user'
+  const isUser = message.role === AI_ROLES.USER
   const showTableCards = !isUser && hasTableData(message.content)
 
   return (

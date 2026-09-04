@@ -1,11 +1,14 @@
+const API_DEFAULT_ROUTE = '/api'
+
 export const API_ROUTES = {
-  expenses: '/api/expenses',
-  revenues: '/api/revenues',
-  bills:    '/api/bills',
-  fuel:     '/api/fuel',
-  sales:    '/api/sales',
-  chart:    '/api/chart',
-  user:     '/api/user',
+  expenses: `${API_DEFAULT_ROUTE}/expenses`,
+  revenues: `${API_DEFAULT_ROUTE}/revenues`,
+  bills:    `${API_DEFAULT_ROUTE}/bills`,
+  fuel:     `${API_DEFAULT_ROUTE}/fuel`,
+  sales:    `${API_DEFAULT_ROUTE}/sales`,
+  chart:    `${API_DEFAULT_ROUTE}/chart`,
+  user:     `${API_DEFAULT_ROUTE}/user`,
+  chat:     `${API_DEFAULT_ROUTE}/chat`,
 } as const
 
 export const queryParams = {

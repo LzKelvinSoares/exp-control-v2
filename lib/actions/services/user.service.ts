@@ -1,5 +1,5 @@
 import { IUserRepository } from '@/lib/db';
-import { AuthContext, HasId, HasPoints, ITableReadAndUpdateService } from '@/types/server-types';
+import { AuthContext, HasPoints, ITableReadAndUpdateService } from '@/types/server-types';
 import { NextRequest } from 'next/server';
 
 export class UserService implements ITableReadAndUpdateService<number, HasPoints> {

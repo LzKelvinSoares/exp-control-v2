@@ -1,5 +1,6 @@
 import { Type, type FunctionDeclaration } from '@google/genai';
 import { BILL_CATEGORIES, EXPENSE_CATEGORIES, REVENUE_CATEGORIES } from './categories';
+import { MessageRole } from '@/types/server-types';
 
 export const TOOL_HANDLER_NAME_OPTIONS = {
   QUERIES: {
@@ -19,6 +20,11 @@ export const TOOL_HANDLER_NAME_OPTIONS = {
     ADD_BILL:       'add_bill',
   }
 }
+
+export const AI_ROLES: Record<string, MessageRole> = {
+  USER: 'user',
+  ASSISTANT: 'assistant',
+} as const
 
 export const CHAT_TOOLS: FunctionDeclaration[] = [
   {
