@@ -1,4 +1,5 @@
-import { GroupSummary, ToolInputGroupBy } from '@/types/server-types';
+import { GroupSummary, ToolInputGroupBy } from '@/types/server-types'
+import type { DataItem } from '@/types/app-types'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -33,4 +34,48 @@ export function groupAndSum<T extends Record<string, unknown>>(
 export function fromDateInput(s: string): string {
   const [y, m, d] = s.split('-').map(Number)
   return new Date(y, m - 1, d).toISOString()
+}
+
+function hasSecondaryTableData(content: string): boolean {
+  return /\*\*Descrição:\*\*/.test(content) && /\*\*Valor:\*\*\s*R\$/.test(content)
+}
+
+export function hasTableData(content: string): boolean {
+  const firstMatch = /^\s*\*\s+\*\*\d{2}\/\d{2}\/\d{4}[^*]*\*\*.*R\$/m.test(content)
+  if (!firstMatch) {
+    const secondMatch = hasSecondaryTableData(content)
+    return secondMatch
+  }
+  return firstMatch
+}
+
+export function parseTableData(content: string): DataItem[] {
+  // Match pattern: * **DATE:** Description — AMOUNT
+  const results: DataItem[] = [];
+  if (!hasSecondaryTableData(content)) {
+    const regex = /^\s*\*\s+\*\*(\d{2}\/\d{2}\/\d{4}):?\*\*\s*(.+?)\s*—\s*R\$\s*([\d.,]+)/gm
+    let match: RegExpExecArray | null;
+
+    while ((match = regex.exec(content)) !== null) {
+      const date = match[1];
+      const description = match[2].trim();
+      const amount = match[3];
+
+      results.push({ date, description, amount: `${amount}` });
+    }
+
+  } else {
+    const descriptionMatch = content.match(/\*\*Descrição:\*\*\s*([^*]+?)(?=\s*\*|\s*$)/);
+    const dateMatch = content.match(/\*\*Data:\*\*\s*(\d{2}\/\d{2}\/\d{4})/);
+    const amountMatch = content.match(/\*\*Valor:\*\*\s*R\$\s*([\d.,]+)/);
+
+    if (!!descriptionMatch && !!dateMatch && !!amountMatch) {
+      const description = descriptionMatch[1].trim();
+      const date = dateMatch[1];
+      const amount = amountMatch[1];
+
+      results.push({ date, description, amount: `${amount}` })
+    }
+  }
+  return results
 }

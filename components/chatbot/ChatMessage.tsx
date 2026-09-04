@@ -1,6 +1,8 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+import { hasTableData } from '@/lib/utils/helpers'
+import { DataTableCards } from './DataTableCards'
 import type { ChatMessage as ChatMessageType } from '@/store/chat'
 
 interface ChatMessageProps {
@@ -9,6 +11,7 @@ interface ChatMessageProps {
 
 export function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === 'user'
+  const showTableCards = !isUser && hasTableData(message.content)
 
   return (
     <div className={cn('flex w-full', isUser ? 'justify-end' : 'justify-start')}>
@@ -20,7 +23,16 @@ export function ChatMessage({ message }: ChatMessageProps) {
             : 'bg-muted text-foreground rounded-bl-sm'
         )}
       >
-        <p className="whitespace-pre-wrap break-words leading-relaxed">{message.content}</p>
+        {showTableCards ? (
+          <div className="space-y-3">
+            <p className="whitespace-pre-wrap break-words leading-relaxed text-muted-foreground mb-2">
+              {message.content.split('\n\n')[0]}
+            </p>
+            <DataTableCards content={message.content} />
+          </div>
+        ) : (
+          <p className="whitespace-pre-wrap break-words leading-relaxed">{message.content}</p>
+        )}
       </div>
     </div>
   )

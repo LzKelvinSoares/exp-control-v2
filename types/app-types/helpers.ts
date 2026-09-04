@@ -1,5 +1,11 @@
 import { PageKey } from './auth'
 
+export interface DataItem {
+  date: string
+  description: string
+  amount: string
+}
+
 export interface CategoryOption<T extends string> {
   value: T
   label: string
