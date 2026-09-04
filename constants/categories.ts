@@ -5,6 +5,7 @@ export const EXPENSE_CATEGORIES: CategoryOption<ExpenseCategory>[] = [
   { value: 'COMPRAS',             label: 'Compras' },
   { value: 'COMPRAS_AVULSAS',     label: 'Compras Avulsas' },
   { value: 'RESTAURANTE',         label: 'Restaurante' },
+  { value: 'FARMACIA',            label: 'Farmácia' },
   { value: 'ENERGIA',             label: 'Energia' },
   { value: 'AGUA',                label: 'Água' },
   { value: 'GAS',                 label: 'Gás' },
@@ -12,6 +13,7 @@ export const EXPENSE_CATEGORIES: CategoryOption<ExpenseCategory>[] = [
   { value: 'TELEFONE',            label: 'Telefone' },
   { value: 'ALUGUEL',             label: 'Aluguel' },
   { value: 'COMBUSTIVEL',         label: 'Combustível' },
+  { value: 'PENSAO',              label: 'Pensão' },
   { value: 'OUTROS',              label: 'Outros' },
 ];
 
@@ -32,6 +34,7 @@ export const BILL_CATEGORIES: CategoryOption<BillCategory>[] = [
   { value: 'ALUGUEL',     label: 'Aluguel' },
   { value: 'UTILIDADES',  label: 'Utilidades' },
   { value: 'CARTAO',      label: 'Cartão' },
+  { value: 'PENSAO',      label: 'Pensão' },
   { value: 'OUTROS',      label: 'Outros' },
 ];
 

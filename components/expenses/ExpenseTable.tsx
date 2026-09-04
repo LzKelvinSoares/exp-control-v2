@@ -74,8 +74,8 @@ export default function ExpenseTable({ expenses, loading }: ExpenseTableProps) {
         )}
       />
 
-      <ExpenseModal open={!!editing} expense={editing} onClose={() => setEditing(undefined)} />
-      <ExpenseModal open={!!cloning} expense={cloning} onClose={() => setCloning(undefined)} />
+      <ExpenseModal open={!!editing} expense={editing} onClose={() => setEditing(undefined)} key={editing?.id}/>
+      <ExpenseModal open={!!cloning} expense={cloning} onClose={() => setCloning(undefined)} key={cloning?.description}/>
 
       <ConfirmDialog
         open={!!deletingId}

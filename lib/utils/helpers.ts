@@ -29,3 +29,8 @@ export function groupAndSum<T extends Record<string, unknown>>(
     .map(([k, total]) => ({ [key]: k, total }))
     .sort((a, b) => b.total - a.total);
 }
+
+export function fromDateInput(s: string): string {
+  const [y, m, d] = s.split('-').map(Number)
+  return new Date(y, m - 1, d).toISOString()
+}

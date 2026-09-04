@@ -1,4 +1,4 @@
-export type BillCategory = 'ENERGIA' | 'AGUA' | 'GAS' | 'INTERNET' | 'TELEFONE' | 'ALUGUEL' | 'CARTAO' | 'UTILIDADES' | 'OUTROS'
+export type BillCategory = 'ENERGIA' | 'AGUA' | 'GAS' | 'INTERNET' | 'TELEFONE' | 'ALUGUEL' | 'CARTAO' | 'UTILIDADES' | 'PENSAO' | 'OUTROS'
 
 export interface Bill {
   id?: string

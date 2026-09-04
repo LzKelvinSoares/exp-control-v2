@@ -74,8 +74,8 @@ export default function RevenueTable({ revenues, loading }: RevenueTableProps) {
         )}
       />
 
-      <RevenueModal open={!!editing} revenue={editing} onClose={() => setEditing(undefined)} />
-      <RevenueModal open={!!cloning} revenue={cloning} onClose={() => setCloning(undefined)} />
+      <RevenueModal open={!!editing} revenue={editing} onClose={() => setEditing(undefined)} key={editing?.id}/>
+      <RevenueModal open={!!cloning} revenue={cloning} onClose={() => setCloning(undefined)} key={cloning?.description}/>
 
       <ConfirmDialog
         open={!!deletingId}
