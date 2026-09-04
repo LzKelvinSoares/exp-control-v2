@@ -88,7 +88,7 @@ export default function SaleTable({ sales, loading }: SaleTableProps) {
         )}
       />
 
-      <SaleModal open={!!editing} sale={editing} onClose={() => setEditing(undefined)} />
+      <SaleModal open={!!editing} sale={editing} onClose={() => setEditing(undefined)} key={editing?.id} />
 
       <ConfirmDialog
         open={!!deletingId}

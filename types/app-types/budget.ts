@@ -10,6 +10,8 @@ export type ExpenseCategory =
   | 'ALUGUEL'
   | 'COMBUSTIVEL'
   | 'RESTAURANTE'
+  | 'PENSAO'
+  | 'FARMACIA'
   | 'OUTROS'
 
 export type RevenueCategory = 'SALARIO' | 'FREELANCE' | 'INVESTIMENTO' | 'EMPRESTIMO' | 'OUTROS'

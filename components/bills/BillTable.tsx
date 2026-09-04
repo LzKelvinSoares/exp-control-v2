@@ -171,8 +171,8 @@ export default function BillTable({ bills, loading }: BillTableProps) {
         }}
       />
 
-      <BillModal open={!!editing} bill={editing} onClose={() => setEditing(undefined)} />
-      <BillModal open={!!cloning} bill={cloning} onClose={() => setCloning(undefined)} />
+      <BillModal open={!!editing} bill={editing} onClose={() => setEditing(undefined)} key={editing?.id}/>
+      <BillModal open={!!cloning} bill={cloning} onClose={() => setCloning(undefined)} key={cloning?.description}/>
 
       <ConfirmDialog
         open={!!deletingId}
