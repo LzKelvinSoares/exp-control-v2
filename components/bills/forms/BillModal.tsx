@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
@@ -31,26 +30,25 @@ export default function BillModal({ open, bill, onClose }: BillModalProps) {
   const { currency } = useCurrencySession()
   const isEditing = !!bill?.id
 
-  const methods = useForm<BillFormData>({
-    resolver: zodResolver(billSchema),
-    defaultValues: { barCode: '', saveAsExpense: false },
-  })
-  const { handleSubmit, reset, formState: { isSubmitting } } = methods
-
-  useEffect(() => {
-    if (bill) {
-      reset({
+  const defaultValues: BillFormData = bill
+    ? {
         description: bill.description,
         type: bill.type,
         value: bill.value,
         expirationDate: toDateInput(bill.expirationDate),
         barCode: bill.barCode ?? '',
         saveAsExpense: false,
-      })
-    } else {
-      reset({ barCode: '', saveAsExpense: false })
-    }
-  }, [bill, reset])
+      } : 
+      { 
+        barCode: '', 
+        saveAsExpense: false 
+      } as BillFormData
+
+  const methods = useForm<BillFormData>({
+    resolver: zodResolver(billSchema),
+    defaultValues,
+  })
+  const { handleSubmit, formState: { isSubmitting } } = methods
 
   async function onSubmit(data: BillFormData) {
     try {
