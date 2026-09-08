@@ -7,6 +7,7 @@ import { ColumnDef, Currency, Sale } from '@/types/app-types'
 interface UseSaleTableColumnsParams {
   currency: Currency
   onEdit: (sale: Sale) => void
+  onClone: (sale: Sale) => void
   onDelete: (id: string) => void
 }
 
@@ -23,7 +24,7 @@ function statusBadgeClass(active: boolean) {
   return active ? 'text-emerald-700 border-emerald-300' : 'text-amber-700 border-amber-300'
 }
 
-export function useSaleTableColumns({ currency, onEdit, onDelete }: UseSaleTableColumnsParams): ColumnDef<Sale>[] {
+export function useSaleTableColumns({ currency, onEdit, onClone, onDelete }: UseSaleTableColumnsParams): ColumnDef<Sale>[] {
   return [
     {
       header: 'Item',
@@ -68,7 +69,7 @@ export function useSaleTableColumns({ currency, onEdit, onDelete }: UseSaleTable
       headerClassName: 'w-20',
       cell: (s) => (
         <div className="flex items-center gap-1 justify-end">
-          <SaleTableActions sale={s} onEdit={onEdit} onDelete={onDelete} />
+          <SaleTableActions sale={s} onEdit={onEdit} onClone={onClone} onDelete={onDelete} />
         </div>
       ),
     },

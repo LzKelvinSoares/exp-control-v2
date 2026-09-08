@@ -1,9 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Share2, TrendingUp } from 'lucide-react'
+import { Share2, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import MonthYearSelector from '@/components/shared/MonthYearSelector'
 import SummaryCard from '@/components/shared/SummaryCard'
 import { TableFilters } from '@/components/shared/TableFilters'
 import RevenueTable from '@/components/revenues/RevenueTable'
@@ -11,10 +10,11 @@ import RevenueModal from '@/components/revenues/forms/RevenueModal'
 import { useRevenues } from '@/hooks/queries/revenues/use-revenues'
 import { useTableFilter } from '@/hooks/useTableFilter'
 import { useCalendar } from '@/store/calendar'
-import { formatCurrency, sumBy } from '@/lib/utils'
+import { formatCurrency, shareOrCopy, sumBy } from '@/lib/utils'
 import { REVENUE_CATEGORIES, REVENUE_FILTER_DEFS } from '@/constants'
 import { useCurrencySession } from '@/hooks/use-currency-session'
 import { PageWrapper } from '@/components/shared/PageWrapper'
+import { toast } from 'sonner'
 
 export default function RevenuesPage() {
   const { month, year } = useCalendar();
@@ -35,8 +35,7 @@ export default function RevenuesPage() {
     .filter((c) => c.value > 0)
     .map((c) => ({ label: c.label, value: formatCurrency(c.value, currency) }));
 
-  function handleShare() {
-    if (typeof navigator === 'undefined' || !navigator.share) return
+  async function handleShare() {
     const text = filteredData
       .map((r) => {
         const value = formatCurrency(r.value, currency).replace(/ /g, ' ')
@@ -44,28 +43,25 @@ export default function RevenuesPage() {
         return r.monthsLeft && r.monthsLeft > 1 ? `${line} - Faltam: ${r.monthsLeft}` : line
       })
       .join('\n')
-    navigator.share({ title: 'Receitas', text })
+    try {
+      const result = await shareOrCopy({ title: 'Receitas', text })
+      if (result === 'copied') toast.success('Receitas copiadas para a área de transferência')
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return
+      toast.error('Não foi possível compartilhar as receitas')
+    }
   };
-
-  const RenderShareButton = () => {
-    return (
-      <Button 
-        size='sm' 
-        variant='outline' 
-        onClick={handleShare}
-        disabled={filteredData.length === 0}
-      >
-        <Share2 size={16} />
-        <span className='hidden sm:inline ml-1'>Compartilhar</span>
-      </Button>
-    )
-  }
 
   return (
     <PageWrapper title='Receitas' 
         addItem='Nova receita' 
         setAddModalOpen={setModalOpen} 
-        secondaryActions={<RenderShareButton />}
+        secondaryActions={
+          <Button size='sm' variant='outline' onClick={handleShare} disabled={filteredData.length === 0}>
+            <Share2 size={16} />
+            <span className='hidden sm:inline ml-1'>Compartilhar</span>
+          </Button>
+        }
       >
       <SummaryCard
         label='Total de receitas'
