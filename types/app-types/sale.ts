@@ -2,6 +2,7 @@ export type SaleRoom = 'SALA' | 'QUARTO' | 'COZINHA' | 'BANHEIRO' | 'ESCRITORIO'
 
 export interface Sale {
   id?: string
+  currencyCurrencyAccount?: string
   description: string
   room: SaleRoom
   roomDescription?: string
