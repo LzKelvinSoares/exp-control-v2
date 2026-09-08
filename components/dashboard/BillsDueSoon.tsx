@@ -14,7 +14,8 @@ export default function BillsDueSoon() {
   const { data: bills, isLoading } = useBillsDueSoon(5)
   const payBill = usePayBill()
 
-  const unpaid = bills?.filter((b) => !b.paid) ?? []
+  const billsDueSoon = bills?.filter((b) => !b.paid) ?? []
+  const unpaid = billsDueSoon
 
   return (
     <Card>
@@ -38,29 +39,53 @@ export default function BillsDueSoon() {
         )}
 
         {!isLoading && unpaid.length > 0 && (
-          <ul className="space-y-2">
-            {unpaid.map((bill) => (
-              <li key={String(bill.id)} className="flex items-center justify-between gap-3 text-sm">
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate">{bill.description}</p>
-                  <p className="text-xs text-muted-foreground">
-                    Vence: {new Date(bill.expirationDate).toLocaleDateString('pt-BR')}
-                  </p>
-                </div>
-                <Badge variant="outline" className="shrink-0">
-                  {formatCurrency(bill.value, currency)}
-                </Badge>
-                <button
-                  onClick={() => payBill.mutate(String(bill.id))}
-                  disabled={payBill.isPending}
-                  className="text-emerald-600 hover:text-emerald-700 disabled:opacity-50"
-                  title="Marcar como pago"
-                >
-                  <CheckCircle2 size={18} />
-                </button>
-              </li>
-            ))}
-          </ul>
+          <div data-testid="bills-timeline" className="relative ml-1">
+            <div className="absolute left-2.5 top-2 bottom-2 w-px bg-border" />
+            <div className="space-y-4">
+              {unpaid.map((bill, index) => {
+                const dueDate = new Date(bill.expirationDate)
+
+                return (
+                  <div key={String(bill.id)} className="relative flex items-start gap-3">
+                    <div style={{ borderColor: '#291b2a' }}
+                      className="relative z-10 flex h-5 w-5 shrink-0 items-center self-center justify-center rounded-full border border-amber-200 bg-amber-50 shadow-sm">
+                      <span className="h-2.5 w-2.5 rounded-full bg-amber-500"  style={{ backgroundColor: 'rgba(97,45,96,0.9)' }} />
+                    </div>
+
+                    <div className="flex-1 min-w-0 rounded-lg border border-border bg-muted/30 p-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-medium leading-5">{bill.description}</p>
+                          <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                            <span>Vence: {dueDate.toLocaleDateString('pt-BR')}</span>
+                            {index === 0 && (
+                              <Badge variant="secondary" className="h-5 px-1.5 py-0 text-[10px]">
+                                Próximo
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+
+                        <Badge variant="outline" className="shrink-0 text-xs">
+                          {formatCurrency(bill.value, currency)}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => payBill.mutate(String(bill.id))}
+                      disabled={payBill.isPending}
+                      className="self-center cursor-pointer text-emerald-600 hover:text-emerald-700 disabled:opacity-50"
+                      aria-label="Marcar como pago"
+                      title="Marcar como pago"
+                    >
+                      <CheckCircle2 size={18} />
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
         )}
       </CardContent>
     </Card>
