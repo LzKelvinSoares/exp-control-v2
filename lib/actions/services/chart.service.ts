@@ -1,12 +1,12 @@
 import { MONTHS } from '@/constants';
 import { Budget, Expense, Fuel, MonthlyChartData } from '@/types/app-types';
-import { AuthContext, IFullTableCrudRepository, IMCPQueryRepository, IReadService } from '@/types/server-types';
+import { AuthContext, IFullTableCrudRepository, IFullMCPQueryRepository, IReadService } from '@/types/server-types';
 import { NextRequest } from 'next/server';
 
 export class ChartService implements IReadService<MonthlyChartData> {
     constructor(
-        private expensesRepository: IMCPQueryRepository<Expense>, 
-        private revenuesRepository: IMCPQueryRepository<Budget>, 
+        private expensesRepository: IFullMCPQueryRepository<Expense>, 
+        private revenuesRepository: IFullMCPQueryRepository<Budget>, 
         private fuelRepository: IFullTableCrudRepository<Fuel>) {
     }
 
