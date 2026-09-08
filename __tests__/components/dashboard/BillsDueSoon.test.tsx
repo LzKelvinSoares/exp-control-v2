@@ -55,6 +55,22 @@ describe('BillsDueSoon', () => {
     expect(screen.getByText('Nenhuma conta a vencer')).toBeInTheDocument()
   })
 
+  it('renders the unpaid bills in a timeline layout', () => {
+    vi.mocked(useBillsDueSoon).mockReturnValue({
+      data: [
+        { id: '1', description: 'Conta de Luz', expirationDate: '2025-01-31', value: 150, paid: false },
+        { id: '2', description: 'Internet', expirationDate: '2025-02-02', value: 90, paid: false },
+      ],
+      isLoading: false,
+    } as unknown as ReturnType<typeof useBillsDueSoon>)
+
+    const { container } = render(<BillsDueSoon />)
+
+    expect(container.querySelector('[data-testid="bills-timeline"]')).toBeInTheDocument()
+    expect(screen.getByText('Conta de Luz')).toBeInTheDocument()
+    expect(screen.getByText('Internet')).toBeInTheDocument()
+  })
+
   it('calls payBill.mutate when pay button clicked', async () => {
     vi.mocked(useBillsDueSoon).mockReturnValue({
       data: [{ id: '1', description: 'Internet', expirationDate: '2025-01-31', value: 100, paid: false }],
