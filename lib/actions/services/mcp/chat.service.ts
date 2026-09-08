@@ -74,20 +74,12 @@ export class ChatService implements IChatService {
       }
 
       case TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_EXPENSE: {
-        const { description, type, value, firstExpirationDate, responsible, monthsLeft = 1 } = toolInput;
-        const expense = await this.expensesRepository.create({
-          description, type, value, firstExpirationDate, responsible, monthsLeft,
-          userId, currencyCurrencyAccount: currency,
-        } as Expense);
+        const expense = await this.createBudget(userId, currency, toolInput, this.expensesRepository);
         return { success: true, expense };
       }
 
       case TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_REVENUE: {
-        const { description, type, value, firstExpirationDate, responsible, monthsLeft = 1 } = toolInput;
-        const revenue = await this.revenuesRepository.create({
-          description, type, value, firstExpirationDate, responsible, monthsLeft,
-          userId, currencyCurrencyAccount: currency,
-        } as Budget);
+        const revenue = await this.createBudget(userId, currency, toolInput, this.revenuesRepository);
         return { success: true, revenue };
       }
 
@@ -131,6 +123,19 @@ export class ChatService implements IChatService {
         return { success: true, bill };
       }
 
+      case TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_SALE: {
+        const {
+          description, room, roomDescription, buyer, value, valuePaid, discount,
+          installments = 1, bookingDate, saleDate, paid = false, delivered = false,
+        } = toolInput;
+        const sale = await this.salesRepository.create({
+          description, room, roomDescription, buyer, value, valuePaid, discount,
+          installments, bookingDate, saleDate, paid, delivered,
+          currencyCurrencyAccount: currency,
+        } as Sale);
+        return { success: true, sale };
+      }
+
       default:
         throw new Error(`Unknown tool: ${toolName}`);
     }
@@ -142,5 +147,18 @@ export class ChatService implements IChatService {
     return items.map(({ id, description, type, typeDescription, responsible, value, firstExpirationDate }) => ({
       id, description, type, typeDescription, responsible, value, firstExpirationDate,
     }));
+  }
+
+  private async createBudget<T extends Budget>(
+    userId: string,
+    currency: string,
+    toolInput: ToolInput,
+    repository: IFullMCPQueryRepository<T>,
+  ): Promise<T> {
+    const { description, type, value, firstExpirationDate, responsible, monthsLeft = 1 } = toolInput;
+    return await repository.create({
+      description, type, value, firstExpirationDate, responsible, monthsLeft,
+      userId, currencyCurrencyAccount: currency,
+    } as T) as T;
   }
 }

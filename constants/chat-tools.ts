@@ -1,5 +1,6 @@
 import { Type, type FunctionDeclaration } from '@google/genai';
 import { BILL_CATEGORIES, EXPENSE_CATEGORIES, REVENUE_CATEGORIES } from './categories';
+import { SALE_ROOM_ENUM } from './enums';
 import { MessageRole } from '@/types/server-types';
 
 export const TOOL_HANDLER_NAME_OPTIONS = {
@@ -19,6 +20,7 @@ export const TOOL_HANDLER_NAME_OPTIONS = {
     ADD_REVENUE:    'add_revenue',
     ADD_FUEL_ENTRY: 'add_fuel_entry',
     ADD_BILL:       'add_bill',
+    ADD_SALE:       'add_sale',
   }
 }
 
@@ -218,6 +220,33 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
         saveAsExpense:  { type: Type.BOOLEAN, description: 'If true, also creates a matching expense entry.' },
       },
       required: ['description', 'type', 'value', 'expirationDate'],
+    },
+  },
+  {
+    name: TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_SALE,
+    description:
+      'Creates a new sale for the user. Use when the user asks to add or record a sale. Include the room where the item is located.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        description:  { type: Type.STRING, description: 'Short description of the item sold.' },
+        room: {
+          type: Type.STRING,
+          enum: [...SALE_ROOM_ENUM],
+          description: 'Room where the item is located.',
+        },
+        roomDescription: { type: Type.STRING, description: 'Additional room details (optional).' },
+        buyer:          { type: Type.STRING, description: 'Buyer name (optional).' },
+        value:          { type: Type.NUMBER, description: 'Sale value.' },
+        valuePaid:      { type: Type.NUMBER, description: 'Amount already paid (optional).' },
+        discount:       { type: Type.NUMBER, description: 'Discount amount (optional).' },
+        installments:   { type: Type.NUMBER, description: 'Number of installments (default 1).' },
+        bookingDate:    { type: Type.STRING, description: 'ISO booking date (optional).' },
+        saleDate:       { type: Type.STRING, description: 'ISO sale date (optional).' },
+        paid:           { type: Type.BOOLEAN, description: 'Whether the sale is paid (default false).' },
+        delivered:      { type: Type.BOOLEAN, description: 'Whether the item was delivered (default false).' },
+      },
+      required: ['description', 'room', 'value'],
     },
   },
 ]

@@ -1,3 +1,5 @@
+import { SaleRoom } from '@/types/app-types';
+
 export type MessageRole = 'user' | 'assistant';
 export type ToolInputGroupBy = 'type' | 'responsible';
 
@@ -23,10 +25,19 @@ export interface ToolInput {
   groupBy?: ToolInputGroupBy;
   // mutation fields
   value?: number;
+  room?: SaleRoom;
+  roomDescription?: string;
+  buyer?: string;
+  valuePaid?: number;
+  discount?: number;
+  installments?: number;
+  bookingDate?: string;
+  saleDate?: string;
   firstExpirationDate?: string;
   expirationDate?: string;
   monthsLeft?: number;
   paid?: boolean;
+  delivered?: boolean;
   barCode?: string;
   saveAsExpense?: boolean;
   creationDate?: string;
