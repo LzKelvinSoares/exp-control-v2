@@ -26,7 +26,7 @@ interface SaleModalProps {
 export default function SaleModal({ open, sale, onClose }: SaleModalProps) {
   const createSale = useCreateSale()
   const updateSale = useUpdateSale()
-  const isEditing = !!sale
+  const isEditing = !!sale?.id
 
   const defaultSale = sale
     ? {
