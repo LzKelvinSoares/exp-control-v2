@@ -1,10 +1,10 @@
 import RevenueModel from '@/models/Revenue'
 import { findMany, createMany, updateOne, deleteOne } from '../crud'
 import { Budget } from '@/types/app-types'
-import { IGetByMonthAndYearProps, IGetByYearProps, IMCPQueryRepository, QueryFilters } from '@/types/server-types';
+import { IGetByMonthAndYearProps, IGetByYearProps, IFullMCPQueryRepository, QueryFilters } from '@/types/server-types';
 import { buildDateRange } from '@/lib/utils';
 
-export class RevenuesRepository implements IMCPQueryRepository<Budget> {
+export class RevenuesRepository implements IFullMCPQueryRepository<Budget> {
   async getByMonthAndYear({ userId, currency, month, year }: IGetByMonthAndYearProps) {
     const start = new Date(year, month - 1, 1).toISOString();
     const end = new Date(year, month, 1).toISOString();

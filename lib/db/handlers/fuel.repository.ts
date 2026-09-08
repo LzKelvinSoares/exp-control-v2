@@ -1,9 +1,10 @@
 import FuelModel from '@/models/Fuel'
 import { findMany, createOne, updateOne, deleteOne } from '../crud'
 import { Fuel } from '@/types/app-types'
-import { IGetByMonthAndYearProps, IGetByYearProps, IFullTableCrudRepository } from '@/types/server-types'
+import { IGetByMonthAndYearProps, IGetByYearProps, IFullMCPQueryRepository, QueryFilters } from '@/types/server-types'
+import { buildDateRange } from '@/lib/utils';
 
-export class FuelRepository implements IFullTableCrudRepository<Fuel> {
+export class FuelRepository implements IFullMCPQueryRepository<Fuel> {
   async getByMonthAndYear({ userId, currency, month, year }: IGetByMonthAndYearProps) {
     const start = new Date(year, month - 1, 1).toISOString();
     const end = new Date(year, month, 1).toISOString();
@@ -26,5 +27,26 @@ export class FuelRepository implements IFullTableCrudRepository<Fuel> {
 
   async delete(id: string){
     return deleteOne(FuelModel, id);
+  }
+
+  async queryWithFilters(userId: string, currency: string, filters: QueryFilters) {
+    const { year, month, minValue, maxValue } = filters;
+    const { start, end } = buildDateRange(year, month);
+
+    const filter: Record<string, unknown> = {
+      userId,
+      currencyCurrencyAccount: currency,
+      firstExpirationDate: { $gte: start, $lt: end },
+    };
+
+    if (minValue !== undefined || maxValue !== undefined) {
+      const valueFilter: Record<string, number> = {};
+      if (minValue !== undefined) valueFilter.$gte = minValue;
+      if (maxValue !== undefined) valueFilter.$lte = maxValue;
+      filter.value = valueFilter;
+    }
+
+    return findMany(FuelModel, filter);
+
   }
 }

@@ -1,11 +1,12 @@
 import { BILLS_EXPENSE_CATEGORIES, EXPENSE_CATEGORIES } from '@/constants/categories';
 import { POINTS } from '@/constants/levels';
-import { IMCPQueryRepository, IFullTableCrudRepository, ToolCallProps, ToolInput } from '@/types/server-types';
+import { IMCPQueryRepository, ToolCallProps, ToolInput, IFullMCPQueryRepository } from '@/types/server-types';
 import { TOOL_HANDLER_NAME_OPTIONS } from '@/constants';
 import { getBudgetQueryFilters, groupAndSum, validateYear } from '@/lib/utils';
-import { Bill, Budget, Expense, Fuel } from '@/types/app-types';
+import { Bill, Budget, Expense, Fuel, Sale } from '@/types/app-types';
 import { IBillsRepository, IUserRepository } from '@/lib/db';
 import { createCalendarEvent, refreshAccessToken } from '../google-calendar.service';
+import { auth } from '../auth.service';
 
 export interface IChatService {
   executeToolCall(toolCallProps: ToolCallProps): Promise<unknown>
@@ -13,10 +14,11 @@ export interface IChatService {
 
 export class ChatService implements IChatService {
   constructor(
-    private expensesRepository: IMCPQueryRepository<Expense>,
-    private revenuesRepository: IMCPQueryRepository<Budget>,
+    private expensesRepository: IFullMCPQueryRepository<Expense>,
+    private revenuesRepository: IFullMCPQueryRepository<Budget>,
     private billsRepository: IBillsRepository,
-    private fuelRepository: IFullTableCrudRepository<Fuel>,
+    private fuelRepository: IFullMCPQueryRepository<Fuel>,
+    private salesRepository: IMCPQueryRepository<Sale>,
     private userRepository: IUserRepository) { }
 
   async executeToolCall({
@@ -62,21 +64,22 @@ export class ChatService implements IChatService {
         return await this.fuelRepository.getByYear({ userId, currency, year });
       }
 
+      case TOOL_HANDLER_NAME_OPTIONS.QUERIES.SALES: {
+        const session = await auth()
+        
+        if (!session?.user?.access?.includes('sales')) {
+          throw new Error('User does not have access to sales data');
+        }
+        return await this.salesRepository.getAllByCurrency?.(currency);
+      }
+
       case TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_EXPENSE: {
-        const { description, type, value, firstExpirationDate, responsible, monthsLeft = 1 } = toolInput;
-        const expense = await this.expensesRepository.create({
-          description, type, value, firstExpirationDate, responsible, monthsLeft,
-          userId, currencyCurrencyAccount: currency,
-        } as Expense);
+        const expense = await this.createBudget(userId, currency, toolInput, this.expensesRepository);
         return { success: true, expense };
       }
 
       case TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_REVENUE: {
-        const { description, type, value, firstExpirationDate, responsible, monthsLeft = 1 } = toolInput;
-        const revenue = await this.revenuesRepository.create({
-          description, type, value, firstExpirationDate, responsible, monthsLeft,
-          userId, currencyCurrencyAccount: currency,
-        } as Budget);
+        const revenue = await this.createBudget(userId, currency, toolInput, this.revenuesRepository);
         return { success: true, revenue };
       }
 
@@ -120,6 +123,19 @@ export class ChatService implements IChatService {
         return { success: true, bill };
       }
 
+      case TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_SALE: {
+        const {
+          description, room, roomDescription, buyer, value, valuePaid, discount,
+          installments = 1, bookingDate, saleDate, paid = false, delivered = false,
+        } = toolInput;
+        const sale = await this.salesRepository.create({
+          description, room, roomDescription, buyer, value, valuePaid, discount,
+          installments, bookingDate, saleDate, paid, delivered,
+          currencyCurrencyAccount: currency,
+        } as Sale);
+        return { success: true, sale };
+      }
+
       default:
         throw new Error(`Unknown tool: ${toolName}`);
     }
@@ -131,5 +147,18 @@ export class ChatService implements IChatService {
     return items.map(({ id, description, type, typeDescription, responsible, value, firstExpirationDate }) => ({
       id, description, type, typeDescription, responsible, value, firstExpirationDate,
     }));
+  }
+
+  private async createBudget<T extends Budget>(
+    userId: string,
+    currency: string,
+    toolInput: ToolInput,
+    repository: IFullMCPQueryRepository<T>,
+  ): Promise<T> {
+    const { description, type, value, firstExpirationDate, responsible, monthsLeft = 1 } = toolInput;
+    return await repository.create({
+      description, type, value, firstExpirationDate, responsible, monthsLeft,
+      userId, currencyCurrencyAccount: currency,
+    } as T) as T;
   }
 }
