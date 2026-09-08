@@ -40,11 +40,14 @@ function hasSecondaryTableData(content: string): boolean {
   return /\*\*Descrição:\*\*/.test(content) && /\*\*Valor:\*\*\s*R\$/.test(content)
 }
 
+function hasRevenueTableData(content: string): boolean {
+  return /^\s*\*\s+\*\*[^*]+\*\*:\s*R\$\s*[\d.,]+\s+\(Vencimento:\s*\d{2}\/\d{2}\/\d{4}\)/m.test(content)
+}
+
 export function hasTableData(content: string): boolean {
   const firstMatch = /^\s*\*\s+\*\*\d{2}\/\d{2}\/\d{4}[^*]*\*\*.*R\$/m.test(content)
   if (!firstMatch) {
-    const secondMatch = hasSecondaryTableData(content)
-    return secondMatch
+    return hasSecondaryTableData(content) || hasRevenueTableData(content)
   }
   return firstMatch
 }
@@ -52,7 +55,18 @@ export function hasTableData(content: string): boolean {
 export function parseTableData(content: string): DataItem[] {
   // Match pattern: * **DATE:** Description — AMOUNT
   const results: DataItem[] = [];
-  if (!hasSecondaryTableData(content)) {
+  if (hasRevenueTableData(content)) {
+    const regex = /^\s*\*\s+\*\*([^*]+)\*\*:\s*R\$\s*([\d.,]+)\s+\(Vencimento:\s*(\d{2}\/\d{2}\/\d{4})\)/gm
+    let match: RegExpExecArray | null
+
+    while ((match = regex.exec(content)) !== null) {
+      results.push({
+        date: match[3],
+        description: match[1].trim(),
+        amount: match[2],
+      })
+    }
+  } else if (!hasSecondaryTableData(content)) {
     const regex = /^\s*\*\s+\*\*(\d{2}\/\d{2}\/\d{4}):?\*\*\s*(.+?)\s*—\s*R\$\s*([\d.,]+)/gm
     let match: RegExpExecArray | null;
 
