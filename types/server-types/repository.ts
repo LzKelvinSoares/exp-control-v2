@@ -21,6 +21,7 @@ export interface IGetByMonthAndYearProps extends IGetByYearProps {
 
 export interface IReadRepository<T> {
     getAll?: () => Promise<T[]>;
+    getAllByCurrency?: (currency: string) => Promise<T[]>;
 }
 
 export interface IReadPerYearRepository<T> {

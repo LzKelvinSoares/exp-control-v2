@@ -9,6 +9,7 @@
     "lint": "eslint",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
+    "migrate:sales-currency": "node scripts/migrate-sales-currency-account.mjs",
     "prepare": "husky"
   },
   "lint-staged": {

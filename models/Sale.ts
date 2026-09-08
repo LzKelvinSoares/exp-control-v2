@@ -4,6 +4,7 @@ import { Sale } from '@/types/app-types'
 
 const SaleSchema = new Schema<Sale>({
   id:               { type: String, default: () => crypto.randomUUID() },
+  currencyCurrencyAccount: { type: String, enum: ['BRL', 'EUR'] },
   description:      { type: String, required: true },
   room:             { type: String, enum: SALE_ROOM_ENUM, required: true },
   roomDescription:  { type: String },

@@ -1,4 +1,4 @@
-import { AI_DEFAULT_MODEL, buildSystemPrompt, CHAT_TOOLS, MAX_ITERATIONS } from '@/constants';
+import { AI_DEFAULT_MODEL, AI_ROLES, buildSystemPrompt, CHAT_TOOLS, MAX_ITERATIONS } from '@/constants';
 import { AuthContext, IChatRequest, ToolInput } from '@/types/server-types';
 import { Content, createPartFromFunctionResponse, GoogleGenAI } from '@google/genai';
 import { NextResponse } from 'next/server';
@@ -24,7 +24,7 @@ export class AIContextService implements IAIContextService {
         }
 
         const contents: Content[] = messages.map((m) => ({
-            role: m.role === 'assistant' ? 'model' : 'user',
+            role: m.role === AI_ROLES.ASSISTANT ? 'model' : AI_ROLES.USER,
             parts: [{ text: m.content }],
         }));
 
@@ -45,7 +45,7 @@ export class AIContextService implements IAIContextService {
             const functionCalls = response.functionCalls;
 
             if (!functionCalls?.length) {
-                return NextResponse.json({ role: 'assistant', content: response.text ?? '' });
+                return NextResponse.json({ role: AI_ROLES.ASSISTANT, content: response.text ?? '' });
             }
 
             const modelParts = response.candidates?.[0]?.content?.parts ?? [];
@@ -71,7 +71,7 @@ export class AIContextService implements IAIContextService {
                 })
             )
 
-            contents.push({ role: 'user', parts: toolResultParts })
+            contents.push({ role: AI_ROLES.USER, parts: toolResultParts })
         }
 
         return NextResponse.json({ error: 'Max iterations reached' }, { status: 500 });
