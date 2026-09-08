@@ -8,6 +8,7 @@ export const TOOL_HANDLER_NAME_OPTIONS = {
     REVENUES: 'query_revenues',
     BILLS: 'query_bills',
     FUEL: 'query_fuel',
+    SALES: 'query_sales',
     EXPENSE_CATEGORIES: 'get_expense_categories'
   },
   SUMMARIES: {
@@ -129,6 +130,17 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
         month: { type: Type.NUMBER, description: 'Optional month 1–12.' },
       },
       required: ['year'],
+    },
+  },
+  {
+    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.SALES,
+    description:
+      "Query the user's sales entries. Use when asked about sales data, revenue, or transaction history.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+      },
+      required: [],
     },
   },
   {

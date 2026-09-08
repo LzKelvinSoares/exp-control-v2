@@ -1,10 +1,10 @@
 import BillModel from '@/models/Bill'
 import { findMany, createOne, updateOne, updateMany, deleteOne } from '../crud'
 import { Bill } from '@/types/app-types'
-import { IGetByMonthAndYearProps, IGetByYearProps, IMCPQueryRepository, QueryFilters } from '@/types/server-types';
+import { IFullMCPQueryRepository, IGetByMonthAndYearProps, IGetByYearProps, QueryFilters } from '@/types/server-types';
 import { buildDateRange, toGmtRange } from '../../utils';
 
-export interface IBillsRepository extends IMCPQueryRepository<Bill> {
+export interface IBillsRepository extends IFullMCPQueryRepository<Bill> {
   getBillsDueSoon: (userId: string, currency: string, withinDays?: number) => Promise<Bill[]>;
   payBill: (id: string) => Promise<void>;
   payBills: (ids: string[]) => Promise<void>;

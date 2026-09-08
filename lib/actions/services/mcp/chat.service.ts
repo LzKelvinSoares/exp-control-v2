@@ -1,11 +1,12 @@
 import { BILLS_EXPENSE_CATEGORIES, EXPENSE_CATEGORIES } from '@/constants/categories';
 import { POINTS } from '@/constants/levels';
-import { IMCPQueryRepository, IFullTableCrudRepository, ToolCallProps, ToolInput } from '@/types/server-types';
+import { IMCPQueryRepository, ToolCallProps, ToolInput, IFullMCPQueryRepository } from '@/types/server-types';
 import { TOOL_HANDLER_NAME_OPTIONS } from '@/constants';
 import { getBudgetQueryFilters, groupAndSum, validateYear } from '@/lib/utils';
-import { Bill, Budget, Expense, Fuel } from '@/types/app-types';
+import { Bill, Budget, Expense, Fuel, Sale } from '@/types/app-types';
 import { IBillsRepository, IUserRepository } from '@/lib/db';
 import { createCalendarEvent, refreshAccessToken } from '../google-calendar.service';
+import { auth } from '../auth.service';
 
 export interface IChatService {
   executeToolCall(toolCallProps: ToolCallProps): Promise<unknown>
@@ -13,10 +14,11 @@ export interface IChatService {
 
 export class ChatService implements IChatService {
   constructor(
-    private expensesRepository: IMCPQueryRepository<Expense>,
-    private revenuesRepository: IMCPQueryRepository<Budget>,
+    private expensesRepository: IFullMCPQueryRepository<Expense>,
+    private revenuesRepository: IFullMCPQueryRepository<Budget>,
     private billsRepository: IBillsRepository,
-    private fuelRepository: IFullTableCrudRepository<Fuel>,
+    private fuelRepository: IFullMCPQueryRepository<Fuel>,
+    private salesRepository: IMCPQueryRepository<Sale>,
     private userRepository: IUserRepository) { }
 
   async executeToolCall({
@@ -60,6 +62,15 @@ export class ChatService implements IChatService {
           return await this.fuelRepository.getByMonthAndYear({ userId, currency, year, month });
         }
         return await this.fuelRepository.getByYear({ userId, currency, year });
+      }
+
+      case TOOL_HANDLER_NAME_OPTIONS.QUERIES.SALES: {
+        const session = await auth()
+        
+        if (!session?.user?.access?.includes('sales')) {
+          throw new Error('User does not have access to sales data');
+        }
+        return await this.salesRepository.getAllByCurrency?.(currency);
       }
 
       case TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_EXPENSE: {

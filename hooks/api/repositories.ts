@@ -1,13 +1,13 @@
 import { BillsRepository, ExpensesRepository, FuelRepository, IBillsRepository, IUserRepository, RevenuesRepository, SalesRepository, UserRepository } from '@/lib/db';
 import { Budget, Expense, Fuel, Sale } from '@/types/app-types';
-import { IFullTableCrudRepository, IMCPQueryRepository, ITableCrudRepository } from '@/types/server-types';
+import { IFullMCPQueryRepository, IMCPQueryRepository } from '@/types/server-types';
 
 export interface IRepositoriesContext {
     billsRepository: IBillsRepository;
-    expensesRepository: IMCPQueryRepository<Expense>;
-    revenuesRepository: IMCPQueryRepository<Budget>;
-    fuelRepository: IFullTableCrudRepository<Fuel>;
-    salesRepository: ITableCrudRepository<Sale>;
+    expensesRepository: IFullMCPQueryRepository<Expense>;
+    revenuesRepository: IFullMCPQueryRepository<Budget>;
+    fuelRepository: IFullMCPQueryRepository<Fuel>;
+    salesRepository: IMCPQueryRepository<Sale>;
     userRepository: IUserRepository;
 }
 

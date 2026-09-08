@@ -1,3 +1,5 @@
+import { SaleRoom } from "../app-types";
+
 export interface IGetByYearProps {
     userId: string;
     currency: string;
@@ -13,6 +15,7 @@ export interface QueryFilters {
   minValue?: number
   maxValue?: number
   paid?: boolean
+  room?: SaleRoom
 }
 
 export interface IGetByMonthAndYearProps extends IGetByYearProps {
@@ -44,4 +47,5 @@ export interface IDeleteRepository {
 
 export type ITableCrudRepository<T> =  IReadRepository<T> & IWriteRepository<T> & IDeleteRepository;
 export type IFullTableCrudRepository<T> =  IReadPerYearRepository<T> & ITableCrudRepository<T>;
-export type IMCPQueryRepository<T> = IFullTableCrudRepository<T> & IQueryWithFiltersRepository<T>;
+export type IMCPQueryRepository<T> = ITableCrudRepository<T> & IQueryWithFiltersRepository<T>;
+export type IFullMCPQueryRepository<T> = IFullTableCrudRepository<T> & IQueryWithFiltersRepository<T>;

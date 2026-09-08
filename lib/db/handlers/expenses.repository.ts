@@ -1,10 +1,10 @@
 import ExpenseModel from '@/models/Expense'
 import { findMany, createMany, updateOne, deleteOne } from '../crud'
 import { Expense } from '@/types/app-types'
-import { IGetByMonthAndYearProps, IGetByYearProps, IMCPQueryRepository, QueryFilters } from '@/types/server-types'
+import { IGetByMonthAndYearProps, IGetByYearProps, IFullMCPQueryRepository, QueryFilters } from '@/types/server-types'
 import { buildDateRange } from '@/lib/utils'
 
-export class ExpensesRepository implements IMCPQueryRepository<Expense> {
+export class ExpensesRepository implements IFullMCPQueryRepository<Expense> {
   async getByMonthAndYear({ userId, currency, month, year }: IGetByMonthAndYearProps) {
     const start = new Date(year, month - 1, 1).toISOString()
     const end = new Date(year, month, 1).toISOString()
