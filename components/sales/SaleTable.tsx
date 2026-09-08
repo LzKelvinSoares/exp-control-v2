@@ -38,9 +38,14 @@ export default function SaleTable({ sales, loading }: SaleTableProps) {
   const deleteSale = useDeleteSale()
 
   const [editing, setEditing] = useState<Sale | undefined>()
+  const [cloning, setCloning] = useState<Sale | undefined>()
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const columns = useSaleTableColumns({ currency, onEdit: setEditing, onDelete: setDeletingId })
+  function handleClone(sale: Sale) {
+    setCloning({ ...sale, id: undefined })
+  }
+
+  const columns = useSaleTableColumns({ currency, onEdit: setEditing, onClone: handleClone, onDelete: setDeletingId })
 
   async function handleDelete() {
     if (!deletingId) return
@@ -83,12 +88,13 @@ export default function SaleTable({ sales, loading }: SaleTableProps) {
                 {s.saleDate && <span className="text-xs text-muted-foreground">{formatDate(s.saleDate)}</span>}
               </>
             }
-            actions={<SaleTableActions sale={s} onEdit={setEditing} onDelete={setDeletingId} />}
+            actions={<SaleTableActions sale={s} onEdit={setEditing} onClone={handleClone} onDelete={setDeletingId} />}
           />
         )}
       />
 
       <SaleModal open={!!editing} sale={editing} onClose={() => setEditing(undefined)} key={editing?.id} />
+      <SaleModal open={!!cloning} sale={cloning} onClose={() => setCloning(undefined)} key={cloning?.description} />
 
       <ConfirmDialog
         open={!!deletingId}
