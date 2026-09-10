@@ -36,7 +36,7 @@ export default function ExpensesPage() {
   return (
     <PageWrapper title='Despesas' addItem='Nova despesa' setAddModalOpen={setModalOpen}>
       <SummaryCard
-        label='Total de despesas'
+        label='Total de despesas (sem combustível)'
         value={formatCurrency(total, currency)}
         icon={TrendingDown}
         loading={isLoading}

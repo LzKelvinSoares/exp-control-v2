@@ -1,12 +1,12 @@
 'use client'
 
 import { TrendingDown, TrendingUp, Wallet } from 'lucide-react'
-import MonthYearSelector from '@/components/shared/MonthYearSelector'
 import SummaryCard from '@/components/shared/SummaryCard'
 import BillsDueSoon from '@/components/dashboard/BillsDueSoon'
 import TrendChart from '@/components/dashboard/TrendChart'
 import FuelChart from '@/components/dashboard/FuelChart'
 import { useExpenses } from '@/hooks/queries/expenses/use-expenses'
+import { useFuel } from '@/hooks/queries/fuel/use-fuel'
 import { useRevenues } from '@/hooks/queries/revenues/use-revenues'
 import { useCalendar } from '@/store/calendar'
 import { formatCurrency, sumBy } from '@/lib/utils'
@@ -18,11 +18,13 @@ export default function HomePage() {
   const { month, year } = useCalendar()
   const { currency } = useCurrencySession()
 
-  const { data: expenses, isLoading: expLoading } = useExpenses(month, year)
-  const { data: revenues, isLoading: revLoading } = useRevenues(month, year)
+  const { data: expenses = [], isLoading: expLoading } = useExpenses(month, year)
+  const { data: fuel = [], isLoading: fuelLoading } = useFuel(month, year)
+  const { data: revenues = [], isLoading: revLoading } = useRevenues(month, year)
 
-  const totalExpenses = sumBy(expenses ?? [], 'value')
-  const totalRevenues = sumBy(revenues ?? [], 'value')
+  const totalFuel = sumBy(fuel, 'value')
+  const totalExpenses = sumBy(expenses, 'value') + totalFuel
+  const totalRevenues = sumBy(revenues, 'value')
   const balance = totalRevenues - totalExpenses
 
   const expenseBreakdown = EXPENSE_CATEGORIES
@@ -30,6 +32,14 @@ export default function HomePage() {
       label: cat.label,
       value: sumBy((expenses ?? []).filter((e) => e.type === cat.value), 'value'),
     }))
+    .filter((c) => c.value > 0)
+
+  const fuelBreakdown = {
+    label: 'Combustível',
+    value: totalFuel,
+  }
+
+  const expenseBreakdownWithFuel = [...expenseBreakdown, fuelBreakdown]
     .filter((c) => c.value > 0)
     .map((c) => ({ label: c.label, value: formatCurrency(c.value, currency) }))
 
@@ -48,9 +58,9 @@ export default function HomePage() {
           label='Despesas'
           value={formatCurrency(totalExpenses, currency)}
           icon={TrendingDown}
-          loading={expLoading}
+          loading={expLoading || fuelLoading}
           variant='negative'
-          breakdown={expenseBreakdown}
+          breakdown={expenseBreakdownWithFuel}
         />
         <SummaryCard
           label='Receitas'
@@ -64,7 +74,7 @@ export default function HomePage() {
           label='Saldo'
           value={formatCurrency(balance, currency)}
           icon={Wallet}
-          loading={expLoading || revLoading}
+          loading={expLoading || fuelLoading || revLoading}
           variant={balance >= 0 ? 'positive' : 'negative'}
         />
       </div>
