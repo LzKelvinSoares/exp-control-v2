@@ -36,6 +36,28 @@ export function fromDateInput(s: string): string {
   return new Date(y, m - 1, d).toISOString()
 }
 
+export function getGoogleDriveImageUrl(value?: string | null): string | null {
+  if (!value) return null
+
+  const normalized = value.trim()
+  if (!normalized) return null
+
+  if (/^https?:\/\//i.test(normalized)) {
+    const driveId = normalized.match(/[?&]id=([^&]+)/)?.[1]
+      ?? normalized.match(/[?&]exportId=([^&]+)/)?.[1]
+      ?? normalized.match(/\/file\/d\/([^/?]+)/)?.[1]
+      ?? normalized.match(/\/open\?id=([^&]+)/)?.[1]
+
+    if (driveId) {
+      return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1000`
+    }
+
+    return normalized
+  }
+
+  return `https://drive.google.com/thumbnail?id=${normalized}&sz=w1000`
+}
+
 function hasSecondaryTableData(content: string): boolean {
   return /\*\*Descrição:\*\*/.test(content) && /\*\*Valor:\*\*\s*R\$/.test(content)
 }
