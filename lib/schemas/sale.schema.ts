@@ -12,6 +12,7 @@ export const saleSchema = z.object({
   installments: z.number().int().min(1).optional(),
   bookingDate:  z.string().optional(),
   saleDate:     z.string().optional(),
+  imgId:        z.string().optional(),
   paid:         z.boolean(),
   delivered:    z.boolean(),
 })

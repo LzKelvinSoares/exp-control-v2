@@ -14,7 +14,7 @@ describe('SaleTableActions', () => {
   it('calls onEdit with the sale when edit button is clicked', async () => {
     const onEdit = vi.fn()
     const user = userEvent.setup()
-    render(<SaleTableActions sale={sale} onEdit={onEdit} onClone={vi.fn()} onDelete={vi.fn()} />)
+    render(<SaleTableActions sale={sale} onEdit={onEdit} onClone={vi.fn()} onDelete={vi.fn()} onPreview={vi.fn()} />)
     await user.click(screen.getAllByRole('button')[0])
     expect(onEdit).toHaveBeenCalledWith(sale)
   })
@@ -22,7 +22,7 @@ describe('SaleTableActions', () => {
   it('calls onDelete with the sale id when delete button is clicked', async () => {
     const onDelete = vi.fn()
     const user = userEvent.setup()
-    render(<SaleTableActions sale={sale} onEdit={vi.fn()} onClone={vi.fn()} onDelete={onDelete} />)
+    render(<SaleTableActions sale={sale} onEdit={vi.fn()} onClone={vi.fn()} onDelete={onDelete} onPreview={vi.fn()} />)
     await user.click(screen.getAllByRole('button')[2])
     expect(onDelete).toHaveBeenCalledWith('2')
   })
@@ -30,7 +30,7 @@ describe('SaleTableActions', () => {
   it('calls onClone with the sale when copy button is clicked', async () => {
     const onClone = vi.fn()
     const user = userEvent.setup()
-    render(<SaleTableActions sale={sale} onEdit={vi.fn()} onClone={onClone} onDelete={vi.fn()} />)
+    render(<SaleTableActions sale={sale} onEdit={vi.fn()} onClone={onClone} onDelete={vi.fn()} onPreview={vi.fn()} />)
     await user.click(screen.getAllByRole('button')[1])
     expect(onClone).toHaveBeenCalledWith(sale)
   })

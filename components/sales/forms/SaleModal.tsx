@@ -39,6 +39,7 @@ export default function SaleModal({ open, sale, onClose }: SaleModalProps) {
       installments: sale.installments ?? 1,
       bookingDate: toDateInput(sale.bookingDate),
       saleDate: toDateInput(sale.saleDate),
+      imgId: sale.imgId ?? '',
       paid: sale.paid,
       delivered: sale.delivered,
     } : 
@@ -46,6 +47,7 @@ export default function SaleModal({ open, sale, onClose }: SaleModalProps) {
       installments: 1,
       bookingDate: toDateInput(new Date()),
       saleDate: toDateInput(new Date()),
+      imgId: '',
       paid: false,
       delivered: false,
     } as SaleFormData
@@ -59,11 +61,16 @@ export default function SaleModal({ open, sale, onClose }: SaleModalProps) {
 
   async function onSubmit(data: SaleFormData) {
     try {
+      const payload = {
+        ...data,
+        imgId: data.imgId?.trim() || undefined,
+      }
+
       if (isEditing) {
-        await updateSale.mutateAsync({ id: String(sale.id), ...data })
+        await updateSale.mutateAsync({ id: String(sale.id), ...payload })
         toast.success('Venda atualizada')
       } else {
-        await createSale.mutateAsync(data)
+        await createSale.mutateAsync(payload)
         toast.success('Venda criada')
       }
       onClose()
@@ -128,6 +135,14 @@ export default function SaleModal({ open, sale, onClose }: SaleModalProps) {
               <DateInput
                 name='saleDate'
                 title={<>Data da venda <span className='text-muted-foreground text-xs'>(opcional)</span></>}
+              />
+            </div>
+
+            <div className='grid grid-cols-1'>
+              <TextInput
+                name='imgId'
+                title={<>URL/ID da imagem <span className='text-muted-foreground text-xs'>(opcional)</span></>}
+                placeholder='https://drive.google.com/... ou ID do arquivo'
               />
             </div>
 
