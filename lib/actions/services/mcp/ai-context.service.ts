@@ -24,7 +24,7 @@ export class AIContextService implements IAIContextService {
         }
 
         const contents: Content[] = messages.map((m) => ({
-            role: m.role === AI_ROLES.ASSISTANT ? 'model' : AI_ROLES.USER,
+            role: m.role === AI_ROLES.ASSISTANT ? AI_ROLES.MODEL : AI_ROLES.USER,
             parts: [{ text: m.content }],
         }));
 
@@ -49,7 +49,7 @@ export class AIContextService implements IAIContextService {
             }
 
             const modelParts = response.candidates?.[0]?.content?.parts ?? [];
-            contents.push({ role: 'model', parts: modelParts });
+            contents.push({ role: AI_ROLES.MODEL, parts: modelParts });
 
             const toolResultParts = await Promise.all(
                 functionCalls.map(async (call) => {

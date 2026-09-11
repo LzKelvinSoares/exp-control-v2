@@ -4,34 +4,39 @@ import { SALE_ROOM_ENUM } from './enums';
 import { MessageRole } from '@/types/server-types';
 
 export const TOOL_HANDLER_NAME_OPTIONS = {
-  QUERIES: {
-    EXPENSES: 'query_expenses',
-    REVENUES: 'query_revenues',
-    BILLS: 'query_bills',
-    FUEL: 'query_fuel',
-    SALES: 'query_sales',
-    EXPENSE_CATEGORIES: 'get_expense_categories'
-  },
-  SUMMARIES: {
-    EXPENSES: 'summarize_expenses',
-  },
-  MUTATIONS: {
+  EXPENSES: {
+    QUERY_EXPENSES: 'query_expenses',
+    SUMMARIZE_EXPENSES: 'summarize_expenses',
+    GET_EXPENSE_CATEGORIES: 'get_expense_categories',
     ADD_EXPENSE:    'add_expense',
-    ADD_REVENUE:    'add_revenue',
+  },
+  REVENUES: {
+    QUERY_REVENUES: 'query_revenues',
+    ADD_REVENUE: 'add_revenue',
+  },
+  BILLS: {
+    QUERY_BILLS: 'query_bills',
+    ADD_BILL: 'add_bill',
+  },
+  FUEL: {
+    QUERY_FUEL: 'query_fuel',
     ADD_FUEL_ENTRY: 'add_fuel_entry',
-    ADD_BILL:       'add_bill',
-    ADD_SALE:       'add_sale',
-  }
+  },
+  SALES: {
+    QUERY_SALES: 'query_sales',
+    ADD_SALE: 'add_sale',
+  },
 }
 
-export const AI_ROLES: Record<string, MessageRole> = {
+export const AI_ROLES: Record<string, MessageRole | 'model'> = {
   USER: 'user',
   ASSISTANT: 'assistant',
+  MODEL: 'model',
 } as const
 
 export const CHAT_TOOLS: FunctionDeclaration[] = [
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.EXPENSES,
+    name: TOOL_HANDLER_NAME_OPTIONS.EXPENSES.QUERY_EXPENSES,
     description:
       "Query the user's expenses with optional filters. Use when the user asks about spending, costs, or expenses. Always pass the year. Pass month when the user refers to a specific month.",
     parameters: {
@@ -53,7 +58,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.REVENUES,
+    name: TOOL_HANDLER_NAME_OPTIONS.REVENUES.QUERY_REVENUES,
     description:
       "Query the user's revenues (income) with optional filters. Use when asked about salary, freelance, investments, or income.",
     parameters: {
@@ -75,7 +80,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.BILLS,
+    name: TOOL_HANDLER_NAME_OPTIONS.BILLS.QUERY_BILLS,
     description:
       "Query the user's bills with optional filters. Use when asked about due bills, future bills, or past bills.",
     parameters: {
@@ -98,7 +103,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.SUMMARIES.EXPENSES,
+    name: TOOL_HANDLER_NAME_OPTIONS.EXPENSES.SUMMARIZE_EXPENSES,
     description:
       'Returns expense totals grouped by category or by responsible person. Use when asked for a breakdown, summary, or comparison by group.',
     parameters: {
@@ -112,7 +117,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.EXPENSE_CATEGORIES,
+    name: TOOL_HANDLER_NAME_OPTIONS.EXPENSES.GET_EXPENSE_CATEGORIES,
     description:
       'Returns the list of valid expense categories with their Portuguese labels. Call this if you need to know valid type values.',
     parameters: {
@@ -122,7 +127,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.FUEL,
+    name: TOOL_HANDLER_NAME_OPTIONS.FUEL.QUERY_FUEL,
     description:
       "Query the user's fuel entries. Use when asked about fuel spending, fuel history, or liters filled.",
     parameters: {
@@ -135,7 +140,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.SALES,
+    name: TOOL_HANDLER_NAME_OPTIONS.SALES.QUERY_SALES,
     description:
       "Query the user's sales entries. Use when asked about sales data, revenue, or transaction history.",
     parameters: {
@@ -146,7 +151,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_EXPENSE,
+    name: TOOL_HANDLER_NAME_OPTIONS.EXPENSES.ADD_EXPENSE,
     description:
       'Creates a new expense for the user. Use when the user asks to add, register, or record an expense.',
     parameters: {
@@ -167,7 +172,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_REVENUE,
+    name: TOOL_HANDLER_NAME_OPTIONS.REVENUES.ADD_REVENUE,
     description:
       'Creates a new revenue (income) entry for the user. Use when the user asks to add or record income, salary, or a revenue.',
     parameters: {
@@ -188,7 +193,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_FUEL_ENTRY,
+    name: TOOL_HANDLER_NAME_OPTIONS.FUEL.ADD_FUEL_ENTRY,
     description:
       'Creates a new fuel entry. Use when the user asks to register or add a fuel fill-up.',
     parameters: {
@@ -202,7 +207,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_BILL,
+    name: TOOL_HANDLER_NAME_OPTIONS.BILLS.ADD_BILL,
     description:
       'Creates a new bill (conta) for the user. Optionally also saves it as an expense. A Google Calendar event is created automatically if the user has connected their calendar.',
     parameters: {
@@ -223,7 +228,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_SALE,
+    name: TOOL_HANDLER_NAME_OPTIONS.SALES.ADD_SALE,
     description:
       'Creates a new sale for the user. Use when the user asks to add or record a sale. Include the room where the item is located.',
     parameters: {
