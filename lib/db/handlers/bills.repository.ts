@@ -1,5 +1,5 @@
 import BillModel from '@/models/Bill'
-import { findMany, createOne, updateOne, updateMany, deleteOne } from '../crud'
+import { findMany, createOne, findById, updateOne, updateMany, deleteOne } from '../crud'
 import { Bill } from '@/types/app-types'
 import { IFullMCPQueryRepository, IGetByMonthAndYearProps, IGetByYearProps, QueryFilters } from '@/types/server-types';
 import { buildDateRange, toGmtRange } from '../../utils';
@@ -47,6 +47,10 @@ export class BillsRepository implements IBillsRepository {
 
   async create(data: Omit<Bill, 'id' | 'creationDate'>): Promise<Bill> {
     return createOne(BillModel, data);
+  }
+
+  async getById(id: string) {
+    return findById(BillModel, id);
   }
 
   async update(id: string, data: Partial<Bill>) {

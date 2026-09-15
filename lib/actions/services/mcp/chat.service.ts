@@ -66,6 +66,14 @@ export class ChatService implements IChatService {
         return { success: true, expense };
       }
 
+      case TOOL_HANDLER_NAME_OPTIONS.EXPENSES.UPDATE_EXPENSE: {
+        const { id, description, type, value, firstExpirationDate, responsible } = toolInput;
+        const expense = await this.updateOwnedBudget(this.expensesRepository, id, userId, currency, {
+          description, type, value, firstExpirationDate, responsible,
+        });
+        return { success: true, expense };
+      }
+
       default:
         throw new Error(`Unknown expense tool: ${toolName}`);
     }
@@ -78,6 +86,14 @@ export class ChatService implements IChatService {
 
       case TOOL_HANDLER_NAME_OPTIONS.REVENUES.ADD_REVENUE: {
         const revenue = await this.createBudget(userId, currency, toolInput, this.revenuesRepository);
+        return { success: true, revenue };
+      }
+
+      case TOOL_HANDLER_NAME_OPTIONS.REVENUES.UPDATE_REVENUE: {
+        const { id, description, type, value, firstExpirationDate, responsible } = toolInput;
+        const revenue = await this.updateOwnedBudget(this.revenuesRepository, id, userId, currency, {
+          description, type, value, firstExpirationDate, responsible,
+        });
         return { success: true, revenue };
       }
 
@@ -127,6 +143,14 @@ export class ChatService implements IChatService {
         return { success: true, bill };
       }
 
+      case TOOL_HANDLER_NAME_OPTIONS.BILLS.UPDATE_BILL: {
+        const { id, description, type, value, expirationDate, barCode, paid, responsible } = toolInput;
+        const bill = await this.updateOwnedBudget(this.billsRepository, id, userId, currency, {
+          description, type, value, expirationDate, barCode, paid, responsible,
+        } as Partial<Bill>);
+        return { success: true, bill };
+      }
+
       default:
         throw new Error(`Unknown bill tool: ${toolName}`);
     }
@@ -152,19 +176,28 @@ export class ChatService implements IChatService {
         return { success: true, fuel };
       }
 
+      case TOOL_HANDLER_NAME_OPTIONS.FUEL.UPDATE_FUEL_ENTRY: {
+        const { id, creationDate, value, valuePerLiter } = toolInput;
+        const fuel = await this.updateOwnedBudget(this.fuelRepository, id, userId, currency, {
+          creationDate, value, valuePerLiter,
+        } as Partial<Fuel>);
+        return { success: true, fuel };
+      }
+
       default:
         throw new Error(`Unknown fuel tool: ${toolName}`);
     }
   }
 
   private async handleSaleTool({ toolName, toolInput, currency }: ToolCallProps) {
+    const session = await auth()
+
+    if (!session?.user?.access?.includes('sales')) {
+      throw new Error('User does not have access to sales data');
+    }
+
     switch (toolName) {
       case TOOL_HANDLER_NAME_OPTIONS.SALES.QUERY_SALES: {
-        const session = await auth()
-
-        if (!session?.user?.access?.includes('sales')) {
-          throw new Error('User does not have access to sales data');
-        }
         return await this.salesRepository.getAllByCurrency?.(currency);
       }
 
@@ -178,6 +211,18 @@ export class ChatService implements IChatService {
           installments, bookingDate, saleDate, paid, delivered,
           currencyCurrencyAccount: currency,
         } as Sale);
+        return { success: true, sale };
+      }
+
+      case TOOL_HANDLER_NAME_OPTIONS.SALES.UPDATE_SALE: {
+        const {
+          id, description, room, roomDescription, buyer, value, valuePaid, discount,
+          installments, bookingDate, saleDate, paid, delivered,
+        } = toolInput;
+        const sale = await this.updateSale(currency, id, {
+          description, room, roomDescription, buyer, value, valuePaid, discount,
+          installments, bookingDate, saleDate, paid, delivered,
+        });
         return { success: true, sale };
       }
 
@@ -205,5 +250,47 @@ export class ChatService implements IChatService {
       description, type, value, firstExpirationDate, responsible, monthsLeft,
       userId, currencyCurrencyAccount: currency,
     } as T) as T;
+  }
+
+  private async updateOwnedBudget<T extends { userId: string; currencyCurrencyAccount: string }>(
+    repository: IFullMCPQueryRepository<T>,
+    id: string | undefined,
+    userId: string,
+    currency: string,
+    data: Partial<T>,
+  ): Promise<T> {
+    if (!id) throw new Error('id is required');
+    if (!repository.getById) throw new Error('Repository does not support updates');
+
+    const current = await repository.getById(id);
+    if (!current || current.userId !== userId || current.currencyCurrencyAccount !== currency) {
+      throw new Error('Record not found');
+    }
+
+    const updated = await repository.update(id, this.removeUndefined(data));
+    if (!updated) throw new Error('Record not found');
+    return updated;
+  }
+
+  private async updateSale(
+    currency: string,
+    id: string | undefined,
+    data: Partial<Sale>,
+  ): Promise<Sale> {
+    if (!id) throw new Error('id is required');
+    if (!this.salesRepository.getById) throw new Error('Repository does not support updates');
+
+    const current = await this.salesRepository.getById(id);
+    if (!current || current.currencyCurrencyAccount !== currency) throw new Error('Record not found');
+
+    const updated = await this.salesRepository.update(id, this.removeUndefined(data));
+    if (!updated) throw new Error('Record not found');
+    return updated;
+  }
+
+  private removeUndefined<T extends object>(data: T): Partial<T> {
+    return Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    ) as Partial<T>;
   }
 }

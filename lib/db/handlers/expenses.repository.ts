@@ -1,5 +1,5 @@
 import ExpenseModel from '@/models/Expense'
-import { findMany, createMany, updateOne, deleteOne } from '../crud'
+import { findMany, createMany, findById, updateOne, deleteOne } from '../crud'
 import { Expense } from '@/types/app-types'
 import { IGetByMonthAndYearProps, IGetByYearProps, IFullMCPQueryRepository, QueryFilters } from '@/types/server-types'
 import { buildDateRange } from '@/lib/utils'
@@ -47,6 +47,10 @@ export class ExpensesRepository implements IFullMCPQueryRepository<Expense> {
     }
 
     return createMany(ExpenseModel, records);
+  }
+
+  async getById(id: string) {
+    return findById(ExpenseModel, id);
   }
 
   async update(id: string, data: Partial<Expense>) {

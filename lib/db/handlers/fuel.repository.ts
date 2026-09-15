@@ -1,5 +1,5 @@
 import FuelModel from '@/models/Fuel'
-import { findMany, createOne, updateOne, deleteOne } from '../crud'
+import { findMany, createOne, findById, updateOne, deleteOne } from '../crud'
 import { Fuel } from '@/types/app-types'
 import { IGetByMonthAndYearProps, IGetByYearProps, IFullMCPQueryRepository, QueryFilters } from '@/types/server-types'
 import { buildDateRange } from '@/lib/utils';
@@ -19,6 +19,10 @@ export class FuelRepository implements IFullMCPQueryRepository<Fuel> {
 
   async create(data: Omit<Fuel, 'id'>): Promise<Fuel[]> {
     return createOne(FuelModel, data);
+  }
+
+  async getById(id: string) {
+    return findById(FuelModel, id);
   }
 
   async update(id: string, data: Partial<Fuel>) {
