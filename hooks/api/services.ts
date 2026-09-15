@@ -3,6 +3,7 @@ import { Budget, Expense, Fuel, MonthlyChartData, Sale } from '@/types/app-types
 import { HasPoints, IReadService, ITableCrudService, ITableReadAndUpdateService } from '@/types/server-types';
 import { useRepositories } from './repositories';
 import { AIContextService, ChatService, IAIContextService, IChatService } from '@/lib/actions/services/mcp';
+import { useAIContextService } from './ai-context-services';
 
 export interface IServicesContext {
     aiContextService: IAIContextService;
@@ -25,7 +26,22 @@ export function useServices() {
         salesRepository,
         userRepository
     } = useRepositories();
-    const chatService = new ChatService(expensesRepository, revenuesRepository, billsRepository, fuelRepository, salesRepository, userRepository);
+
+    const {
+        billsContextService,
+        expensesContextService,
+        fuelContextService,
+        revenuesContextService,
+        salesContextService
+    } = useAIContextService();
+    
+    const chatService = new ChatService(
+        billsContextService,
+        expensesContextService,
+        fuelContextService,
+        revenuesContextService,
+        salesContextService
+    );
 
     return {
         aiContextService: new AIContextService(chatService),

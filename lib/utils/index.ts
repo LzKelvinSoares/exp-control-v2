@@ -1,3 +1,4 @@
+export * from './chat';
 export * from './format';
 export * from './helpers';
 export * from './queries';

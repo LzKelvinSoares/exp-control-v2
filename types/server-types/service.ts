@@ -37,5 +37,9 @@ export interface ToolCallProps {
   currency: string;
 }
 
+export interface IChatContextService<T> {
+  handleTool(props: ToolCallProps): Promise<T[]>
+}
+
 export interface ITableReadAndUpdateService<T, R extends HasId> extends IReadService<T>, IUpdateService<T, R> {}
 export interface ITableCrudService<T, R extends HasId> extends ITableReadAndUpdateService<T, R>, ICreateService<T>, IDeleteService {}
