@@ -1,5 +1,5 @@
 import SaleModel from '@/models/Sale'
-import { findMany, createOne, updateOne, deleteOne } from '../crud'
+import { findMany, createOne, findById, updateOne, deleteOne } from '../crud'
 import { Sale } from '@/types/app-types'
 import { IMCPQueryRepository, QueryFilters } from '@/types/server-types';
 
@@ -10,6 +10,10 @@ export class SalesRepository implements IMCPQueryRepository<Sale> {
 
   async create(data: Omit<Sale, 'id' | 'creationDate'>): Promise<Sale[]> {
     return createOne(SaleModel, data);
+  }
+
+  async getById(id: string) {
+    return findById(SaleModel, id);
   }
 
   async update(id: string, data: Partial<Sale>) {

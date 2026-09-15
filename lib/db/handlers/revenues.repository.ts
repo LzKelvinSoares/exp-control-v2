@@ -1,5 +1,5 @@
 import RevenueModel from '@/models/Revenue'
-import { findMany, createMany, updateOne, deleteOne } from '../crud'
+import { findMany, createMany, findById, updateOne, deleteOne } from '../crud'
 import { Budget } from '@/types/app-types'
 import { IGetByMonthAndYearProps, IGetByYearProps, IFullMCPQueryRepository, QueryFilters } from '@/types/server-types';
 import { buildDateRange } from '@/lib/utils';
@@ -47,6 +47,10 @@ export class RevenuesRepository implements IFullMCPQueryRepository<Budget> {
     }
 
     return createMany(RevenueModel, records);
+  }
+
+  async getById(id: string) {
+    return findById(RevenueModel, id);
   }
 
   async update(id: string, data: Partial<Budget>) {

@@ -15,6 +15,7 @@ export interface IChatRequest {
 }
 
 export interface ToolInput {
+  id?: string;
   year?: number;
   month?: number;
   type?: string;

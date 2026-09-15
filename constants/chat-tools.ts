@@ -4,34 +4,44 @@ import { SALE_ROOM_ENUM } from './enums';
 import { MessageRole } from '@/types/server-types';
 
 export const TOOL_HANDLER_NAME_OPTIONS = {
-  QUERIES: {
-    EXPENSES: 'query_expenses',
-    REVENUES: 'query_revenues',
-    BILLS: 'query_bills',
-    FUEL: 'query_fuel',
-    SALES: 'query_sales',
-    EXPENSE_CATEGORIES: 'get_expense_categories'
-  },
-  SUMMARIES: {
-    EXPENSES: 'summarize_expenses',
-  },
-  MUTATIONS: {
+  EXPENSES: {
+    QUERY_EXPENSES: 'query_expenses',
+    SUMMARIZE_EXPENSES: 'summarize_expenses',
+    GET_EXPENSE_CATEGORIES: 'get_expense_categories',
     ADD_EXPENSE:    'add_expense',
-    ADD_REVENUE:    'add_revenue',
+    UPDATE_EXPENSE: 'update_expense',
+  },
+  REVENUES: {
+    QUERY_REVENUES: 'query_revenues',
+    ADD_REVENUE: 'add_revenue',
+    UPDATE_REVENUE: 'update_revenue',
+  },
+  BILLS: {
+    QUERY_BILLS: 'query_bills',
+    ADD_BILL: 'add_bill',
+    UPDATE_BILL: 'update_bill',
+  },
+  FUEL: {
+    QUERY_FUEL: 'query_fuel',
     ADD_FUEL_ENTRY: 'add_fuel_entry',
-    ADD_BILL:       'add_bill',
-    ADD_SALE:       'add_sale',
-  }
+    UPDATE_FUEL_ENTRY: 'update_fuel_entry',
+  },
+  SALES: {
+    QUERY_SALES: 'query_sales',
+    ADD_SALE: 'add_sale',
+    UPDATE_SALE: 'update_sale',
+  },
 }
 
-export const AI_ROLES: Record<string, MessageRole> = {
+export const AI_ROLES: Record<string, MessageRole | 'model'> = {
   USER: 'user',
   ASSISTANT: 'assistant',
+  MODEL: 'model',
 } as const
 
 export const CHAT_TOOLS: FunctionDeclaration[] = [
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.EXPENSES,
+    name: TOOL_HANDLER_NAME_OPTIONS.EXPENSES.QUERY_EXPENSES,
     description:
       "Query the user's expenses with optional filters. Use when the user asks about spending, costs, or expenses. Always pass the year. Pass month when the user refers to a specific month.",
     parameters: {
@@ -53,7 +63,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.REVENUES,
+    name: TOOL_HANDLER_NAME_OPTIONS.REVENUES.QUERY_REVENUES,
     description:
       "Query the user's revenues (income) with optional filters. Use when asked about salary, freelance, investments, or income.",
     parameters: {
@@ -75,7 +85,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.BILLS,
+    name: TOOL_HANDLER_NAME_OPTIONS.BILLS.QUERY_BILLS,
     description:
       "Query the user's bills with optional filters. Use when asked about due bills, future bills, or past bills.",
     parameters: {
@@ -98,7 +108,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.SUMMARIES.EXPENSES,
+    name: TOOL_HANDLER_NAME_OPTIONS.EXPENSES.SUMMARIZE_EXPENSES,
     description:
       'Returns expense totals grouped by category or by responsible person. Use when asked for a breakdown, summary, or comparison by group.',
     parameters: {
@@ -112,7 +122,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.EXPENSE_CATEGORIES,
+    name: TOOL_HANDLER_NAME_OPTIONS.EXPENSES.GET_EXPENSE_CATEGORIES,
     description:
       'Returns the list of valid expense categories with their Portuguese labels. Call this if you need to know valid type values.',
     parameters: {
@@ -122,7 +132,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.FUEL,
+    name: TOOL_HANDLER_NAME_OPTIONS.FUEL.QUERY_FUEL,
     description:
       "Query the user's fuel entries. Use when asked about fuel spending, fuel history, or liters filled.",
     parameters: {
@@ -135,7 +145,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.QUERIES.SALES,
+    name: TOOL_HANDLER_NAME_OPTIONS.SALES.QUERY_SALES,
     description:
       "Query the user's sales entries. Use when asked about sales data, revenue, or transaction history.",
     parameters: {
@@ -146,7 +156,7 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_EXPENSE,
+    name: TOOL_HANDLER_NAME_OPTIONS.EXPENSES.ADD_EXPENSE,
     description:
       'Creates a new expense for the user. Use when the user asks to add, register, or record an expense.',
     parameters: {
@@ -167,7 +177,23 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_REVENUE,
+    name: TOOL_HANDLER_NAME_OPTIONS.EXPENSES.UPDATE_EXPENSE,
+    description: 'Updates an existing expense. First query expenses to find the id, then provide only the fields to change.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        id:                { type: Type.STRING, description: 'ID of the expense to update.' },
+        description:       { type: Type.STRING },
+        type:               { type: Type.STRING, enum: EXPENSE_CATEGORIES.map(c => c.value) },
+        value:              { type: Type.NUMBER },
+        firstExpirationDate:{ type: Type.STRING, description: 'ISO date string (YYYY-MM-DD).' },
+        responsible:       { type: Type.STRING },
+      },
+      required: ['id'],
+    },
+  },
+  {
+    name: TOOL_HANDLER_NAME_OPTIONS.REVENUES.ADD_REVENUE,
     description:
       'Creates a new revenue (income) entry for the user. Use when the user asks to add or record income, salary, or a revenue.',
     parameters: {
@@ -188,7 +214,23 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_FUEL_ENTRY,
+    name: TOOL_HANDLER_NAME_OPTIONS.REVENUES.UPDATE_REVENUE,
+    description: 'Updates an existing revenue. First query revenues to find the id, then provide only the fields to change.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        id:                { type: Type.STRING, description: 'ID of the revenue to update.' },
+        description:       { type: Type.STRING },
+        type:               { type: Type.STRING, enum: REVENUE_CATEGORIES.map(c => c.value) },
+        value:              { type: Type.NUMBER },
+        firstExpirationDate:{ type: Type.STRING, description: 'ISO date string (YYYY-MM-DD).' },
+        responsible:       { type: Type.STRING },
+      },
+      required: ['id'],
+    },
+  },
+  {
+    name: TOOL_HANDLER_NAME_OPTIONS.FUEL.ADD_FUEL_ENTRY,
     description:
       'Creates a new fuel entry. Use when the user asks to register or add a fuel fill-up.',
     parameters: {
@@ -202,7 +244,21 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_BILL,
+    name: TOOL_HANDLER_NAME_OPTIONS.FUEL.UPDATE_FUEL_ENTRY,
+    description: 'Updates an existing fuel entry. First query fuel entries to find the id, then provide only the fields to change.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        id:            { type: Type.STRING, description: 'ID of the fuel entry to update.' },
+        creationDate: { type: Type.STRING, description: 'ISO date string (YYYY-MM-DD).' },
+        value:        { type: Type.NUMBER },
+        valuePerLiter:{ type: Type.NUMBER },
+      },
+      required: ['id'],
+    },
+  },
+  {
+    name: TOOL_HANDLER_NAME_OPTIONS.BILLS.ADD_BILL,
     description:
       'Creates a new bill (conta) for the user. Optionally also saves it as an expense. A Google Calendar event is created automatically if the user has connected their calendar.',
     parameters: {
@@ -223,7 +279,25 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
     },
   },
   {
-    name: TOOL_HANDLER_NAME_OPTIONS.MUTATIONS.ADD_SALE,
+    name: TOOL_HANDLER_NAME_OPTIONS.BILLS.UPDATE_BILL,
+    description: 'Updates an existing bill. First query bills to find the id, then provide only the fields to change.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        id:             { type: Type.STRING, description: 'ID of the bill to update.' },
+        description:    { type: Type.STRING },
+        type:            { type: Type.STRING, enum: BILL_CATEGORIES.map(b => b.value) },
+        value:          { type: Type.NUMBER },
+        expirationDate: { type: Type.STRING, description: 'ISO date string (YYYY-MM-DD).' },
+        barCode:        { type: Type.STRING },
+        paid:           { type: Type.BOOLEAN },
+        responsible:    { type: Type.STRING },
+      },
+      required: ['id'],
+    },
+  },
+  {
+    name: TOOL_HANDLER_NAME_OPTIONS.SALES.ADD_SALE,
     description:
       'Creates a new sale for the user. Use when the user asks to add or record a sale. Include the room where the item is located.',
     parameters: {
@@ -249,6 +323,29 @@ export const CHAT_TOOLS: FunctionDeclaration[] = [
       required: ['description', 'room', 'value'],
     },
   },
+  {
+    name: TOOL_HANDLER_NAME_OPTIONS.SALES.UPDATE_SALE,
+    description: 'Updates an existing sale. First query sales to find the id, then provide only the fields to change.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        id:             { type: Type.STRING, description: 'ID of the sale to update.' },
+        description:    { type: Type.STRING },
+        room:           { type: Type.STRING, enum: [...SALE_ROOM_ENUM] },
+        roomDescription:{ type: Type.STRING },
+        buyer:          { type: Type.STRING },
+        value:          { type: Type.NUMBER },
+        valuePaid:      { type: Type.NUMBER },
+        discount:       { type: Type.NUMBER },
+        installments:   { type: Type.NUMBER },
+        bookingDate:    { type: Type.STRING },
+        saleDate:       { type: Type.STRING },
+        paid:           { type: Type.BOOLEAN },
+        delivered:      { type: Type.BOOLEAN },
+      },
+      required: ['id'],
+    },
+  },
 ]
 
 export const maxDuration = 60;
@@ -257,7 +354,7 @@ export const MAX_ITERATIONS = 10;
 export const buildSystemPrompt = (month: number, year: number, currency: string) =>
   `Você é um assistente financeiro pessoal. Responda sempre em português brasileiro.
 Contexto atual: mês ${month}, ano ${year}, moeda ${currency}.
-Use as ferramentas disponíveis para consultar ou criar despesas, receitas, abastecimentos e contas quando necessário.
+Use as ferramentas disponíveis para consultar, criar ou atualizar despesas, receitas, abastecimentos, contas e vendas quando necessário. Para atualizar um registro, consulte-o primeiro para obter seu id.
 Apresente valores monetários no formato R$ 1.234,56. Seja conciso e objetivo.`;
 
 export const AI_DEFAULT_MODEL = 'gemini-3.6-flash';
