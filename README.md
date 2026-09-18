@@ -80,29 +80,59 @@ npm run test:coverage    # with coverage report
 
 ## Project Structure
 
-```
+```text
 app/
-  (auth)/              # Login / register pages
-  (dashboard)/         # Protected dashboard routes
-    bills/
-    expenses/
-    fuel/
-    revenues/
-    sales/
-  api/                 # API route handlers
+  (auth)/
+  (dashboard)/
+  api/
+  globals.css
+  layout.tsx
+  offline/
+
 components/
-  layout/              # Shell components (sidebar, header)
-  ui/                  # Reusable UI primitives
-  bills|expenses|...   # Feature-specific components
-  shared/              # Cross-feature components
+  bills/
+  chatbot/
+  dashboard/
+  expenses/
+  fuel/
+  layout/
+  revenues/
+  sales/
+  shared/
+  ui/
+
+constants/
+hooks/
+
 lib/
-  actions/             # Server actions
-  db/                  # Database helpers
-  schemas/             # Zod validation schemas
-  utils/               # Utility functions
-models/                # Mongoose models
-store/                 # Zustand stores
-types/                 # Shared TypeScript types
-hooks/                 # Custom React hooks
-constants/             # App-wide constants
+  actions/
+  db/
+  schemas/
+  utils/
+  mongodb.ts
+
+models/
+store/
+types/
+
+__tests__/
+public/
+
+scripts/
+
+tasks/
+
+.env.local.example
+AGENTS.md
+auth.config.ts
+components.json
+eslint.config.mjs
+next.config.ts
+package.json
+postcss.config.mjs
+proxy.ts
+tsconfig.json
+vitest.config.ts
+vitest.d.ts
+vitest.setup.ts
 ```
