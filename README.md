@@ -106,6 +106,10 @@ hooks/
 
 lib/
   actions/
+    controllers/
+    middlewares/
+    services/
+      mcp/
   db/
   schemas/
   utils/
